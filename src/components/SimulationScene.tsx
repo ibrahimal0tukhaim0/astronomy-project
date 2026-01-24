@@ -1,6 +1,7 @@
 import { useRef, useEffect } from 'react'
 import * as THREE from 'three'
 import { useFrame } from '@react-three/fiber'
+import { useTexture } from '@react-three/drei'
 import gsap from 'gsap'
 import { AsteroidBelts } from './AsteroidBelts'
 
@@ -18,30 +19,20 @@ interface SimulationSceneProps {
 const BASE_TIME_SCALE = 1;
 
 // 🌌 Procedural Particle Starfield (SoumyaEXE Implementation)
-function ReferenceStarfield() {
-    // Generate 5000 random stars
-    const starsGeometry = new THREE.BufferGeometry();
-    const count = 5000;
-    const positions = new Float32Array(count * 3);
-
-    for (let i = 0; i < count * 3; i++) {
-        // Range: -600 to +600 matchings repo
-        positions[i] = (Math.random() - 0.5) * 1200;
-    }
-
-    starsGeometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+// 🌌 360 Space Background (High Res)
+function SpaceBackground() {
+    const texture = useTexture("/textures/space360.jpg")
 
     return (
-        <points>
-            <bufferGeometry attach="geometry" {...starsGeometry} />
-            <pointsMaterial
-                attach="material"
-                color={0xffffff}
-                size={0.7} // Repo size
-                sizeAttenuation={true} // Perspective scaling
+        <mesh scale={[4000, 4000, 4000]}> {/* Increased scale to 4000 to be safely behind everything */}
+            <sphereGeometry args={[1, 64, 64]} />
+            <meshBasicMaterial
+                map={texture}
+                side={THREE.BackSide}
+                toneMapped={false} // Keep colors vivid
             />
-        </points>
-    );
+        </mesh>
+    )
 }
 
 
@@ -133,8 +124,8 @@ export default function SimulationScene({ onSelect, isPaused, onDateChange }: Si
 
     return (
         <>
-            {/* Reference Repository Starfield System */}
-            <ReferenceStarfield />
+            {/* Reference Repository Starfield System - REPLACED with 360 Background */}
+            <SpaceBackground />
 
             {/* Reference Lighting Setup - Boosted for Visibility */}
             <ambientLight intensity={1.5} color={new THREE.Color(0.2, 0.2, 0.2)} />
