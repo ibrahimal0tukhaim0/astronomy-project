@@ -1,0 +1,19 @@
+/* Google Fonts for Arabic Typography */
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+    --font-sans: "Cairo", "Outfit", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-serif: "Outfit", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-arabic: "Amiri", "Scheherazade New", serif;
+}
+
+/* Custom utility classes for Arabic text */
+.font-quran {
+    font-family: var(--font-arabic);
+    line-height: 2.5;
+    letter-spacing: 0.03em;
+}
