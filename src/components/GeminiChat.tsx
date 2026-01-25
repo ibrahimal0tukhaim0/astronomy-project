@@ -179,7 +179,7 @@ export function GeminiChat() {
                             </form>
                             {/* Version Debug Indicator */}
                             <div className="text-[10px] text-cyan-400 text-center mt-1">
-                                System: v3.1 (Flash 002 Enabled)
+                                System: v3.2 (Single Flash Model)
                             </div>
                         </div>
                     </motion.div>
