@@ -38,9 +38,7 @@ export function GeminiChat() {
             // MULTI-MODEL FALBACK SYSTEM (The "Shotgun" Approach)
             const MODELS = [
                 "v1beta/models/gemini-1.5-flash",
-                "v1beta/models/gemini-1.5-flash-001",
-                "v1beta/models/gemini-1.0-pro",
-                "v1/models/gemini-pro"
+                "v1beta/models/gemini-1.5-pro",
             ];
 
             let lastError = null;
