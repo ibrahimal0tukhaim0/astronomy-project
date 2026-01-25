@@ -35,14 +35,14 @@ export function GeminiChat() {
         try {
             const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
-            // SIMPLIFIED: Using the single most stable model
+            // Step 1: Try the preferred model
             const MODEL_NAME = "gemini-1.5-flash";
-            const API_VERSION = "v1";
+            const API_VERSION = "v1beta";
             const FULL_MODEL_PATH = `${API_VERSION}/models/${MODEL_NAME}`;
 
             console.log(`Attempting Gemini with: ${FULL_MODEL_PATH}`);
 
-            const response = await fetch(
+            let response = await fetch(
                 `https://generativelanguage.googleapis.com/${FULL_MODEL_PATH}:generateContent?key=${apiKey}`,
                 {
                     method: 'POST',
@@ -51,19 +51,42 @@ export function GeminiChat() {
                 }
             );
 
-            const data = await response.json();
+            let data = await response.json();
 
+            // Step 2: Critical Failure Handling - Run Diagnostics
             if (!response.ok || data.error) {
-                const errDetails = data.error?.message || `HTTP ${response.status}`;
-                throw new Error(`[${MODEL_NAME}] Failed: ${errDetails}`);
+                const originalError = data.error?.message || `HTTP ${response.status}`;
+                console.warn("Primary model failed. Running Diagnostics...", originalError);
+
+                // Diagnostic: List available models
+                try {
+                    const listResponse = await fetch(
+                        `https://generativelanguage.googleapis.com/v1beta/models?key=${apiKey}`
+                    );
+                    const listData = await listResponse.json();
+
+                    if (listData.models) {
+                        const availableModels = listData.models
+                            .map((m: any) => m.name.replace('models/', ''))
+                            .filter((n: string) => n.includes('gemini'));
+
+                        throw new Error(
+                            `Model '${MODEL_NAME}' failed. Available models for your key:\n` +
+                            availableModels.join(', ')
+                        );
+                    } else {
+                        throw new Error(`Failed: ${originalError} (And could not list models: ${listData.error?.message})`);
+                    }
+                } catch (diagError: any) {
+                    // If listing fails, throw original error + diag error
+                    throw new Error(`${originalError} || Diag failed: ${diagError.message}`);
+                }
             }
 
             // If we get here, it worked!
             const successData = data;
 
             const aiText = successData.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't understand that.";
-
-            // Append success note for debug
             const finalText = aiText;
 
             setMessages(prev => [...prev, { role: 'model', text: finalText }]);
@@ -164,7 +187,7 @@ export function GeminiChat() {
                             </form>
                             {/* Version Debug Indicator */}
                             <div className="text-[10px] text-cyan-400 text-center mt-1">
-                                System: v3.5 (API v1 Stable)
+                                System: v3.6 (Diagnostic Mode)
                             </div>
                         </div>
                     </motion.div>
