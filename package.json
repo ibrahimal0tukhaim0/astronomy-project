@@ -10,7 +10,8 @@
     "lint": "eslint .",
     "preview": "vite preview",
     "zip": "zip -r solar-system-explorer.zip . -x \"node_modules/*\" \"dist/*\" \".git/*\" \".DS_Store\" \"solar-system-explorer.zip\"",
-    "deploy": "rm -rf dist && npm run build && touch dist/.nojekyll && cd dist && git init && git add . && git commit -m \"Auto-deploy update\" && git branch -M gh-pages && git remote add origin https://github.com/ibrahimal0tukhaim0/astronomy-project.git && git push -f origin gh-pages"
+    "deploy": "rm -rf dist && npm run build && touch dist/.nojekyll && cd dist && git init && git add . && git commit -m \"Auto-deploy update\" && git branch -M gh-pages && git remote add origin https://github.com/ibrahimal0tukhaim0/astronomy-project.git && git push -f origin gh-pages",
+    "cache-bust": "echo 'Busting Vercel Cache'"
   },
   "dependencies": {
     "@capacitor/cli": "^8.0.1",
