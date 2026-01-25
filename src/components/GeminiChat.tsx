@@ -37,13 +37,11 @@ export function GeminiChat() {
 
             // MULTI-MODEL FALBACK SYSTEM (The "Shotgun" Approach)
             const MODELS = [
-                "v1beta/models/gemini-1.5-flash-002",
-                "v1beta/models/gemini-1.5-flash-001",
                 "v1beta/models/gemini-1.5-flash",
-                "v1beta/models/gemini-1.5-pro-002",
+                "v1beta/models/gemini-1.5-pro",
             ];
 
-            let firstError = null;
+            let lastError = null;
             let successData = null;
 
             for (const modelPath of MODELS) {
@@ -69,15 +67,13 @@ export function GeminiChat() {
                     break; // Stop the loop
                 } catch (e: any) {
                     console.warn(`Model ${modelPath} failed:`, e.message);
-                    if (!firstError) firstError = e;
+                    lastError = e;
                     // Continue to next model
                 }
             }
 
             if (!successData) {
-                // Throw the FIRST error because it's usually the most relevant (e.g. Invalid API Key applies to all)
-                // The last error is usually just "Model not found" because we ran out of valid models
-                throw firstError || new Error("All models failed.");
+                throw lastError || new Error("All models failed.");
             }
 
             const aiText = successData.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't understand that.";
@@ -88,10 +84,7 @@ export function GeminiChat() {
             setMessages(prev => [...prev, { role: 'model', text: finalText }]);
         } catch (error: any) {
             console.error("Gemini Catch Block:", error);
-            // Show a user-friendly error if it's the 404/Not Found
-            let msg = error.message;
-            if (msg.includes('not found')) msg = "Service unavailable or API Key invalid.";
-            setMessages(prev => [...prev, { role: 'model', text: `Error: ${msg}` }]);
+            setMessages(prev => [...prev, { role: 'model', text: `System Error: ${error.message}` }]);
         } finally {
             setIsLoading(false);
         }
@@ -186,7 +179,7 @@ export function GeminiChat() {
                             </form>
                             {/* Version Debug Indicator */}
                             <div className="text-[10px] text-cyan-400 text-center mt-1">
-                                System: v3.0 (Robust Check)
+                                System: v3.1 (Flash 002 Enabled)
                             </div>
                         </div>
                     </motion.div>
