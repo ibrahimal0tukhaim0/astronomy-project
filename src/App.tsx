@@ -1,5 +1,5 @@
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Loader } from '@react-three/drei'
+import { OrbitControls, Loader, AdaptiveDpr, AdaptiveEvents } from '@react-three/drei'
 import { useState, Suspense, useRef } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { CelestialData } from './data/objects'
@@ -18,6 +18,21 @@ import * as THREE from 'three'
 // Direct import for debugging (Default import)
 import SimulationScene from './components/SimulationScene'
 import { MainMenu } from './components/MainMenu'
+import { planetTextures } from './utils/textureLoader'
+import { useTexture } from '@react-three/drei'
+
+// 🚀 Performance: Preload ALL textures to avoid frame drops during travel
+function TexturePreloader() {
+    // Flatten all texture URLs into a single array
+    const allTextures = Object.values(planetTextures).flatMap(t => {
+        if (typeof t === 'string') return [t];
+        return Object.values(t);
+    }) as string[];
+
+    // This hook suspends until all textures are loaded
+    useTexture(allTextures);
+    return null;
+}
 
 function AppContent() {
     const [selectedObject, setSelectedObject] = useState<CelestialData | null>(null)
@@ -61,7 +76,12 @@ function AppContent() {
                 >
                     <color attach="background" args={['#000814']} />
 
+                    {/* Performance Optimization for iOS */}
+                    <AdaptiveDpr pixelated />
+                    <AdaptiveEvents />
+
                     <Suspense fallback={null}>
+                        <TexturePreloader /> {/* FORCE LOAD EVERYTHING HERE */}
                         <SimulationScene
                             onSelect={setSelectedObject}
                             isPaused={isPaused || !hasStarted} // Pause simulation behind menu
@@ -89,6 +109,7 @@ function AppContent() {
                         autoRotate={!hasStarted} // Rotate while in menu for cinematic effect? Or false. Let's Set False to keep it still until start.
                         autoRotateSpeed={0.3}
                         enabled={hasStarted} // Disable controls while in menu
+                        regress={true} // Triggers resolution downgrade on movement for stable FPS
                     />
                 </Canvas>
             </ErrorBoundary>
@@ -102,7 +123,7 @@ function AppContent() {
             <div className={`transition-opacity duration-1000 ${hasStarted ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                 <NavigationSidebar onNavigate={handleNavigate} />
 
-                <div className={`absolute top-0 left-0 p-4 md:p-8 text-white pointer-events-none transition-opacity duration-500 rtl:right-0 rtl:left-auto ${selectedObject ? 'opacity-0 md:opacity-100' : 'opacity-100'}`}>
+                <div className="absolute top-safe left-0 p-4 md:p-8 text-white pointer-events-none transition-opacity duration-500 rtl:right-0 rtl:left-auto mt-12 md:mt-0" style={{ marginTop: 'env(safe-area-inset-top)' }}>
                     <h1 className="text-3xl md:text-5xl font-bold font-serif tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
                         {t('app.title')}
                     </h1>
@@ -123,7 +144,7 @@ function AppContent() {
                     onClose={() => setSelectedObject(null)}
                 />
 
-                <div className="absolute bottom-2 left-1/2 -translate-x-1/2 text-white/30 text-xs font-serif pointer-events-none z-10">
+                <div className="absolute bottom-safe left-1/2 -translate-x-1/2 text-white/30 text-xs font-serif pointer-events-none z-10 mb-2">
                     {t('app.credits')}
                 </div>
 
@@ -132,7 +153,7 @@ function AppContent() {
                     <source src={`${import.meta.env.BASE_URL}textures/interstellar.mp3`} type="audio/mpeg" />
                 </audio>
 
-                <div className="absolute bottom-4 left-4 z-50">
+                <div className="absolute bottom-safe left-safe z-50 mb-4 ml-4">
                     <button
                         onClick={() => {
                             const audio = document.getElementById('bg-music') as HTMLAudioElement;

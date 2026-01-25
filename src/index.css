@@ -17,3 +17,37 @@
     line-height: 2.5;
     letter-spacing: 0.03em;
 }
+
+/* iOS Safe Areas utilities */
+.pt-safe {
+    padding-top: env(safe-area-inset-top, 20px);
+}
+
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+.pl-safe {
+    padding-left: env(safe-area-inset-left, 0px);
+}
+
+.pr-safe {
+    padding-right: env(safe-area-inset-right, 0px);
+}
+
+/* Positioning helpers for absolute elements */
+.top-safe {
+    top: env(safe-area-inset-top, 20px);
+}
+
+.bottom-safe {
+    bottom: env(safe-area-inset-bottom, 20px);
+}
+
+.left-safe {
+    left: env(safe-area-inset-left, 16px);
+}
+
+.right-safe {
+    right: env(safe-area-inset-right, 16px);
+}

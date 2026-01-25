@@ -39,11 +39,7 @@ function SpaceBackground() {
 
 
 // 🪐 Planet Orbits (Visual Paths)
-// Renders static rings showing the orbital path of each planet
-// 🪐 Planet Orbits (Visual Paths)
-// Renders Dashed Blue Lines for "High-Tech Radar" look
-// 🪐 Planet Orbits (Visual Paths)
-// Renders Dashed Blue Lines for "High-Tech Radar" look
+// Renders static rings, optionally animated with dashed lines for "High-Tech Radar" look
 // Bypass TS conflict for <line> element
 const ThreeLine = 'line' as any;
 

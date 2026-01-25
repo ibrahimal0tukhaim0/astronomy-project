@@ -84,6 +84,11 @@ export const loadTexture = (url: string): Promise<THREE.Texture | null> => {
                 // IMPORTANT: Flag update for renderer
                 texture.needsUpdate = true;
 
+
+                // PERFORMANCE: Cap Anisotropy for Mobile Stability (Max 8x)
+                // This prevents extreme filtering cost on oblique angles without visible quality loss
+                texture.anisotropy = 8;
+
                 textureCache.set(url, texture);
                 resolve(texture);
             },

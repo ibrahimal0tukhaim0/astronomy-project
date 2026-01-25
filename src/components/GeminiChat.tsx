@@ -40,7 +40,7 @@ export function GeminiChat() {
             const API_VERSION = "v1beta"; // 2.5 might require beta or v1. Diagnostic showed v1beta in error, so safe to use v1beta.beta";
             const FULL_MODEL_PATH = `${API_VERSION}/models/${MODEL_NAME}`;
 
-            console.log(`Attempting Gemini with: ${FULL_MODEL_PATH}`);
+
 
             let response = await fetch(
                 `https://generativelanguage.googleapis.com/${FULL_MODEL_PATH}:generateContent?key=${apiKey}`,
@@ -187,7 +187,7 @@ export function GeminiChat() {
                             </form>
                             {/* Version Debug Indicator */}
                             <div className="text-[10px] text-cyan-400 text-center mt-1 flex flex-col gap-0.5">
-                                <span>System: v4.9 (Key Update)</span>
+                                <span>System: v5.0 (Performance & Preload)</span>
                                 <span className="opacity-70">
                                     Key Ends: {import.meta.env.VITE_GEMINI_API_KEY ? `...${import.meta.env.VITE_GEMINI_API_KEY.slice(-5)}` : 'NONE'}
                                 </span>

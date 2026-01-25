@@ -215,42 +215,10 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
     // Load textures with enhanced error handling and logging
     // 🌍 TEXTURE LOADING & SELECTION
     // --------------------------------------------------------------------------------
-    // Ensure we always have a valid texture path
-    // Default: Ask the TextureLoader utility
-    // let textureUrl = planetTextures[data.id]?.map || planetTextures[data.id] || getPath('textures/pluto.jpg');
-
-    // ☀️ SPECIAL CASE: Sun - Use High Res 4K Texture directly for safety
-    // if (data.id === 'sun') {
-    //    textureUrl = getPath('textures/sun_real.png'); // FORCE 4K TEXTURE
-    // }
-
-    // Initialize the hook with our primary choice (kept for preloading logic if needed, but suppressed for now)
-    // const texture = useTexture(textureUrl);
 
     // 🔄 RE-VERIFY: Sometimes hooks cache old values. 
     // We force specific textures for key objects to prevent "Generic Rock" syndrome.
-    useEffect(() => {
-        if (meshRef.current) {
-            let forcedUrl = null;
 
-            // --- PLANET TEXTURE OVERRIDES ---
-            if (data.id === 'moon') forcedUrl = getPath('textures/moon.jpg');
-            if (data.id === 'mercury') forcedUrl = getPath('textures/mercury_new.jpg'); // Custom User Texture
-            if (data.id === 'earth') forcedUrl = getPath('textures/earth.jpg');
-
-            if (forcedUrl) {
-                // Manually load and swap to bypass cache
-                new THREE.TextureLoader().load(forcedUrl, (tex: THREE.Texture) => {
-                    if (meshRef.current) {
-                        // @ts-ignore
-                        meshRef.current.material.map = tex;
-                        // @ts-ignore
-                        meshRef.current.material.needsUpdate = true;
-                    }
-                });
-            }
-        }
-    }, [data.id]);
 
     // 🌍 TEXTURE LOADING & SELECTION
     useEffect(() => {
@@ -657,8 +625,8 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
                         color="#FFF4E6"
                         castShadow={true}
                         shadow-bias={-0.0001}
-                        shadow-mapSize-width={2048}
-                        shadow-mapSize-height={2048}
+                        shadow-mapSize-width={1024} // Optimized for Mobile (was 2048)
+                        shadow-mapSize-height={1024} // Optimized for Mobile
                     />
 
                     {/* CORE: Real Textured Sun */}
