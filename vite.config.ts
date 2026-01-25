@@ -10,8 +10,8 @@ export default defineConfig({
   ],
   server: {
     host: true,
-    strictPort: true,
+    strictPort: false, // Allow fallback to 3001 if 3000 is busy
     port: 3000,
   },
-  base: './', // Universal relative path (Safest for GitHub Pages)
+  base: '/', // Vercel / Standard Root Deployment
 })

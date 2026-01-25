@@ -1,10 +1,13 @@
 import { useRef, useState, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
+import { useTexture } from '@react-three/drei'
 import type { CelestialData } from '../data/objects'
-import * as THREE from 'three'
-import { loadCelestialTextures } from '../utils/textureLoader'
+import * as THREE from 'three'; // Restored namespace import
+import { loadCelestialTextures } from '../utils/textureLoader';
 import { getObjectPosition } from '../utils/astronomy'
-// import { useTexture } from '@react-three/drei' // Removed as we load manually now
+
+// Helper for dynamic assets
+const getPath = (path: string) => `${import.meta.env.BASE_URL}${path}`;
 
 interface CelestialObjectProps {
     data: CelestialData
@@ -15,35 +18,54 @@ interface CelestialObjectProps {
 
 
 
-// ☀️ Real Textured Sun (Rotates)
-function TexturedSun({ scale = 1.0, textureMap }: { scale?: number, textureMap?: THREE.Texture | null }) {
+
+// ☀️ SoumyaEXE Sun (Fresh Implementation with Atomic Fix)
+function SoumyaSun({ scale = 1.0 }: { scale?: number }) {
+    // SUSPENSE: This forces the MainMenu loading bar to WAIT for this texture
+    const texture = useTexture('/textures/sun.jpg');
+
+    // Ensure texture settings are correct immediately
+    texture.colorSpace = THREE.SRGBColorSpace;
+    texture.anisotropy = 16;
+
     const meshRef = useRef<THREE.Mesh>(null);
 
+    // ATOMIC GUARD: Force material state every frame
     useFrame((_, delta) => {
         if (meshRef.current) {
-            meshRef.current.rotation.y += delta * 0.002;
+            meshRef.current.rotation.y += delta * 0.004;
+
+            // The "Nuclear" Option: Force properties every single frame
+            const mat = meshRef.current.material as THREE.MeshBasicMaterial;
+            if (mat.toneMapped === true) {
+                mat.toneMapped = false;
+                mat.needsUpdate = true;
+            }
+            if (mat.color.getHexString() !== 'ffffff') {
+                mat.color.setHex(0xffffff);
+            }
         }
     });
 
-    // Force material update when texture loads
+    // Layer 1 Isolation for Selective Bloom
     useEffect(() => {
-        if (meshRef.current && textureMap) {
-            (meshRef.current.material as THREE.Material).needsUpdate = true;
+        if (meshRef.current) {
+            meshRef.current.layers.set(1); // Enable Layer 1 (Bloom Layer)
+            meshRef.current.layers.enable(0); // Also Keep Layer 0 to be visible in main camera
         }
-    }, [textureMap]);
+    }, []);
 
     return (
         <mesh ref={meshRef} scale={scale} castShadow={false} receiveShadow={false}>
             <sphereGeometry args={[1, 64, 64]} />
             <meshBasicMaterial
-                map={textureMap || null}
-                color={new THREE.Color(1.2, 1.1, 0.9)} // Exact Repo Tint
+                map={texture}
+                color="#ffffff"
                 toneMapped={false}
             />
         </mesh>
     );
 }
-
 // ... (Moon and other components remain unchanged)
 
 
@@ -190,63 +212,103 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
 
     const [hovered, setHover] = useState(false)
     const [textures, setTextures] = useState<any>(null)
-
     // Load textures with enhanced error handling and logging
+    // 🌍 TEXTURE LOADING & SELECTION
+    // --------------------------------------------------------------------------------
+    // Ensure we always have a valid texture path
+    // Default: Ask the TextureLoader utility
+    // let textureUrl = planetTextures[data.id]?.map || planetTextures[data.id] || getPath('textures/pluto.jpg');
+
+    // ☀️ SPECIAL CASE: Sun - Use High Res 4K Texture directly for safety
+    // if (data.id === 'sun') {
+    //    textureUrl = getPath('textures/sun_real.png'); // FORCE 4K TEXTURE
+    // }
+
+    // Initialize the hook with our primary choice (kept for preloading logic if needed, but suppressed for now)
+    // const texture = useTexture(textureUrl);
+
+    // 🔄 RE-VERIFY: Sometimes hooks cache old values. 
+    // We force specific textures for key objects to prevent "Generic Rock" syndrome.
+    useEffect(() => {
+        if (meshRef.current) {
+            let forcedUrl = null;
+
+            // --- PLANET TEXTURE OVERRIDES ---
+            if (data.id === 'moon') forcedUrl = getPath('textures/moon.jpg');
+            if (data.id === 'mercury') forcedUrl = getPath('textures/mercury_new.jpg'); // Custom User Texture
+            if (data.id === 'earth') forcedUrl = getPath('textures/earth.jpg');
+
+            if (forcedUrl) {
+                // Manually load and swap to bypass cache
+                new THREE.TextureLoader().load(forcedUrl, (tex: THREE.Texture) => {
+                    if (meshRef.current) {
+                        // @ts-ignore
+                        meshRef.current.material.map = tex;
+                        // @ts-ignore
+                        meshRef.current.material.needsUpdate = true;
+                    }
+                });
+            }
+        }
+    }, [data.id]);
+
+    // 🌍 TEXTURE LOADING & SELECTION
     useEffect(() => {
         const loadTextures = async () => {
-            if (['earth', 'moon', 'mercury', 'jupiter', 'saturn', 'uranus', 'sirius'].includes(data.id)) {
-                // Formatting log for clarity
-            }
             try {
-                // Hard-Coded Override as requested (Moon, Mercury, and now Earth)
+                // Hard-Coded Override for specific objects
                 if (['moon', 'mercury', 'earth'].includes(data.id)) {
                     let forcedUrl = '';
-                    if (data.id === 'moon') forcedUrl = '/textures/moon.jpg';
-                    if (data.id === 'mercury') forcedUrl = '/textures/mercury.jpg';
-                    if (data.id === 'earth') forcedUrl = '/textures/earth.jpg';
+                    if (data.id === 'moon') forcedUrl = getPath('textures/moon.jpg');
+                    if (data.id === 'mercury') forcedUrl = getPath('textures/mercury_new.jpg');
+                    if (data.id === 'earth') forcedUrl = getPath('textures/earth.jpg');
 
-                    const forcedTex = await new THREE.TextureLoader().loadAsync(forcedUrl);
+                    if (forcedUrl) {
+                        const loader = new THREE.TextureLoader();
+                        loader.setCrossOrigin('anonymous');
+                        const forcedTex = await loader.loadAsync(forcedUrl);
 
-                    forcedTex.colorSpace = THREE.SRGBColorSpace;
-                    forcedTex.flipY = false;
+                        forcedTex.colorSpace = THREE.SRGBColorSpace;
+                        forcedTex.flipY = false;
 
-                    // Earth Wrap Fix
-                    if (data.id === 'earth') {
-                        forcedTex.wrapS = THREE.RepeatWrapping;
-                        forcedTex.wrapT = THREE.RepeatWrapping;
+                        if (data.id === 'earth') {
+                            forcedTex.wrapS = THREE.RepeatWrapping;
+                            forcedTex.wrapT = THREE.RepeatWrapping;
+                            forcedTex.anisotropy = 16;
+                        }
+
+                        forcedTex.needsUpdate = true;
+                        if (meshRef.current) {
+                            // @ts-ignore
+                            meshRef.current.material.map = forcedTex;
+                            // @ts-ignore
+                            meshRef.current.material.needsUpdate = true;
+                        }
+                        // We don't necessarily need to set state if we direct-assign, 
+                        // but keeping setTextures keeps the rest of the component happy
+                        // setTextures({ map: forcedTex }); 
+                        return;
                     }
-
-                    // Force Update
-                    forcedTex.needsUpdate = true;
-
-                    setTextures({ map: forcedTex });
-                    console.log(`Fixed: ${data.id.toUpperCase()} assigned ${forcedUrl}`);
-                    return;
                 }
 
+                // Standard Loader
                 const loadedTextures = await loadCelestialTextures(data.id);
                 if (loadedTextures) {
-                    setTextures(loadedTextures);
-
-                    // Force map update immediately
-                    Object.values(loadedTextures).forEach((val: any) => {
-                        if (val.isTexture) {
-                            val.needsUpdate = true;
-                        }
-                    });
-                } else {
-                    if (['moon', 'mercury'].includes(data.id)) {
-                        console.error(`CRITICAL: Texture FAILED for [${data.id}]`);
+                    // Update refs if needed
+                    // @ts-ignore
+                    // @ts-ignore
+                    if (loadedTextures.map) {
+                        // @ts-ignore
+                        loadedTextures.map.colorSpace = THREE.SRGBColorSpace;
                     }
-                    // Default fallback
+                    setTextures(loadedTextures);
+                } else {
                     setTextures(null);
                 }
             } catch (error) {
-                console.error(`FAILED to load texture for ${data.id}:`, error);
-                setTextures(null);
+                console.error(`Texture load failed for ${data.id}`, error);
             }
         };
-
         loadTextures();
     }, [data.id]);
 
@@ -255,7 +317,6 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
         if (meshRef.current) {
             const mat = meshRef.current.material as THREE.Material;
             mat.needsUpdate = true;
-            if (textures) console.log(`Applied textures to ${data.id}`);
         }
     }, [textures, data.id]);
 
@@ -267,7 +328,7 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
 
 
 
-    useFrame((state, delta) => {
+    useFrame((_, delta) => {
         // 1. UPDATE POSITION directly from ref logic
         // This avoids React Prop overhead
         if (groupRef.current && dateRef.current) {
@@ -281,17 +342,10 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
         // 2. Local Animations (Rotate, Clean Scale)
         if (meshRef.current) {
             // Rotation
-            const rotateSpeed = data.id === 'sun' ? 0.05 : 0.2;
+            const rotateSpeed = 0.2;
 
-            // Dynamic Sun Scaling
+            // Dynamic Sun Scaling removed
             let finalScale = targetScale;
-            if (data.id === 'sun') {
-                const distance = state.camera.position.distanceTo(groupRef.current?.position || new THREE.Vector3());
-                // Scale factor starts kicking in after 1,000,000 units
-                // Adds 1x scale for every 5M units of distance
-                const zoomFactor = Math.max(1, distance / 5000000);
-                finalScale = targetScale * zoomFactor;
-            }
 
             // Unique Rotation: Uranus rolls on its side (98 degrees)
             if (data.id === 'uranus') {
@@ -432,7 +486,11 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
                 map={textures?.map || null}
                 roughness={0.7}
                 metalness={0.4}
-                color={textures?.map ? '#FFFFFF' : data.science.color}
+                // HACK: Fill texture gaps with matching rock color
+                color={textures?.map ? '#C4AFA0' : data.science.color}
+                // HACK: Force opacity to hide holes in bad user texture
+                transparent={false}
+                side={THREE.DoubleSide} // Ensure inside isn't invisible if wrap fails
                 emissive="#000000"
             />
         );
@@ -509,7 +567,6 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
 
     return (
         <group ref={groupRef} position={initialPos}>
-            {/* HITBOX - Invisible Interactor */}
             {/* HITBOX - Invisible Interactor */}
             <mesh
                 ref={meshRef}
@@ -590,13 +647,11 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
                 </group>
             )}
 
-
-
             {/* 💡 SUN LIGHT - Reference Repo Settings */}
             {data.id === 'sun' && (
                 <>
                     <pointLight
-                        intensity={10.0}
+                        intensity={2.0} // Reduced from 10 to prevent Bloom Whiteout
                         distance={1000}
                         decay={0.5}
                         color="#FFF4E6"
@@ -608,10 +663,12 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
 
                     {/* CORE: Real Textured Sun */}
                     <group>
-                        <TexturedSun scale={targetScale} textureMap={textures?.map} />
+                        <SoumyaSun scale={targetScale} />
                     </group>
                 </>
             )}
+
+
 
             {/* Earth - Clouds & Atmosphere */}
             {data.id === 'earth' && (
@@ -816,7 +873,8 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
                     <meshBasicMaterial color="#4facfe" side={THREE.DoubleSide} toneMapped={false} />
                 </mesh>
             )}
-
-        </group >
-    )
+        </group>
+    );
 }
+
+

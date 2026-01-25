@@ -1,5 +1,5 @@
 {
-  "name": "astronomy-app",
+  "name": "solar-system-explorer",
   "private": true,
   "version": "0.0.0",
   "homepage": "https://ibrahimal0tukhaim0.github.io/astronomy-project/",
@@ -9,8 +9,8 @@
     "build": "tsc -b && vite build",
     "lint": "eslint .",
     "preview": "vite preview",
-    "zip": "zip -r astronomy-source-code.zip . -x \"node_modules/*\" \"dist/*\" \".git/*\" \".DS_Store\" \"astronomy-source-code.zip\"",
-    "deploy": "rm -rf dist && npm run zip && npm run build && touch dist/.nojekyll && cd dist && git init && git add . && git commit -m \"Auto-deploy update\" && git branch -M gh-pages && git remote add origin https://github.com/ibrahimal0tukhaim0/astronomy-project.git && git push -f origin gh-pages"
+    "zip": "zip -r solar-system-explorer.zip . -x \"node_modules/*\" \"dist/*\" \".git/*\" \".DS_Store\" \"solar-system-explorer.zip\"",
+    "deploy": "rm -rf dist && npm run build && touch dist/.nojekyll && cd dist && git init && git add . && git commit -m \"Auto-deploy update\" && git branch -M gh-pages && git remote add origin https://github.com/ibrahimal0tukhaim0/astronomy-project.git && git push -f origin gh-pages"
   },
   "dependencies": {
     "@capacitor/cli": "^8.0.1",

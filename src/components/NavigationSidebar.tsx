@@ -20,10 +20,10 @@ export function NavigationSidebar({ onNavigate }: NavigationSidebarProps) {
 
     return (
         <>
-            {/* Hamburger Button (Top-Right) */}
+            {/* Hamburger Button (Top-Left for RTL Balance) */}
             <button
                 onClick={toggleMenu}
-                className="absolute top-5 right-5 z-50 p-3 bg-black/30 hover:bg-black/50 backdrop-blur-md rounded-full text-white transition-all duration-300 border border-white/10 hover:border-white/30"
+                className="absolute top-14 left-6 z-50 p-3 bg-black/30 hover:bg-black/50 backdrop-blur-md rounded-full text-white transition-all duration-300 border border-white/10 hover:border-white/30"
                 aria-label="Menu"
                 aria-expanded={isOpen}
                 aria-controls="navigation-menu"
@@ -58,13 +58,13 @@ export function NavigationSidebar({ onNavigate }: NavigationSidebarProps) {
                             aria-hidden="true"
                         />
 
-                        {/* Sidebar */}
+                        {/* Sidebar (Left Side) */}
                         <motion.div
-                            initial={{ x: '100%' }}
+                            initial={{ x: '-100%' }}
                             animate={{ x: 0 }}
-                            exit={{ x: '100%' }}
+                            exit={{ x: '-100%' }}
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            className="absolute top-0 right-0 h-full w-80 bg-black/80 backdrop-blur-xl border-l border-white/10 z-50 shadow-2xl overflow-y-auto"
+                            className="absolute top-0 left-0 h-full w-80 bg-black/80 backdrop-blur-xl border-r border-white/10 z-50 shadow-2xl overflow-y-auto"
                             id="navigation-menu"
                             role="dialog"
                             aria-modal="true"

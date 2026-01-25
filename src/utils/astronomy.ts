@@ -11,6 +11,8 @@ export const getObjectPosition = (
     id: CelestialObjectId,
     currentTime: Date
 ): [number, number, number] => {
+    // Force Re-Calc
+
 
     // 1. Find the object data
     const obj = celestialObjects.find(o => o.id === id);

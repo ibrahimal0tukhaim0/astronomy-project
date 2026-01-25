@@ -1,34 +1,40 @@
 import * as THREE from 'three';
 
 // Performance: Switched to 1K textures where possible to save VRAM
-export const TEXTURE_URLS = {
+// Helper to get correct path regardless of deployment
+const getPath = (path: string) => `${import.meta.env.BASE_URL}${path}`;
+
+export const planetTextures: Record<string, any> = {
     sun: {
-        map: '/textures/sun.jpg', // SoumyaEXE Repo standard
+        map: getPath('textures/sun_real.png'), // High Quality 4K Sun
+        emissiveMap: getPath('textures/sun_real.png'), // Self-illumination
     },
     moon: {
-        map: '/textures/moon.jpg',
+        map: getPath('textures/moon.jpg'),
+        bumpMap: getPath('textures/moon.jpg'),
     },
     earth: {
-        map: '/textures/earth.jpg', // User requested exact path
-        clouds: '/textures/earth_clouds.jpg', // Repo file
-        specular: '/textures/earth_specular.jpg', // Repo file
+        map: getPath('textures/earth.jpg'),
+        clouds: getPath('textures/earth_clouds.jpg'),
+        specular: getPath('textures/earth_specular.jpg'),
+        bumpMap: getPath('textures/earth.jpg'),
     },
-    mercury: { map: '/textures/mercury.jpg' },
+    mercury: { map: getPath('textures/mercury.jpg') },
     venus: {
-        map: '/textures/venus.jpg',
-        atmosphere: '/textures/venus_atmosphere.jpg'
+        map: getPath('textures/venus.jpg'),
+        atmosphere: getPath('textures/venus_atmosphere.jpg')
     },
-    mars: { map: '/textures/mars.jpg' },
-    jupiter: { map: '/textures/jupiter.jpg' },
+    mars: { map: getPath('textures/mars.jpg') },
+    jupiter: { map: getPath('textures/jupiter.jpg') },
     saturn: {
-        map: '/textures/saturn.jpg',
-        ring: '/textures/saturn_ring.png'
+        map: getPath('textures/saturn.jpg'),
+        ring: getPath('textures/saturn_ring.png')
     },
-    uranus: { map: '/textures/uranus.jpg' },
-    neptune: { map: '/textures/neptune.jpg' },
-    pluto: { map: '/textures/pluto.jpg' },
-    ceres: { map: '/textures/pluto.jpg' }, // Use Pluto (generic rock) instead of Moon to avoid confusion
-    stars: { map: '/textures/stars.jpg' }, // Repo standard
+    uranus: { map: getPath('textures/uranus.jpg') },
+    neptune: { map: getPath('textures/neptune.jpg') },
+    pluto: { map: getPath('textures/pluto.jpg') },
+    ceres: { map: getPath('textures/pluto.jpg') }, // Use Pluto (generic rock) instead of Moon to avoid confusion
+    stars: { map: getPath('textures/stars.jpg') },
 };
 
 // Singleton LoadingManager for better debugging
@@ -95,7 +101,7 @@ export const loadTexture = (url: string): Promise<THREE.Texture | null> => {
  * Load all textures for a celestial body
  */
 export const loadCelestialTextures = async (bodyId: string) => {
-    const urls = TEXTURE_URLS[bodyId as keyof typeof TEXTURE_URLS];
+    const urls = planetTextures[bodyId as keyof typeof planetTextures];
 
     if (!urls) return null;
 
@@ -107,7 +113,7 @@ export const loadCelestialTextures = async (bodyId: string) => {
 
     const promises = Object.entries(urls).map(async ([key, url]) => {
         try {
-            const tex = await loadTexture(url);
+            const tex = await loadTexture(url as string);
             if (tex) {
                 textures[key] = tex;
             }

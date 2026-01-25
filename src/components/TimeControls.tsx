@@ -25,7 +25,7 @@ export function TimeControls({
     };
 
     return (
-        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-xl border border-white/20 rounded-2xl p-4 shadow-2xl z-40 pointer-events-auto">
+        <div className="absolute bottom-8 left-1/2 -translate-x-1/2 bg-black/80 backdrop-blur-xl border border-white/20 rounded-2xl p-4 shadow-2xl z-40 pointer-events-auto transform scale-80 origin-bottom">
             <div className="flex flex-col gap-3">
                 {/* Date Display */}
                 <div className="text-center text-white font-mono text-sm border-b border-white/10 pb-2">

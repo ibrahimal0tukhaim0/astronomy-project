@@ -1,4 +1,4 @@
-import { useRef, useEffect } from 'react'
+import { useRef, useEffect, Suspense } from 'react'
 import * as THREE from 'three'
 import { useFrame } from '@react-three/fiber'
 import { useTexture } from '@react-three/drei'
@@ -20,8 +20,10 @@ const BASE_TIME_SCALE = 1;
 
 // 🌌 Procedural Particle Starfield (SoumyaEXE Implementation)
 // 🌌 360 Space Background (High Res)
+// 🌌 360 Space Background (High Res)
 function SpaceBackground() {
-    const texture = useTexture("/textures/space360.jpg")
+    // FIX: Using reliable CDN URL to guarantee loading (bypassing local path issues)
+    const texture = useTexture("https://upload.wikimedia.org/wikipedia/commons/6/60/ESO_-_Milky_Way.jpg")
 
     return (
         <mesh scale={[4000, 4000, 4000]}> {/* Increased scale to 4000 to be safely behind everything */}
@@ -40,6 +42,11 @@ function SpaceBackground() {
 // Renders static rings showing the orbital path of each planet
 // 🪐 Planet Orbits (Visual Paths)
 // Renders Dashed Blue Lines for "High-Tech Radar" look
+// 🪐 Planet Orbits (Visual Paths)
+// Renders Dashed Blue Lines for "High-Tech Radar" look
+// Bypass TS conflict for <line> element
+const ThreeLine = 'line' as any;
+
 function PlanetOrbits() {
     const groupRef = useRef<THREE.Group>(null);
     const orbitPlanets = ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
@@ -77,8 +84,7 @@ function PlanetOrbits() {
                 const geometry = new THREE.BufferGeometry().setFromPoints(points);
 
                 return (
-                    // @ts-ignore: TypeScript confuses this with SVG line element
-                    <line
+                    <ThreeLine
                         key={`orbit-${obj.id}`}
                         geometry={geometry}
                         onUpdate={(self: any) => {
@@ -96,7 +102,7 @@ function PlanetOrbits() {
                             depthWrite={false}
                             blending={THREE.AdditiveBlending}
                         />
-                    </line>
+                    </ThreeLine>
                 );
             })}
         </group>
@@ -125,18 +131,20 @@ export default function SimulationScene({ onSelect, isPaused, onDateChange }: Si
     return (
         <>
             {/* Reference Repository Starfield System - REPLACED with 360 Background */}
-            <SpaceBackground />
+            <Suspense fallback={null}>
+                <SpaceBackground />
+            </Suspense>
 
-            {/* Reference Lighting Setup - Boosted for Visibility */}
-            <ambientLight intensity={1.5} color={new THREE.Color(0.2, 0.2, 0.2)} />
+            {/* Reference Lighting Setup - Cinematic Deep Space Balance */}
+            <ambientLight intensity={0.2} color="#111122" /> {/* Subtle blue tint for shadows */}
 
-            {/* Fill Light (Blueish) - Boosted */}
+            {/* Fill Light (Blueish) - Soft Rim Light */}
             <pointLight
                 position={[50, 50, -100]}
-                intensity={3.0}
-                color={new THREE.Color(0.3, 0.5, 1.0)}
+                intensity={0.5}
+                color="#4466ff"
                 distance={500}
-                decay={0.5}
+                decay={0.8}
             />
 
             {/* ☄️ Procedural Asteroid Belts (Main, Trojans, Kuiper, Oort) */}

@@ -35,37 +35,58 @@ export function GeminiChat() {
         try {
             const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
-            if (!apiKey) {
-                throw new Error("API Key missing. Please check .env file.");
-            }
+            // MULTI-MODEL FALBACK SYSTEM (The "Shotgun" Approach)
+            const MODELS = [
+                "v1beta/models/gemini-1.5-flash",
+                "v1beta/models/gemini-1.5-flash-001",
+                "v1beta/models/gemini-1.0-pro",
+                "v1/models/gemini-pro"
+            ];
 
-            const response = await fetch(
-                `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${apiKey}`,
-                {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify({
-                        contents: [{
-                            parts: [{ text: userMsg }]
-                        }]
-                    })
+            let lastError = null;
+            let successData = null;
+
+            for (const modelPath of MODELS) {
+                try {
+                    console.log(`Trying model: ${modelPath}...`);
+                    const response = await fetch(
+                        `https://generativelanguage.googleapis.com/${modelPath}:generateContent?key=${apiKey}`,
+                        {
+                            method: 'POST',
+                            headers: { 'Content-Type': 'application/json' },
+                            body: JSON.stringify({ contents: [{ parts: [{ text: userMsg }] }] })
+                        }
+                    );
+
+                    const data = await response.json();
+
+                    if (!response.ok || data.error) {
+                        throw new Error(data.error?.message || `HTTP ${response.status}`);
+                    }
+
+                    // If we get here, it worked!
+                    successData = data;
+                    break; // Stop the loop
+                } catch (e: any) {
+                    console.warn(`Model ${modelPath} failed:`, e.message);
+                    lastError = e;
+                    // Continue to next model
                 }
-            );
-
-            const data = await response.json();
-
-            if (data.error) {
-                throw new Error(data.error.message);
             }
 
-            const aiText = data.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't understand that.";
+            if (!successData) {
+                throw lastError || new Error("All models failed.");
+            }
 
-            setMessages(prev => [...prev, { role: 'model', text: aiText }]);
+            const aiText = successData.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't understand that.";
+
+            // Append success note for debug
+            const finalText = aiText; // + `\n\n(Generated with ${workedModel})`;
+
+            setMessages(prev => [...prev, { role: 'model', text: finalText }]);
         } catch (error: any) {
-            console.error("Gemini API Error:", error);
-            setMessages(prev => [...prev, { role: 'model', text: `Error: ${error.message || "Something went wrong."}` }]);
+            console.error("Gemini Catch Block:", error);
+            setMessages(prev => [...prev, { role: 'model', text: `System Error: ${error.message}` }]);
         } finally {
             setIsLoading(false);
         }
@@ -113,8 +134,8 @@ export function GeminiChat() {
                                 >
                                     <div
                                         className={`max-w-[80%] p-3 rounded-2xl text-sm leading-relaxed ${msg.role === 'user'
-                                                ? 'bg-blue-600 text-white rounded-tr-sm'
-                                                : 'bg-white/10 text-gray-200 rounded-tl-sm'
+                                            ? 'bg-blue-600 text-white rounded-tr-sm'
+                                            : 'bg-white/10 text-gray-200 rounded-tl-sm'
                                             }`}
                                     >
                                         {msg.text}
@@ -158,6 +179,10 @@ export function GeminiChat() {
                                     ➤
                                 </button>
                             </form>
+                            {/* Version Debug Indicator */}
+                            <div className="text-[10px] text-cyan-400 text-center mt-1">
+                                System: v3.0 (Robust Check)
+                            </div>
                         </div>
                     </motion.div>
                 )}
@@ -165,7 +190,7 @@ export function GeminiChat() {
 
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="group flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-r from-blue-600 to-purple-600 text-white shadow-lg hover:shadow-blue-500/30 hover:scale-105 transition-all duration-300"
+                className="group flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-[0_0_20px_rgba(0,255,255,0.4)] hover:shadow-[0_0_30px_rgba(0,255,255,0.6)] hover:scale-105 transition-all duration-300"
             >
                 {isOpen ? (
                     <span className="text-xl">✕</span>
