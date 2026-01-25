@@ -35,9 +35,9 @@ export function GeminiChat() {
         try {
             const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
-            // Step 1: Try the preferred model
-            const MODEL_NAME = "gemini-1.5-flash";
-            const API_VERSION = "v1beta";
+            // SIMPLIFIED: Using the single most stable model
+            const MODEL_NAME = "gemini-2.5-flash"; // 2026 Standard
+            const API_VERSION = "v1beta"; // 2.5 might require beta or v1. Diagnostic showed v1beta in error, so safe to use v1beta.beta";
             const FULL_MODEL_PATH = `${API_VERSION}/models/${MODEL_NAME}`;
 
             console.log(`Attempting Gemini with: ${FULL_MODEL_PATH}`);
@@ -187,7 +187,7 @@ export function GeminiChat() {
                             </form>
                             {/* Version Debug Indicator */}
                             <div className="text-[10px] text-cyan-400 text-center mt-1">
-                                System: v3.6 (Diagnostic Mode)
+                                System: v4.0 (Gemini 2.5)
                             </div>
                         </div>
                     </motion.div>
