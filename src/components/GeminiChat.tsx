@@ -35,51 +35,36 @@ export function GeminiChat() {
         try {
             const apiKey = import.meta.env.VITE_GEMINI_API_KEY;
 
-            // MULTI-MODEL FALBACK SYSTEM (The "Shotgun" Approach)
-            const MODELS = [
-                "v1beta/models/gemini-1.5-flash",
-                "v1beta/models/gemini-1.5-pro",
-            ];
+            // SIMPLIFIED: Using the single most stable model
+            const MODEL_NAME = "gemini-1.5-flash";
+            const API_VERSION = "v1beta";
+            const FULL_MODEL_PATH = `${API_VERSION}/models/${MODEL_NAME}`;
 
-            let lastError = null;
-            let successData = null;
+            console.log(`Attempting Gemini with: ${FULL_MODEL_PATH}`);
 
-            for (const modelPath of MODELS) {
-                try {
-                    console.log(`Trying model: ${modelPath}...`);
-                    const response = await fetch(
-                        `https://generativelanguage.googleapis.com/${modelPath}:generateContent?key=${apiKey}`,
-                        {
-                            method: 'POST',
-                            headers: { 'Content-Type': 'application/json' },
-                            body: JSON.stringify({ contents: [{ parts: [{ text: userMsg }] }] })
-                        }
-                    );
-
-                    const data = await response.json();
-
-                    if (!response.ok || data.error) {
-                        throw new Error(data.error?.message || `HTTP ${response.status}`);
-                    }
-
-                    // If we get here, it worked!
-                    successData = data;
-                    break; // Stop the loop
-                } catch (e: any) {
-                    console.warn(`Model ${modelPath} failed:`, e.message);
-                    lastError = e;
-                    // Continue to next model
+            const response = await fetch(
+                `https://generativelanguage.googleapis.com/${FULL_MODEL_PATH}:generateContent?key=${apiKey}`,
+                {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ contents: [{ parts: [{ text: userMsg }] }] })
                 }
+            );
+
+            const data = await response.json();
+
+            if (!response.ok || data.error) {
+                const errDetails = data.error?.message || `HTTP ${response.status}`;
+                throw new Error(`[${MODEL_NAME}] Failed: ${errDetails}`);
             }
 
-            if (!successData) {
-                throw lastError || new Error("All models failed.");
-            }
+            // If we get here, it worked!
+            const successData = data;
 
             const aiText = successData.candidates?.[0]?.content?.parts?.[0]?.text || "Sorry, I couldn't understand that.";
 
             // Append success note for debug
-            const finalText = aiText; // + `\n\n(Generated with ${workedModel})`;
+            const finalText = aiText;
 
             setMessages(prev => [...prev, { role: 'model', text: finalText }]);
         } catch (error: any) {
@@ -179,7 +164,7 @@ export function GeminiChat() {
                             </form>
                             {/* Version Debug Indicator */}
                             <div className="text-[10px] text-cyan-400 text-center mt-1">
-                                System: v3.3 (Fixed Logic)
+                                System: v3.4 (Strict Flash Only)
                             </div>
                         </div>
                     </motion.div>
