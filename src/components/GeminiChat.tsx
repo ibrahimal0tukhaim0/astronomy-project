@@ -186,8 +186,11 @@ export function GeminiChat() {
                                 </button>
                             </form>
                             {/* Version Debug Indicator */}
-                            <div className="text-[10px] text-cyan-400 text-center mt-1">
-                                System: v4.0 (Gemini 2.5)
+                            <div className="text-[10px] text-cyan-400 text-center mt-1 flex flex-col gap-0.5">
+                                <span>System: v4.1 (Key Check)</span>
+                                <span className="opacity-70">
+                                    Key Starts: {import.meta.env.VITE_GEMINI_API_KEY ? `${import.meta.env.VITE_GEMINI_API_KEY.substring(0, 5)}...` : 'NONE'}
+                                </span>
                             </div>
                         </div>
                     </motion.div>
