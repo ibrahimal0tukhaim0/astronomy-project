@@ -37,7 +37,7 @@ export function GeminiChat() {
 
             // SIMPLIFIED: Using the single most stable model
             const MODEL_NAME = "gemini-1.5-flash";
-            const API_VERSION = "v1beta";
+            const API_VERSION = "v1";
             const FULL_MODEL_PATH = `${API_VERSION}/models/${MODEL_NAME}`;
 
             console.log(`Attempting Gemini with: ${FULL_MODEL_PATH}`);
@@ -164,7 +164,7 @@ export function GeminiChat() {
                             </form>
                             {/* Version Debug Indicator */}
                             <div className="text-[10px] text-cyan-400 text-center mt-1">
-                                System: v3.4 (Strict Flash Only)
+                                System: v3.5 (API v1 Stable)
                             </div>
                         </div>
                     </motion.div>
