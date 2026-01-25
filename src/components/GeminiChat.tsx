@@ -187,7 +187,7 @@ export function GeminiChat() {
                             </form>
                             {/* Version Debug Indicator */}
                             <div className="text-[10px] text-cyan-400 text-center mt-1 flex flex-col gap-0.5">
-                                <span>System: v4.3 (Key Refresh)</span>
+                                <span>System: v4.4 (Final Key Check)</span>
                                 <span className="opacity-70">
                                     Key Ends: {import.meta.env.VITE_GEMINI_API_KEY ? `...${import.meta.env.VITE_GEMINI_API_KEY.slice(-5)}` : 'NONE'}
                                 </span>
