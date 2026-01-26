@@ -39,7 +39,7 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
     render() {
         if (this.state.hasError) {
             return (
-                <div style={{ color: 'white', padding: 20, textAlign: 'center', direction: 'rtl', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                <div style={{ background: 'black', color: 'white', padding: 20, textAlign: 'center', direction: 'rtl', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
                     <h2>حدث خطأ بسيط في الفضاء ⚠️</h2>
                     <p>نحاول استعادة الاتصال...</p>
                     <button

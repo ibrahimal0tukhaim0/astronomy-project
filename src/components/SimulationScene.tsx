@@ -1,4 +1,4 @@
-import { useRef, useEffect, Suspense } from 'react'
+import React, { useRef, useEffect, Suspense } from 'react'
 import * as THREE from 'three'
 import { useFrame } from '@react-three/fiber'
 import { useTexture } from '@react-three/drei'
@@ -11,18 +11,23 @@ import type { CelestialData } from '../data/objects'
 import { celestialObjects } from '../data/objects'
 import { CelestialObject } from './CelestialObject'
 
+// 🛡️ Component Boundary: Prevents one effect from crashing the whole scene
+class ComponentBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
+    state = { hasError: false }
+    static getDerivedStateFromError() { return { hasError: true } }
+    componentDidCatch(e: any) { console.warn("Visual Effect Failed:", e); }
+    render() { return this.state.hasError ? null : this.props.children; }
+}
+
 interface SimulationSceneProps {
     onSelect: (data: CelestialData) => void;
     isPaused: boolean;
     onDateChange: (date: Date) => void;
 }
 
-// Base time scale: 1 = Real Time (1 second = 1 second)
 // Base time scale: 1 = Real Time. 2 = Double Speed (Requested)
 const BASE_TIME_SCALE = 2.0;
 
-// 🌌 Procedural Particle Starfield (SoumyaEXE Implementation)
-// 🌌 360 Space Background (High Res)
 // 🌌 360 Space Background (High Res)
 function SpaceBackground() {
     // FIX: Using reliable CDN URL to guarantee loading (bypassing local path issues)
@@ -150,10 +155,16 @@ export default function SimulationScene({ onSelect, isPaused, onDateChange }: Si
             <AsteroidBelts />
 
             {/* 🌠 Shooting Stars (Every 15s) */}
-            <Meteors />
+            <ComponentBoundary>
+                <Meteors />
+            </ComponentBoundary>
 
             {/* ⚡ Space Lightning (Random Flashes) */}
-            <SpaceLightning />
+            <ComponentBoundary>
+                <Suspense fallback={null}>
+                    <SpaceLightning />
+                </Suspense>
+            </ComponentBoundary>
 
             {/* 🪐 Orbit Rings (Visual Paths) */}
             <PlanetOrbits />
