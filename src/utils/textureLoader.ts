@@ -32,6 +32,7 @@ export const planetTextures: Record<string, any> = {
     neptune: { map: '/textures/neptune.jpg' },
     pluto: { map: '/textures/pluto.jpg' },
     ceres: { map: '/textures/pluto.jpg' },
+    sirius: { map: '/textures/sirius_real.png' }, // Generated Real Texture
     stars: { map: '/textures/stars.jpg' },
 };
 

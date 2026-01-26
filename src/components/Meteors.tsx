@@ -36,8 +36,8 @@ export function Meteors() {
         // Initial spawn
         spawnMeteor();
 
-        // Loop interval (15000ms = 15s)
-        const interval = setInterval(spawnMeteor, 15000);
+        // Loop interval (2000ms = 2s) - M4 Ultra Speed
+        const interval = setInterval(spawnMeteor, 2000);
         return () => clearInterval(interval);
     }, []);
 
@@ -81,8 +81,8 @@ function SingleMeteor({ start, end }: { start: THREE.Vector3; end: THREE.Vector3
     useFrame((_, delta) => {
         if (!meshRef.current) return;
 
-        // Speed factor (Faster)
-        const speed = 0.8 * delta;
+        // Speed factor (Hyper Fast for M4)
+        const speed = 2.5 * delta;
         const newProgress = progress + speed;
 
         if (newProgress <= 1) {

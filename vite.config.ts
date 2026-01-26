@@ -9,9 +9,10 @@ export default defineConfig(({ command }) => ({
     tailwindcss(),
   ],
   server: {
-    host: true,
-    strictPort: false, // Allow fallback to 3001 if 3000 is busy
+    host: '0.0.0.0', // Ensure visibility on local network
+    strictPort: true, // Fail if port 3000 is busy
     port: 3000,
+    open: true, // Attempt to open browser automatically
   },
   base: command === 'serve' ? '/' : '/astronomy-project/',
 }))

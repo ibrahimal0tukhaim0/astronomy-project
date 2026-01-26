@@ -533,8 +533,8 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
             </mesh>
 
 
-            {/* VISUAL MESH - Optimized geometry (Skip for Sun/Moon/Mars/Jupiter/Saturn/OrionStars as they have custom handling) */}
-            {data.id !== 'sun' && data.id !== 'moon' && data.id !== 'mars' && data.id !== 'jupiter' && data.id !== 'saturn' && !['alnitak', 'alnilam', 'mintaka'].includes(data.id) && (
+            {/* VISUAL MESH - Optimized geometry (Skip for Sun/Moon/Mars/Jupiter/Saturn/OrionStars/Sirius as they have custom handling) */}
+            {data.id !== 'sun' && data.id !== 'moon' && data.id !== 'mars' && data.id !== 'jupiter' && data.id !== 'saturn' && data.id !== 'sirius' && !['alnitak', 'alnilam', 'mintaka'].includes(data.id) && (
                 <mesh
                     ref={meshRef}
                     scale={targetScale}
@@ -632,43 +632,32 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
                 </>
             )}
 
-            {/* Sirius - The Brightest Star (Blue-White) - EXTREME RADIANCE UPGRADE */}
+            {/* Sirius - The Brightest Star (Blue-White) - REAL SPRITE ONLY */}
             {data.id === 'sirius' && (
                 <>
                     {/* Blinding Light Source */}
-                    <pointLight intensity={300.0} distance={8000} decay={1.0} color="#FFFFFF" />
+                    <pointLight intensity={250.0} distance={8000} decay={1.0} color="#dceeff" />
 
-                    {/* Solid Core (White Hot) */}
-                    <mesh scale={3.0} raycast={() => null}>
-                        <sphereGeometry args={[1, 32, 32]} />
-                        <meshBasicMaterial color="#FFFFFF" toneMapped={false} />
-                    </mesh>
+                    {/* The Real Star Image (Sprite for exact visual match) */}
+                    {textures?.map && (
+                        <sprite scale={[25, 25, 1]}> {/* Slightly larger to command attention */}
+                            <spriteMaterial
+                                map={textures.map}
+                                color="#FFFFFF"
+                                blending={THREE.AdditiveBlending}
+                                depthWrite={false}
+                                toneMapped={false}
+                            />
+                        </sprite>
+                    )}
 
-                    {/* Primary Glare (Blue-White) */}
-                    <mesh scale={6.0} raycast={() => null}>
-                        <sphereGeometry args={[1, 32, 32]} />
-                        <meshBasicMaterial
-                            color="#dceeff"
-                            transparent
-                            opacity={0.8}
-                            blending={THREE.AdditiveBlending}
-                            depthWrite={false}
-                            toneMapped={false}
-                        />
-                    </mesh>
-
-                    {/* Massive Radiant Halo */}
-                    <mesh scale={15.0} raycast={() => null}>
-                        <sphereGeometry args={[1, 32, 32]} />
-                        <meshBasicMaterial
-                            color="#4A90E2"
-                            transparent
-                            opacity={0.4}
-                            blending={THREE.AdditiveBlending}
-                            depthWrite={false}
-                            toneMapped={false}
-                        />
-                    </mesh>
+                    {/* Fallback only if texture is strictly missing */}
+                    {!textures?.map && (
+                        <mesh scale={3.0}>
+                            <sphereGeometry args={[1, 32, 32]} />
+                            <meshBasicMaterial color="#A0C8FF" toneMapped={false} />
+                        </mesh>
+                    )}
                 </>
             )}
 
