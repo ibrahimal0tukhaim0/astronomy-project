@@ -2,38 +2,40 @@ import * as THREE from 'three';
 
 // Singleton LoadingManager for better debugging
 // Helper to get correct path regardless of deployment
+const BASE = import.meta.env.BASE_URL;
+
 export const planetTextures: Record<string, any> = {
     sun: {
-        map: '/textures/sun_real.png',
-        emissiveMap: '/textures/sun_real.png',
+        map: `${BASE}textures/sun_real.png`,
+        emissiveMap: `${BASE}textures/sun_real.png`,
     },
     moon: {
-        map: '/textures/moon_nasa_new.jpg', // NASA PIA00405
-        bumpMap: '/textures/moon_nasa_new.jpg',
+        map: `${BASE}textures/moon_nasa_new.jpg`, // NASA PIA00405
+        bumpMap: `${BASE}textures/moon_nasa_new.jpg`,
     },
     earth: {
-        map: '/textures/earth_recreated.png', // RECREATED
-        // clouds: '/textures/earth_clouds.jpg', 
-        specular: '/textures/earth_specular.jpg',
-        bumpMap: '/textures/earth_recreated.png',
+        map: `${BASE}textures/earth_recreated.png`, // RECREATED
+        // clouds: `${BASE}textures/earth_clouds.jpg`, 
+        specular: `${BASE}textures/earth_specular.jpg`,
+        bumpMap: `${BASE}textures/earth_recreated.png`,
     },
-    mercury: { map: '/textures/mercury.jpg' },
+    mercury: { map: `${BASE}textures/mercury.jpg` },
     venus: {
-        map: '/textures/venus.jpg',
-        atmosphere: '/textures/venus_atmosphere.jpg'
+        map: `${BASE}textures/venus.jpg`,
+        atmosphere: `${BASE}textures/venus_atmosphere.jpg`
     },
-    mars: { map: '/textures/mars_final.png' }, // KEPT
-    jupiter: { map: '/textures/jupiter_recreated.png' }, // RECREATED
+    mars: { map: `${BASE}textures/mars_final.png` }, // KEPT
+    jupiter: { map: `${BASE}textures/jupiter_recreated.png` }, // RECREATED
     saturn: {
-        map: '/textures/saturn_recreated.png', // RECREATED
-        ring: '/textures/saturn_ring_detailed.png' // Keeping geometry ring but using image for map
+        map: `${BASE}textures/saturn_recreated.png`, // RECREATED
+        ring: `${BASE}textures/saturn_ring_detailed.png` // Keeping geometry ring but using image for map
     },
-    uranus: { map: '/textures/uranus_recreated.png' }, // RECREATED
-    neptune: { map: '/textures/neptune.jpg' },
-    pluto: { map: '/textures/pluto.jpg' },
-    ceres: { map: '/textures/pluto.jpg' },
-    sirius: { map: '/textures/sirius_real.png' }, // Generated Real Texture
-    stars: { map: '/textures/stars.jpg' },
+    uranus: { map: `${BASE}textures/uranus_recreated.png` }, // RECREATED
+    neptune: { map: `${BASE}textures/neptune.jpg` },
+    pluto: { map: `${BASE}textures/pluto.jpg` },
+    ceres: { map: `${BASE}textures/pluto.jpg` },
+    sirius: { map: `${BASE}textures/sirius_real.png` }, // Generated Real Texture
+    stars: { map: `${BASE}textures/stars.jpg` },
 };
 
 // Singleton LoadingManager for better debugging

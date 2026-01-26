@@ -4,10 +4,17 @@ import './index.css'
 import './i18n'
 import App from './App.tsx'
 
-createRoot(document.getElementById('root')!).render(
-  <StrictMode>
-    <Suspense fallback={<div className="bg-black text-white h-screen flex items-center justify-center">Loading Al-Falak...</div>}>
-      <App />
-    </Suspense>
-  </StrictMode>,
-)
+// FORCE BLACK BACKGROUND IMMEDIATELY
+document.body.style.backgroundColor = '#000000';
+document.body.style.color = '#ffffff';
+
+const rootElement = document.getElementById('root');
+if (rootElement) {
+  createRoot(rootElement).render(
+    <StrictMode>
+      <Suspense fallback={<div style={{ color: 'white', textAlign: 'center', marginTop: '50px' }}>Loading 3D Engine...</div>}>
+        <App />
+      </Suspense>
+    </StrictMode>,
+  )
+}

@@ -6,7 +6,7 @@ import * as THREE from 'three';
 // 🌩️ AUDIO ASSETS ARRAY
 // A mix of local and reliable CDN assets for variety
 const THUNDER_SOUNDS = [
-    '/sounds/thunder.ogg',
+    `${import.meta.env.BASE_URL}sounds/thunder.ogg`,
     'https://actions.google.com/sounds/v1/weather/thunder_heavy.ogg', // Heavy crack
     'https://actions.google.com/sounds/v1/weather/thunder_rumble.ogg' // Deep rumble
 ];
@@ -22,7 +22,7 @@ interface LightningBolt {
 
 export function SpaceLightning() {
     // ⚡ REALISTIC TREE LIGHTNING TEXTURE
-    const texture = useTexture('/textures/lightning_branch.png');
+    const texture = useTexture(`${import.meta.env.BASE_URL}textures/lightning_branch.png`);
     const [bolts, setBolts] = useState<LightningBolt[]>([]);
     const nextFlashTime = useRef(0);
 
@@ -198,7 +198,7 @@ export function SpaceLightning() {
                     fontSize: '10px',
                     fontFamily: 'monospace'
                 }}>
-                    v2.0 (Deep Background)
+                    v3.0 (GitHub Pages)
                 </div>
                 <div style={{
                     position: 'absolute',

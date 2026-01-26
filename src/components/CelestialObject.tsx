@@ -22,7 +22,7 @@ interface CelestialObjectProps {
 // ☀️ SoumyaEXE Sun (Fresh Implementation with Atomic Fix)
 function SoumyaSun({ scale = 1.0 }: { scale?: number }) {
     // SUSPENSE: This forces the MainMenu loading bar to WAIT for this texture
-    const texture = useTexture('/textures/sun.jpg');
+    const texture = useTexture(`${import.meta.env.BASE_URL}textures/sun.jpg`);
 
     // Ensure texture settings are correct immediately
     texture.colorSpace = THREE.SRGBColorSpace;
