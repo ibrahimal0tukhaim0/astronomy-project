@@ -52,7 +52,8 @@ export function Meteors() {
 
 function SingleMeteor({ start, end }: { start: THREE.Vector3; end: THREE.Vector3 }) {
     const meshRef = useRef<THREE.Group>(null);
-    const [progress, setProgress] = useState(0);
+    // Optimized: Use Ref instead of State for 60fps animation
+    const progressRef = useRef(0);
 
     // Procedural Glow Texture (Halo)
     const glowTexture = useMemo(() => {
@@ -83,20 +84,18 @@ function SingleMeteor({ start, end }: { start: THREE.Vector3; end: THREE.Vector3
 
         // Speed factor (Hyper Fast for M4)
         const speed = 2.5 * delta;
-        const newProgress = progress + speed;
+        progressRef.current += speed;
 
-        if (newProgress <= 1) {
+        if (progressRef.current <= 1) {
             // Linear interpolation for movement
-            meshRef.current.position.lerpVectors(start, end, newProgress);
+            meshRef.current.position.lerpVectors(start, end, progressRef.current);
 
             // Fade out tail near end (Accessing children materials is tricky in React-Three unless declarative)
             // We'll keep it simple: just scale down slightly at the very end
-            if (newProgress > 0.9) {
-                const scale = 1 - ((newProgress - 0.9) * 10);
+            if (progressRef.current > 0.9) {
+                const scale = 1 - ((progressRef.current - 0.9) * 10);
                 meshRef.current.scale.setScalar(Math.max(0, scale));
             }
-
-            setProgress(newProgress);
         }
     });
 

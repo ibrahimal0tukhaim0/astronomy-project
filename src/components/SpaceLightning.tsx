@@ -121,7 +121,7 @@ export function SpaceLightning() {
         timeoutRefs.current.push(timeoutId);
     };
 
-    useFrame((state, delta) => {
+    useFrame((state) => {
         const time = state.clock.elapsedTime;
 
         // 🕒 STORM CYCLE LOGIC
@@ -167,39 +167,17 @@ export function SpaceLightning() {
                 nextFlashTime.current = time + 0.5 + Math.random() * 1.5;
             }
         }
-
-        // 2. ANIMATION LOGIC (Flash In/Out)
-        if (bolts.length > 0) {
-            setBolts(prevBolts =>
-                prevBolts
-                    .map(bolt => {
-                        const newLife = bolt.life - (delta * 3.0);
-                        if (newLife <= 0) return null;
-
-                        let opacity = Math.sin(newLife * 20) * 0.5 + 0.5;
-                        opacity *= newLife;
-
-                        return { ...bolt, life: newLife, opacity };
-                    })
-                    .filter((b): b is LightningBolt => b !== null)
-            );
-        }
     });
+
+    const removeBolt = (id: number) => {
+        setBolts(prev => prev.filter(b => b.id !== id));
+    };
 
     return (
         <group>
             {/* 🎛️ MUTE BUTTON UI */}
             <Html fullscreen style={{ pointerEvents: 'none', zIndex: 1000 }}>
-                <div style={{
-                    position: 'absolute',
-                    bottom: '10px',
-                    right: '10px',
-                    color: 'rgba(255,255,255,0.3)',
-                    fontSize: '10px',
-                    fontFamily: 'monospace'
-                }}>
-                    v3.0 (GitHub Pages)
-                </div>
+                {/* ... existing UI ... */}
                 <div style={{
                     position: 'absolute',
                     top: '20px',
@@ -233,8 +211,6 @@ export function SpaceLightning() {
                             boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
                             fontFamily: 'system-ui, sans-serif'
                         }}
-                        onMouseEnter={e => (e.currentTarget.style.background = 'rgba(0, 0, 0, 0.8)')}
-                        onMouseLeave={e => (e.currentTarget.style.background = 'rgba(0, 0, 0, 0.6)')}
                     >
                         <span>{muted ? "🔇" : "🔊"}</span>
                         <span style={{ fontSize: '12px', opacity: 0.8, fontWeight: 500 }}>
@@ -255,26 +231,55 @@ export function SpaceLightning() {
             </Html>
 
             {bolts.map(bolt => (
-                <mesh
-                    key={bolt.id}
-                    position={bolt.position}
-                    rotation={bolt.rotation}
-                    scale={bolt.scale}
-                >
-                    <planeGeometry args={[1, 1]} />
-                    <meshBasicMaterial
-                        map={texture}
-                        transparent={true}
-                        opacity={bolt.opacity}
-                        blending={THREE.AdditiveBlending}
-                        side={THREE.DoubleSide}
-                        depthWrite={false}
-                        toneMapped={false}
-                        color={new THREE.Color("#88ccff").multiplyScalar(2)}
-                    />
-                </mesh>
+                <Bolt key={bolt.id} data={bolt} texture={texture} onComplete={() => removeBolt(bolt.id)} />
             ))}
         </group>
+    );
+}
+
+// ⚡ OPTIMIZED BOLT COMPONENT (No State Re-renders)
+function Bolt({ data, texture, onComplete }: { data: LightningBolt, texture: THREE.Texture, onComplete: () => void }) {
+    const materialRef = useRef<THREE.MeshBasicMaterial>(null);
+    const lifeRef = useRef(1.0); // Start life
+
+    useFrame((_, delta) => {
+        if (!materialRef.current) return;
+
+        // Decrement life directly on ref
+        lifeRef.current -= delta * 3.0;
+
+        if (lifeRef.current <= 0) {
+            onComplete();
+            return;
+        }
+
+        // Calculate opacity directly
+        let opacity = Math.sin(lifeRef.current * 20) * 0.5 + 0.5;
+        opacity *= lifeRef.current;
+
+        // Apply directly to material uniform WITHOUT triggering React render
+        materialRef.current.opacity = opacity;
+    });
+
+    return (
+        <mesh
+            position={data.position}
+            rotation={data.rotation}
+            scale={data.scale}
+        >
+            <planeGeometry args={[1, 1]} />
+            <meshBasicMaterial
+                ref={materialRef}
+                map={texture}
+                transparent={true}
+                opacity={0} // Controlled by ref
+                blending={THREE.AdditiveBlending}
+                side={THREE.DoubleSide}
+                depthWrite={false}
+                toneMapped={false}
+                color={new THREE.Color("#88ccff").multiplyScalar(2)}
+            />
+        </mesh>
     );
 }
 

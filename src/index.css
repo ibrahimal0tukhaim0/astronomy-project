@@ -70,3 +70,44 @@
 .right-safe {
     right: env(safe-area-inset-right, 16px);
 }
+
+/* =========================================
+   PERFORMANCE ENGINE OPTIMIZATIONS
+   ========================================= */
+
+/* Optimization 7: CSS Containment */
+
+/* Contain layout calculations */
+.planet,
+.sun,
+[class*="planet"],
+[class*="orbit"],
+.solar-system {
+    contain: layout style paint;
+    content-visibility: auto;
+}
+
+/* Reduce paint area */
+.home-screen {
+    contain: layout style;
+    isolation: isolate;
+}
+
+/* Optimize animations */
+@media (prefers-reduced-motion: no-preference) {
+    * {
+        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+}
+
+/* Force GPU layers */
+.planet,
+.sun,
+[class*="animate"],
+[class*="rotate"],
+[class*="orbit"] {
+    transform: translateZ(0) translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform;
+}
