@@ -15,6 +15,29 @@
 
 <body>
   <div id="root"></div>
+  <!-- GLOBAL ERROR HANDLER FOR DEBUGGING -->
+  <script>
+    window.onerror = function (message, source, lineno, colno, error) {
+      const root = document.getElementById('root');
+      root.innerHTML = `
+        <div style="background:black; color:red; padding:20px; font-family:monospace; height:100vh; overflow:auto;">
+          <h2>CRITICAL ERROR</h2>
+          <p><strong>Message:</strong> ${message}</p>
+          <p><strong>Source:</strong> ${source}:${lineno}:${colno}</p>
+          <pre>${error ? error.stack : 'No stack trace'}</pre>
+        </div>
+      `;
+    };
+    window.onunhandledrejection = function (event) {
+      const root = document.getElementById('root');
+      root.innerHTML += `
+        <div style="background:black; color:orange; padding:20px; font-family:monospace;">
+           <h2>UNHANDLED PROMISE REJECTION</h2>
+           <p>${event.reason}</p>
+        </div>
+      `;
+    };
+  </script>
   <script type="module" src="/src/main.tsx"></script>
 </body>
 
