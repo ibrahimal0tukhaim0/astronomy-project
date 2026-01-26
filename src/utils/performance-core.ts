@@ -90,44 +90,164 @@
         return originalCreateElement.call(this, tagName);
     };
 
-    // CRITICAL: Aggressive automatic cleanup every 10 seconds
+    // Smart cleanup - only when needed (every 30 seconds)
     setInterval(() => {
-        console.log('🗑️ Emergency cleanup running...');
+        console.log('🗑️ Maintenance cleanup...');
 
-        // Remove all stars
-        document.querySelectorAll('.star, [class*="star"]').forEach((el, i) => {
-            if (i > 30) el.remove(); // Keep only 30 stars
-        });
-
-        // Remove all particles
-        document.querySelectorAll('.particle, [class*="particle"]').forEach(el => {
-            el.remove();
-        });
-
-        // Remove shooting stars
-        document.querySelectorAll('.shooting-star, [class*="shooting"]').forEach(el => {
-            el.remove();
-        });
-
-        // Force GC
-        if (window.gc) {
-            try { window.gc(); } catch (e) { }
-        }
-
-        // Check memory
+        // Only cleanup if needed
         if (performance.memory) {
-            const usedMB = (performance.memory.usedJSHeapSize / 1048576).toFixed(1);
-            console.log(`💾 Memory: ${usedMB} MB`);
+            const usedMB = performance.memory.usedJSHeapSize / 1048576;
 
-            // If memory too high, reload page
-            if (usedMB > 600) { // Increased from 150 to 600MB for 3D context
-                console.error('❌ MEMORY CRITICAL - AUTO RELOAD');
-                alert('التطبيق يستهلك ذاكرة كثيرة. سيتم إعادة التحميل...');
-                setTimeout(() => window.location.reload(), 2000);
+            // Only cleanup if memory > 80MB
+            if (usedMB > 80) {
+                // Remove excess stars (keep 50)
+                const stars = document.querySelectorAll('.star, [class*="star"]');
+                stars.forEach((el, i) => {
+                    if (i > 50) el.remove();
+                });
+
+                // Remove all particles
+                document.querySelectorAll('.particle, [class*="particle"]').forEach(el => {
+                    el.remove();
+                });
+
+                // Force GC
+                if (window.gc) {
+                    try { window.gc(); } catch (e) { }
+                }
+
+                console.log('✅ Cleanup done. Memory:', usedMB.toFixed(1), 'MB');
+            } else {
+                console.log('✅ Memory OK:', usedMB.toFixed(1), 'MB - No cleanup needed');
+            }
+
+            // If memory too high, perform silent recovery
+            if (usedMB > 150) {
+                console.warn('⚠️ High memory usage - performing silent cleanup');
+
+                // Silent aggressive cleanup instead of reload
+                performSilentCleanup();
+
+                // Reset memory counter
+                totalElementsCreated = 0;
             }
         }
 
-    }, 10000); // Every 10 seconds
+    }, 30000); // Every 30 seconds (less aggressive)
+
+    // Silent cleanup function
+    function performSilentCleanup() {
+        console.log('🧹 Silent cleanup starting...');
+
+        // 1. Remove ALL non-essential elements
+        const removable = document.querySelectorAll(`
+            .star,
+            [class*="star"],
+            .particle,
+            [class*="particle"],
+            .shooting-star,
+            [class*="shooting"],
+            .cosmic-dust,
+            [class*="cosmic"],
+            [class*="nebula-dust"],
+            [class*="glow-particle"]
+        `);
+
+        removable.forEach(el => {
+            el.remove();
+        });
+
+        console.log(`✅ Removed ${removable.length} elements`);
+
+        // 2. Stop all animations temporarily
+        const animated = document.querySelectorAll('[style*="animation"]');
+        animated.forEach(el => {
+            const oldAnimation = el.style.animation;
+            el.style.animation = 'none';
+
+            // Restart after 100ms
+            setTimeout(() => {
+                el.style.animation = oldAnimation;
+            }, 100);
+        });
+
+        // 3. Clear all intervals except essential ones
+        const highestId = window.setInterval(() => { }, 0);
+        for (let i = 100; i < highestId; i++) { // Keep first 100 (essential)
+            window.clearInterval(i);
+        }
+
+        // 4. Force multiple GC cycles
+        if (window.gc) {
+            try {
+                for (let i = 0; i < 3; i++) {
+                    window.gc();
+                }
+            } catch (e) { }
+        }
+
+        // 5. Reduce quality mode
+        document.body.dataset.perfMode = 'low';
+
+        console.log('✅ Silent cleanup complete');
+
+        // Show subtle notification (no alert!)
+        showSubtleNotification('تم تحسين الأداء بنجاح');
+    }
+
+    // Subtle notification system (no blocking alert!)
+    function showSubtleNotification(message) {
+        const notification = document.createElement('div');
+        notification.style.cssText = `
+            position: fixed;
+            bottom: 20px;
+            right: 20px;
+            background: rgba(0, 0, 0, 0.8);
+            color: white;
+            padding: 15px 20px;
+            border-radius: 8px;
+            font-family: 'Cairo', sans-serif;
+            font-size: 14px;
+            z-index: 10000;
+            animation: slideIn 0.3s ease;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        `;
+        notification.textContent = message;
+
+        // Add animation
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes slideIn {
+                from {
+                    transform: translateX(400px);
+                    opacity: 0;
+                }
+                to {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+            }
+            @keyframes slideOut {
+                from {
+                    transform: translateX(0);
+                    opacity: 1;
+                }
+                to {
+                    transform: translateX(400px);
+                    opacity: 0;
+                }
+            }
+        `;
+        document.head.appendChild(style);
+
+        document.body.appendChild(notification);
+
+        // Auto remove after 3 seconds
+        setTimeout(() => {
+            notification.style.animation = 'slideOut 0.3s ease';
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
 
     // CRITICAL: Stop ALL intervals after 5 minutes
     setTimeout(() => {
@@ -213,35 +333,111 @@
     console.log('✅ Heavy features disabled for stability');
 })();
 
-// Auto-reload before crash
-(function autoReloadSafety() {
+// Optional refresh suggestion (not forced)
+(function gentleRefreshSuggestion() {
     'use strict';
 
-    // Reload after 10 minutes to prevent memory buildup
+    // After 30 minutes, suggest refresh (not force)
     setTimeout(() => {
-        console.log('🔄 Preventive reload (10 min)');
-        window.location.reload();
-    }, 600000); // 10 minutes
+        if (performance.memory) {
+            const usedMB = performance.memory.usedJSHeapSize / 1048576;
 
-    // Also reload if user inactive for 5 minutes
-    let lastActivity = Date.now();
+            // Only suggest if memory is actually high
+            if (usedMB > 100) {
+                // Add refresh button to notification
+                const notification = document.createElement('div');
+                notification.style.cssText = `
+                    position: fixed;
+                    bottom: 20px;
+                    left: 50%;
+                    transform: translateX(-50%);
+                    background: rgba(0, 0, 0, 0.9);
+                    color: white;
+                    padding: 20px 30px;
+                    border-radius: 12px;
+                    font-family: 'Cairo', sans-serif;
+                    z-index: 10000;
+                    display: flex;
+                    gap: 15px;
+                    align-items: center;
+                    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
+                `;
 
-    ['click', 'touchstart', 'mousemove', 'keydown'].forEach(event => {
-        document.addEventListener(event, () => {
-            lastActivity = Date.now();
-        }, { passive: true });
-    });
+                notification.innerHTML = `
+                    <span>للحصول على أفضل أداء، يُنصح بتحديث الصفحة</span>
+                    <button onclick="window.location.reload()" style="
+                        background: #4CAF50;
+                        color: white;
+                        border: none;
+                        padding: 8px 20px;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        font-family: 'Cairo', sans-serif;
+                        font-size: 14px;
+                    ">تحديث</button>
+                    <button onclick="this.parentElement.remove()" style="
+                        background: transparent;
+                        color: white;
+                        border: 1px solid white;
+                        padding: 8px 20px;
+                        border-radius: 6px;
+                        cursor: pointer;
+                        font-family: 'Cairo', sans-serif;
+                        font-size: 14px;
+                    ">لاحقاً</button>
+                `;
 
-    setInterval(() => {
-        const inactiveTime = Date.now() - lastActivity;
-
-        if (inactiveTime > 300000) { // 5 minutes inactive
-            console.log('🔄 Reload due to inactivity');
-            window.location.reload();
+                document.body.appendChild(notification);
+            }
         }
-    }, 60000); // Check every minute
+    }, 1800000); // After 30 minutes
 
-    console.log('✅ Auto-reload safety: Active');
+    console.log('✅ Gentle refresh suggestion: Scheduled');
+})();
+
+// Memory status indicator
+(function memoryIndicator() {
+    'use strict';
+
+    const indicator = document.createElement('div');
+    indicator.style.cssText = `
+        position: fixed;
+        bottom: 10px;
+        left: 10px;
+        background: rgba(0, 0, 0, 0.7);
+        color: white;
+        padding: 5px 10px;
+        border-radius: 5px;
+        font-family: monospace;
+        font-size: 11px;
+        z-index: 9999;
+        display: none; /* Hidden by default */
+    `;
+    document.body.appendChild(indicator);
+
+    // Update every 5 seconds
+    setInterval(() => {
+        if (performance.memory) {
+            const usedMB = (performance.memory.usedJSHeapSize / 1048576).toFixed(0);
+            const limitMB = (performance.memory.jsHeapSizeLimit / 1048576).toFixed(0);
+            const percent = ((performance.memory.usedJSHeapSize / performance.memory.jsHeapSizeLimit) * 100).toFixed(0);
+
+            indicator.textContent = `💾 ${usedMB}/${limitMB} MB (${percent}%)`;
+
+            // Color based on usage
+            if (percent > 80) {
+                indicator.style.background = 'rgba(255, 0, 0, 0.8)';
+                indicator.style.display = 'block'; // Show when high
+            } else if (percent > 60) {
+                indicator.style.background = 'rgba(255, 165, 0, 0.8)';
+                indicator.style.display = 'block';
+            } else {
+                indicator.style.display = 'none'; // Hide when OK
+            }
+        }
+    }, 5000);
+
+    console.log('✅ Memory indicator: Active');
 })();
 
 // Simplify all animations

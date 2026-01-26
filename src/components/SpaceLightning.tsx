@@ -1,4 +1,4 @@
-import { useRef, useEffect, useState } from 'react';
+import { useRef, useEffect, useState, memo } from 'react';
 import { useFrame } from '@react-three/fiber';
 import { useTexture, Html } from '@react-three/drei';
 import * as THREE from 'three';
@@ -20,7 +20,10 @@ interface LightningBolt {
     opacity: number;
 }
 
-export function SpaceLightning() {
+// ═══════════════════════════════════════════════════════════════
+// MAIN COMPONENT - WRAPPED WITH React.memo FOR ISOLATION
+// ═══════════════════════════════════════════════════════════════
+export const SpaceLightning = memo(function SpaceLightning() {
     // ⚡ REALISTIC TREE LIGHTNING TEXTURE
     const texture = useTexture(`${import.meta.env.BASE_URL}textures/lightning_branch.png`);
     const [bolts, setBolts] = useState<LightningBolt[]>([]);
@@ -32,6 +35,12 @@ export function SpaceLightning() {
     const audioCtxRef = useRef<AudioContext | null>(null);
     const buffersRef = useRef<AudioBuffer[]>([]);
     const timeoutRefs = useRef<ReturnType<typeof setTimeout>[]>([]);
+
+    // ═══════════════════════════════════════════════════════════════
+    // OPTIMIZATION 1: SINGLETON AUDIO SOURCE POOL
+    // ═══════════════════════════════════════════════════════════════
+    const audioSourcePoolRef = useRef<AudioBufferSourceNode[]>([]);
+    const MAX_CONCURRENT_SOURCES = 3; // Limit concurrent audio instances
 
     // 1. INITIALIZE AUDIO ENGINE & PRELOAD
     useEffect(() => {
@@ -75,28 +84,71 @@ export function SpaceLightning() {
         window.addEventListener('touchstart', unlockAudio);
         window.addEventListener('keydown', unlockAudio);
 
+        // ═══════════════════════════════════════════════════════════════
+        // OPTIMIZATION 2: ENHANCED CLEANUP
+        // ═══════════════════════════════════════════════════════════════
         return () => {
+            // Stop all active audio sources
+            audioSourcePoolRef.current.forEach(source => {
+                try {
+                    source.stop();
+                    source.disconnect();
+                } catch (e) {
+                    // Source may already be stopped
+                }
+            });
+            audioSourcePoolRef.current = [];
+
+            // Close audio context
             if (ctx) ctx.close();
+
+            // Remove event listeners
             window.removeEventListener('click', unlockAudio);
             window.removeEventListener('touchstart', unlockAudio);
             window.removeEventListener('keydown', unlockAudio);
-            // Cleanup pending audio triggers on unmount
+
+            // Clear all pending timeouts
             timeoutRefs.current.forEach(t => clearTimeout(t));
+            timeoutRefs.current = [];
         };
     }, []);
 
-    // ⚡ SPATIAL AUDIO TRIGGER
+    // ⚡ OPTIMIZED SPATIAL AUDIO TRIGGER WITH SOURCE REUSE
     const triggerThunder = (positionX: number) => {
         if (muted || !hasInteracted || !audioCtxRef.current || buffersRef.current.length === 0) return;
 
         const ctx = audioCtxRef.current;
         const buffer = buffersRef.current[Math.floor(Math.random() * buffersRef.current.length)];
+
         // Distance Delay logic
         const delay = 200 + Math.random() * 800;
 
         const timeoutId = setTimeout(() => {
             // Guard: Context might be closed
             if (ctx.state === 'closed') return;
+
+            // ═══════════════════════════════════════════════════════════════
+            // OPTIMIZATION: LIMIT CONCURRENT AUDIO SOURCES
+            // ═══════════════════════════════════════════════════════════════
+            // Clean up finished sources from pool
+            audioSourcePoolRef.current = audioSourcePoolRef.current.filter(source => {
+                // Remove sources that have already played
+                return source.context.state !== 'closed';
+            });
+
+            // Limit pool size to prevent memory overflow
+            if (audioSourcePoolRef.current.length >= MAX_CONCURRENT_SOURCES) {
+                // Stop and remove oldest source
+                const oldestSource = audioSourcePoolRef.current.shift();
+                if (oldestSource) {
+                    try {
+                        oldestSource.stop();
+                        oldestSource.disconnect();
+                    } catch (e) {
+                        // Already stopped
+                    }
+                }
+            }
 
             const source = ctx.createBufferSource();
             source.buffer = buffer;
@@ -115,7 +167,22 @@ export function SpaceLightning() {
             gainNode.connect(panner);
             panner.connect(ctx.destination);
 
+            // Auto-cleanup when source finishes
+            source.onended = () => {
+                source.disconnect();
+                gainNode.disconnect();
+                panner.disconnect();
+                // Remove from pool
+                const index = audioSourcePoolRef.current.indexOf(source);
+                if (index > -1) {
+                    audioSourcePoolRef.current.splice(index, 1);
+                }
+            };
+
             source.start();
+
+            // Add to pool
+            audioSourcePoolRef.current.push(source);
         }, delay);
 
         timeoutRefs.current.push(timeoutId);
@@ -235,12 +302,64 @@ export function SpaceLightning() {
             ))}
         </group>
     );
-}
+});
 
-// ⚡ OPTIMIZED BOLT COMPONENT (No State Re-renders)
-function Bolt({ data, texture, onComplete }: { data: LightningBolt, texture: THREE.Texture, onComplete: () => void }) {
+// ═══════════════════════════════════════════════════════════════
+// OPTIMIZATION 3: MEMOIZED BOLT COMPONENT WITH BufferGeometry
+// ═══════════════════════════════════════════════════════════════
+const Bolt = memo(function Bolt({ data, texture, onComplete }: { data: LightningBolt, texture: THREE.Texture, onComplete: () => void }) {
     const materialRef = useRef<THREE.MeshBasicMaterial>(null);
     const lifeRef = useRef(1.0); // Start life
+
+    // ═══════════════════════════════════════════════════════════════
+    // OPTIMIZATION 4: GPU-EFFICIENT BufferGeometry (Singleton)
+    // ═══════════════════════════════════════════════════════════════
+    const geometryRef = useRef<THREE.BufferGeometry | null>(null);
+
+    useEffect(() => {
+        // Create optimized BufferGeometry once
+        if (!geometryRef.current) {
+            const geometry = new THREE.BufferGeometry();
+
+            // Define vertices for a plane (2 triangles)
+            const vertices = new Float32Array([
+                -0.5, -0.5, 0,  // Bottom-left
+                0.5, -0.5, 0,  // Bottom-right
+                0.5, 0.5, 0,  // Top-right
+                -0.5, 0.5, 0   // Top-left
+            ]);
+
+            // Define UVs for texture mapping
+            const uvs = new Float32Array([
+                0, 0,  // Bottom-left
+                1, 0,  // Bottom-right
+                1, 1,  // Top-right
+                0, 1   // Top-left
+            ]);
+
+            // Define indices (2 triangles)
+            const indices = new Uint16Array([
+                0, 1, 2,  // First triangle
+                0, 2, 3   // Second triangle
+            ]);
+
+            geometry.setAttribute('position', new THREE.BufferAttribute(vertices, 3));
+            geometry.setAttribute('uv', new THREE.BufferAttribute(uvs, 2));
+            geometry.setIndex(new THREE.BufferAttribute(indices, 1));
+
+            geometryRef.current = geometry;
+        }
+
+        // ═══════════════════════════════════════════════════════════════
+        // OPTIMIZATION: CLEANUP ON UNMOUNT
+        // ═══════════════════════════════════════════════════════════════
+        return () => {
+            if (geometryRef.current) {
+                geometryRef.current.dispose();
+                geometryRef.current = null;
+            }
+        };
+    }, []);
 
     useFrame((_, delta) => {
         if (!materialRef.current) return;
@@ -266,8 +385,9 @@ function Bolt({ data, texture, onComplete }: { data: LightningBolt, texture: THR
             position={data.position}
             rotation={data.rotation}
             scale={data.scale}
+            geometry={geometryRef.current || undefined}
         >
-            <planeGeometry args={[1, 1]} />
+            {!geometryRef.current && <planeGeometry args={[1, 1]} />}
             <meshBasicMaterial
                 ref={materialRef}
                 map={texture}
@@ -281,7 +401,10 @@ function Bolt({ data, texture, onComplete }: { data: LightningBolt, texture: THR
             />
         </mesh>
     );
-}
+}, (prevProps, nextProps) => {
+    // Custom comparison: only re-render if data.id changes
+    return prevProps.data.id === nextProps.data.id;
+});
 
 // Global Style for Animation
 const style = document.createElement('style');

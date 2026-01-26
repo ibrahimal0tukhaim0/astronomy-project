@@ -22,11 +22,22 @@ interface CelestialObjectProps {
 // ☀️ SoumyaEXE Sun (Fresh Implementation with Atomic Fix)
 function SoumyaSun({ scale = 1.0 }: { scale?: number }) {
     // SUSPENSE: This forces the MainMenu loading bar to WAIT for this texture
-    const texture = useTexture(`${import.meta.env.BASE_URL}textures/sun.jpg`);
+    const texture = useTexture(`${import.meta.env.BASE_URL}textures/sun_real.png`);
 
     // Ensure texture settings are correct immediately
     texture.colorSpace = THREE.SRGBColorSpace;
     texture.anisotropy = 16;
+
+    // CRITICAL: Fix texture wrapping to prevent black line
+    texture.wrapS = THREE.RepeatWrapping;
+    texture.wrapT = THREE.ClampToEdgeWrapping;
+    texture.repeat.set(1, 1);
+    texture.offset.set(0, 0);
+
+    // Ensure proper filtering
+    texture.minFilter = THREE.LinearFilter;
+    texture.magFilter = THREE.LinearFilter;
+    texture.needsUpdate = true;
 
     const meshRef = useRef<THREE.Mesh>(null);
 
