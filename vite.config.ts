@@ -3,16 +3,22 @@ import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
 
 // https://vitejs.dev/config/
-export default defineConfig(() => ({
-  plugins: [
-    react(),
-    tailwindcss(),
-  ],
-  server: {
-    host: '0.0.0.0',
-    strictPort: true,
-    port: 3000,
-    open: true,
-  },
-  base: '/astronomy-project/',
-}))
+export default defineConfig(({ mode }) => {
+  // Check if running on Vercel
+  const isVercel = process.env.VERCEL === '1';
+
+  return {
+    plugins: [
+      react(),
+      tailwindcss(),
+    ],
+    server: {
+      host: '0.0.0.0',
+      strictPort: true,
+      port: 3000,
+      open: true,
+    },
+    // Use root '/' for Vercel, project path for GitHub Pages
+    base: isVercel ? '/' : '/astronomy-project/',
+  }
+})

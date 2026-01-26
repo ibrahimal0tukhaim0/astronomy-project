@@ -33,3 +33,6 @@ astronomy-source-code*
 
 # Local Netlify folder
 .netlify
+
+# CRITICAL PERFORMANCE CORE - DO NOT IGNORE
+!src/utils/performance-core.ts
