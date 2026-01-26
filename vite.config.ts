@@ -14,5 +14,5 @@ export default defineConfig(({ command }) => ({
     port: 3000,
     open: true, // Attempt to open browser automatically
   },
-  base: command === 'serve' ? '/' : '/astronomy-project/',
+  base: '/',
 }))
