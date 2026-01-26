@@ -19,46 +19,41 @@ interface CelestialObjectProps {
 
 
 
-// ☀️ SoumyaEXE Sun (Fresh Implementation with Atomic Fix)
+// ☀️ SoumyaEXE Sun (Optimized & Seamless)
 function SoumyaSun({ scale = 1.0 }: { scale?: number }) {
     // SUSPENSE: This forces the MainMenu loading bar to WAIT for this texture
     const texture = useTexture(`${import.meta.env.BASE_URL}textures/sun_real.png`);
-
-    // Ensure texture settings are correct immediately
-    texture.colorSpace = THREE.SRGBColorSpace;
-    texture.anisotropy = 16;
-
-    // CRITICAL: Fix texture wrapping to prevent black line
-    texture.wrapS = THREE.RepeatWrapping;
-    texture.wrapT = THREE.ClampToEdgeWrapping;
-    texture.repeat.set(1, 1);
-    texture.offset.set(0, 0);
-
-    // Ensure proper filtering
-    texture.minFilter = THREE.LinearFilter;
-    texture.magFilter = THREE.LinearFilter;
-    texture.needsUpdate = true;
-
     const meshRef = useRef<THREE.Mesh>(null);
 
-    // ATOMIC GUARD: Force material state every frame
+    // 🛠️ TEXTURE & MATERIAL SETUP
+    useEffect(() => {
+        if (!texture) return;
+
+        // 1. Texture Config
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.anisotropy = 16;
+
+        // Fix Seams: Repeat horizontally, Clamp vertically (Standard Sphere Map)
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.ClampToEdgeWrapping;
+
+        // Ensure no offset drift
+        texture.repeat.set(1, 1);
+        texture.offset.set(0, 0);
+
+        texture.minFilter = THREE.LinearFilter;
+        texture.magFilter = THREE.LinearFilter;
+        texture.needsUpdate = true;
+    }, [texture]);
+
+    // 🔄 ROTATION LOOP (Smooth & Passive)
     useFrame((_, delta) => {
         if (meshRef.current) {
-            meshRef.current.rotation.y += delta * 0.008;
-
-            // The "Nuclear" Option: Force properties every single frame
-            const mat = meshRef.current.material as THREE.MeshBasicMaterial;
-            if (mat.toneMapped === true) {
-                mat.toneMapped = false;
-                mat.needsUpdate = true;
-            }
-            if (mat.color.getHexString() !== 'ffffff') {
-                mat.color.setHex(0xffffff);
-            }
+            meshRef.current.rotation.y += delta * 0.005; // Slightly smoother rotation
         }
     });
 
-    // Layer 1 Isolation for Selective Bloom
+    // ✨ BLOOM LAYER SETUP
     useEffect(() => {
         if (meshRef.current) {
             meshRef.current.layers.set(1); // Enable Layer 1 (Bloom Layer)
@@ -68,11 +63,17 @@ function SoumyaSun({ scale = 1.0 }: { scale?: number }) {
 
     return (
         <mesh ref={meshRef} scale={scale} castShadow={false} receiveShadow={false}>
+            {/* High-Res Geometry to minimize UV distortion at poles */}
             <sphereGeometry args={[1, 64, 64]} />
+
+            {/* Seamless Basic Material */}
             <meshBasicMaterial
                 map={texture}
                 color="#ffffff"
-                toneMapped={false}
+                toneMapped={false}   // 🚨 CRITICAL: Keeps it bright/white
+                side={THREE.DoubleSide} // 🛡️ Fixes holes/black artifacts if normals flip
+                transparent={false}     // 🛡️ Prevents alpha transparency issues
+                fog={false}             // 🛡️ Ignored by scene fog (always bright)
             />
         </mesh>
     );
@@ -327,16 +328,6 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
             />
         );
 
-        // CERES: Asteroid Belt (Grey, emissive to be visible)
-        if (data.id === 'ceres') return (
-            <meshStandardMaterial
-                color={'#8C8C8C'}
-                emissive={'#555555'}
-                emissiveIntensity={0.5}
-                roughness={0.9}
-                toneMapped={false}
-            />
-        );
 
         // Fallback or missing textures
         if (!textures) {

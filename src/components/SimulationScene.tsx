@@ -5,7 +5,6 @@ import { useTexture } from '@react-three/drei'
 import gsap from 'gsap'
 import { Meteors } from './Meteors';
 import { SpaceLightning } from './SpaceLightning';
-import { AsteroidBelts } from './AsteroidBelts'
 
 import type { CelestialData } from '../data/objects'
 import { celestialObjects } from '../data/objects'
@@ -151,8 +150,6 @@ export default function SimulationScene({ onSelect, isPaused, onDateChange }: Si
                 decay={0.8}
             />
 
-            {/* ☄️ Procedural Asteroid Belts (Main, Trojans, Kuiper, Oort) */}
-            <AsteroidBelts />
 
             {/* 🌠 Shooting Stars (Every 15s) */}
             <ComponentBoundary>

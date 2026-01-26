@@ -199,7 +199,7 @@ export function GeminiChat() {
 
             <button
                 onClick={() => setIsOpen(!isOpen)}
-                className="group flex items-center justify-center w-14 h-14 rounded-full bg-gradient-to-r from-cyan-500 to-blue-600 text-white shadow-[0_0_20px_rgba(0,255,255,0.4)] hover:shadow-[0_0_30px_rgba(0,255,255,0.6)] hover:scale-105 transition-all duration-300"
+                className="group flex items-center justify-center w-14 h-14 rounded-full text-white hover:scale-105 transition-all duration-300 backdrop-blur-md bg-white/10 border border-white/20 shadow-[0_0_15px_rgba(255,255,255,0.1)] hover:shadow-[0_0_25px_rgba(255,255,255,0.2)]"
             >
                 {isOpen ? (
                     <span className="text-xl">✕</span>

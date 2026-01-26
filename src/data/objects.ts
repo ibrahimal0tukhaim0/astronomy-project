@@ -1,7 +1,7 @@
 // Celestial Objects Data Model - Educational Astronomy & Monotheism App
 // Normalized for Visual Representation (Not 1:1 Scale)
 
-export type CelestialObjectId = 'sun' | 'earth' | 'moon' | 'sirius' | 'al-tariq' | 'venus' | 'mars' | 'mercury' | 'jupiter' | 'saturn' | 'uranus' | 'neptune' | 'pluto' | 'ceres' | 'alnitak' | 'alnilam' | 'mintaka';
+export type CelestialObjectId = 'sun' | 'earth' | 'moon' | 'sirius' | 'al-tariq' | 'venus' | 'mars' | 'mercury' | 'jupiter' | 'saturn' | 'uranus' | 'neptune' | 'pluto' | 'alnitak' | 'alnilam' | 'mintaka';
 
 export interface CelestialData {
     id: CelestialObjectId;

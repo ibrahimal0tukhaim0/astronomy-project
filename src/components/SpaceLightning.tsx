@@ -242,17 +242,17 @@ export const SpaceLightning = memo(function SpaceLightning() {
 
     return (
         <group>
-            {/* 🎛️ MUTE BUTTON UI */}
+            {/* 🎛️ MUTE BUTTON UI - GLASSMORPHISM REDESIGN */}
             <Html fullscreen style={{ pointerEvents: 'none', zIndex: 1000 }}>
-                {/* ... existing UI ... */}
                 <div style={{
                     position: 'absolute',
-                    top: '20px',
-                    left: '20px',
+                    bottom: '40px', // Bottom
+                    right: '30px',  // Moved to RIGHT
                     pointerEvents: 'auto',
                     display: 'flex',
                     alignItems: 'center',
-                    gap: '10px'
+                    gap: '8px',     // Reduced gap
+                    transition: 'all 0.3s cubic-bezier(0.25, 0.8, 0.25, 1)'
                 }}>
                     <button
                         onClick={() => {
@@ -262,36 +262,63 @@ export const SpaceLightning = memo(function SpaceLightning() {
                             setHasInteracted(true);
                             setMuted(!muted);
                         }}
+                        onMouseEnter={(e) => {
+                            e.currentTarget.style.transform = 'scale(1.05)';
+                            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.15)';
+                            e.currentTarget.style.boxShadow = '0 8px 32px 0 rgba(31, 38, 135, 0.37)';
+                        }}
+                        onMouseLeave={(e) => {
+                            e.currentTarget.style.transform = 'scale(1)';
+                            e.currentTarget.style.background = 'rgba(255, 255, 255, 0.05)';
+                            e.currentTarget.style.boxShadow = '0 4px 16px 0 rgba(0, 0, 0, 0.2)';
+                        }}
                         style={{
-                            background: 'rgba(0, 0, 0, 0.6)',
-                            border: '1px solid rgba(255, 255, 255, 0.3)',
-                            borderRadius: '50px',
+                            // Glassmorphism Base
+                            background: 'rgba(255, 255, 255, 0.05)',
+                            backdropFilter: 'blur(16px)',
+                            WebkitBackdropFilter: 'blur(16px)', // Safari support
+                            border: '1px solid rgba(255, 255, 255, 0.1)',
+                            borderRadius: '16px',
+
+                            // Typography & Layout
                             color: 'white',
-                            padding: '10px 16px',
+                            padding: '8px 14px',     // Reduced padding (was 12px 20px)
                             cursor: 'pointer',
-                            fontSize: '16px',
-                            backdropFilter: 'blur(10px)',
-                            transition: 'all 0.2s ease',
+                            fontSize: '13px',        // Reduced font (was 15px)
+                            fontWeight: 500,
+                            letterSpacing: '0.5px',
+
+                            // Transitions & Flex
+                            transition: 'all 0.3s ease',
                             display: 'flex',
                             alignItems: 'center',
-                            gap: '8px',
-                            boxShadow: '0 4px 15px rgba(0,0,0,0.3)',
-                            fontFamily: 'system-ui, sans-serif'
+                            gap: '10px',
+                            boxShadow: '0 4px 16px 0 rgba(0, 0, 0, 0.2)',
+                            fontFamily: '"SF Pro Display", "Inter", system-ui, sans-serif'
                         }}
                     >
-                        <span>{muted ? "🔇" : "🔊"}</span>
-                        <span style={{ fontSize: '12px', opacity: 0.8, fontWeight: 500 }}>
-                            {muted ? "SOUND OFF" : "SOUND ON (3D)"}
+                        <span style={{ fontSize: '18px' }}>{muted ? "🔇" : "🔊"}</span>
+                        <span style={{
+                            opacity: 0.9,
+                            textShadow: '0 2px 4px rgba(0,0,0,0.2)'
+                        }}>
+                            {muted ? "Sound Off" : "Ambience On"}
                         </span>
                     </button>
+
                     {!hasInteracted && !muted && (
                         <div style={{
-                            color: '#FFCC00',
-                            fontSize: '12px',
-                            textShadow: '0 0 5px black',
-                            animation: 'bounce 1s infinite'
+                            color: '#FFD700',
+                            fontSize: '13px',
+                            fontWeight: 600,
+                            textShadow: '0 2px 4px rgba(0,0,0,0.8)',
+                            animation: 'bounce 1.5s infinite ease-in-out',
+                            backdropFilter: 'blur(4px)',
+                            padding: '4px 8px',
+                            borderRadius: '8px',
+                            background: 'rgba(0,0,0,0.2)'
                         }}>
-                            Tap to Enable Audio
+                            Tap to Start Audio
                         </div>
                     )}
                 </div>

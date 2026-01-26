@@ -70,7 +70,7 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
     return (
         <div
             ref={containerRef}
-            className="home-screen relative w-full h-screen overflow-hidden flex flex-col justify-center items-center text-white bg-black"
+            className="home-screen relative w-full h-screen overflow-hidden flex flex-col justify-center items-center text-white bg-transparent pointer-events-auto"
             dir="rtl"
         >
             <style>{`
@@ -209,16 +209,19 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
 
             `}</style>
 
-            {/* Background */}
-            <div className="deep-space-bg" />
+            {/* Glassmorphism Background - Blurs the Scene slightly */}
+            <div style={{ position: 'absolute', inset: 0, backdropFilter: 'blur(8px)', zIndex: -1 }} />
 
-            {/* The Sunrise Light */}
-            <div className="orbital-sunrise" />
+            {/* Background - Transparent to show 3D Scene */}
+            {/* <div className="deep-space-bg" /> */}
 
-            {/* The Planet (Earth) */}
-            <div className="orbital-planet">
+            {/* The Sunrise Light - REMOVED for Transparency */}
+            {/* <div className="orbital-sunrise" /> */}
+
+            {/* The Planet (Earth) - REMOVED for Transparency */}
+            {/* <div className="orbital-planet">
                 <div className="orbital-clouds" />
-            </div>
+            </div> */}
 
             {/* UI Content */}
             <div className="hero-text-container">

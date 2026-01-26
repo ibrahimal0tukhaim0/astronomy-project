@@ -116,6 +116,7 @@ function AppContent() {
                         selectedObject={selectedObject}
                         objectPosition={selectedObjectPos}
                         controlsRef={controlsRef as any}
+                        startIntro={hasStarted} // Trigger intro when started
                     />
 
                     <OrbitControls
@@ -125,12 +126,12 @@ function AppContent() {
                         enablePan={true}
                         panSpeed={1.0}
                         enableDamping={true}
-                        dampingFactor={0.08}
-                        maxDistance={2000}
-                        minDistance={10}
+                        dampingFactor={0.05} // Smooth damping as requested
+                        maxDistance={4000}   // Prevent getting lost
+                        minDistance={20}     // Prevent crashing into planets
                         autoRotate={!hasStarted}
-                        autoRotateSpeed={0.3}
-                        enabled={hasStarted}
+                        autoRotateSpeed={0.5}
+                        enabled={true}      // Always enabled, controlled by CameraController
                         regress={true}
                     />
 
