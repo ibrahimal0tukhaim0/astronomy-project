@@ -192,6 +192,16 @@ export function SpaceLightning() {
             <Html fullscreen style={{ pointerEvents: 'none', zIndex: 1000 }}>
                 <div style={{
                     position: 'absolute',
+                    bottom: '10px',
+                    right: '10px',
+                    color: 'rgba(255,255,255,0.3)',
+                    fontSize: '10px',
+                    fontFamily: 'monospace'
+                }}>
+                    v2.0 (Deep Background)
+                </div>
+                <div style={{
+                    position: 'absolute',
                     top: '20px',
                     left: '20px',
                     pointerEvents: 'auto',
