@@ -7,7 +7,7 @@ import { loadCelestialTextures } from '../utils/textureLoader';
 import { getObjectPosition } from '../utils/astronomy'
 
 // Helper for dynamic assets
-const getPath = (path: string) => `${import.meta.env.BASE_URL}${path}`;
+
 
 interface CelestialObjectProps {
     data: CelestialData
@@ -33,7 +33,7 @@ function SoumyaSun({ scale = 1.0 }: { scale?: number }) {
     // ATOMIC GUARD: Force material state every frame
     useFrame((_, delta) => {
         if (meshRef.current) {
-            meshRef.current.rotation.y += delta * 0.004;
+            meshRef.current.rotation.y += delta * 0.008;
 
             // The "Nuclear" Option: Force properties every single frame
             const mat = meshRef.current.material as THREE.MeshBasicMaterial;
@@ -92,7 +92,7 @@ function TexturedMars({ scale = 1.0, textureMap }: { scale?: number, textureMap?
 
     useFrame((_, delta) => {
         if (meshRef.current) {
-            meshRef.current.rotation.y += delta * 0.015;
+            meshRef.current.rotation.y += delta * 0.009;
         }
     });
 
@@ -123,7 +123,7 @@ function TexturedJupiter({ scale = 1.0, textureMap }: { scale?: number, textureM
 
     useFrame((_, delta) => {
         if (meshRef.current) {
-            meshRef.current.rotation.y += delta * 0.01;
+            meshRef.current.rotation.y += delta * 0.006;
         }
     });
 
@@ -147,7 +147,7 @@ function TexturedSaturn({ scale = 1.0, textureMap, ringMap }: { scale?: number, 
 
     useFrame((_, delta) => {
         if (groupRef.current) {
-            groupRef.current.rotation.y += delta * 0.012;
+            groupRef.current.rotation.y += delta * 0.007;
         }
     });
 
@@ -177,12 +177,12 @@ function TexturedSaturn({ scale = 1.0, textureMap, ringMap }: { scale?: number, 
                         map={ringMap}
                         alphaMap={ringMap}
                         transparent={true}
-                        opacity={0.8}
+                        opacity={0.95} // Prominent Visibility
                         side={THREE.DoubleSide}
                         depthWrite={false}
-                        roughness={0.8}
-                        metalness={0.2}
-                        color="#FFFFFF"
+                        roughness={0.6} // Icy reflection
+                        metalness={0.1}
+                        color="#F0F0F0" // Slightly off-white for realism
                     />
                 </mesh>
             ) : (
@@ -224,41 +224,6 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
     useEffect(() => {
         const loadTextures = async () => {
             try {
-                // Hard-Coded Override for specific objects
-                if (['moon', 'mercury', 'earth'].includes(data.id)) {
-                    let forcedUrl = '';
-                    if (data.id === 'moon') forcedUrl = getPath('textures/moon.jpg');
-                    if (data.id === 'mercury') forcedUrl = getPath('textures/mercury_new.jpg');
-                    if (data.id === 'earth') forcedUrl = getPath('textures/earth.jpg');
-
-                    if (forcedUrl) {
-                        const loader = new THREE.TextureLoader();
-                        loader.setCrossOrigin('anonymous');
-                        const forcedTex = await loader.loadAsync(forcedUrl);
-
-                        forcedTex.colorSpace = THREE.SRGBColorSpace;
-                        forcedTex.flipY = false;
-
-                        if (data.id === 'earth') {
-                            forcedTex.wrapS = THREE.RepeatWrapping;
-                            forcedTex.wrapT = THREE.RepeatWrapping;
-                            forcedTex.anisotropy = 16;
-                        }
-
-                        forcedTex.needsUpdate = true;
-                        if (meshRef.current) {
-                            // @ts-ignore
-                            meshRef.current.material.map = forcedTex;
-                            // @ts-ignore
-                            meshRef.current.material.needsUpdate = true;
-                        }
-                        // We don't necessarily need to set state if we direct-assign, 
-                        // but keeping setTextures keeps the rest of the component happy
-                        // setTextures({ map: forcedTex }); 
-                        return;
-                    }
-                }
-
                 // Standard Loader
                 const loadedTextures = await loadCelestialTextures(data.id);
                 if (loadedTextures) {
@@ -329,7 +294,7 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
 
         // 3. Earth Clouds Rotation
         if (cloudsRef.current) {
-            cloudsRef.current.rotation.y += delta * 0.05; // Clouds move slightly faster than surface
+            cloudsRef.current.rotation.y += delta * 0.03; // Clouds move slightly faster than surface
         }
     })
 

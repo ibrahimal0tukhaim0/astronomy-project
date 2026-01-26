@@ -1,44 +1,66 @@
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Loader, AdaptiveDpr, AdaptiveEvents } from '@react-three/drei'
-import { useState, Suspense, useRef } from 'react'
+import React, { useState, Suspense, useRef, lazy } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { CelestialData } from './data/objects'
 import { InfoPanel } from './components/InfoPanel'
 import { Layout } from './components/Layout'
-import { ErrorBoundary } from './components/ErrorBoundary'
 import { TimeControls } from './components/TimeControls'
 import { CameraController } from './components/CameraController'
 import type { CameraControllerHandle } from './components/CameraController'
 import { NavigationSidebar } from './components/NavigationSidebar'
 import { GeminiChat } from './components/GeminiChat'
 import { getObjectPosition } from './utils/astronomy'
+import { EffectComposer, Bloom } from '@react-three/postprocessing';
+import { PerformanceOptimizer } from './components/PerformanceOptimizer';
 import type { OrbitControls as OrbitControlsType } from 'three-stdlib'
 import * as THREE from 'three'
 
-// Direct import for debugging (Default import)
-import SimulationScene from './components/SimulationScene'
-import { MainMenu } from './components/MainMenu'
-import { planetTextures } from './utils/textureLoader'
-import { useTexture } from '@react-three/drei'
+// Lazy load the heavy 3D scene so Home Screen loads instantly
+const SimulationScene = lazy(() => import('./components/SimulationScene'));
+import { CinematicHome } from './components/CinematicHome'
+import { AppEnhancements } from './components/AppEnhancements'
 
-// 🚀 Performance: Preload ALL textures to avoid frame drops during travel
-function TexturePreloader() {
-    // Flatten all texture URLs into a single array
-    const allTextures = Object.values(planetTextures).flatMap(t => {
-        if (typeof t === 'string') return [t];
-        return Object.values(t);
-    }) as string[];
+// 🛡️ User Requested: Error Boundary to prevent crashes
+class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
+    constructor(props: { children: React.ReactNode }) {
+        super(props);
+        this.state = { hasError: false };
+    }
 
-    // This hook suspends until all textures are loaded
-    useTexture(allTextures);
-    return null;
+    static getDerivedStateFromError(_: Error) {
+        return { hasError: true };
+    }
+
+    componentDidCatch(error: Error, info: React.ErrorInfo) {
+        console.log("حدث خطأ بسيط في الفضاء، تم الاحتواء:", error, info);
+    }
+
+    render() {
+        if (this.state.hasError) {
+            return (
+                <div style={{ color: 'white', padding: 20, textAlign: 'center', direction: 'rtl', height: '100vh', display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center' }}>
+                    <h2>حدث خطأ بسيط في الفضاء ⚠️</h2>
+                    <p>نحاول استعادة الاتصال...</p>
+                    <button
+                        onClick={() => this.setState({ hasError: false })}
+                        style={{ background: 'orange', padding: '10px 20px', borderRadius: 5, color: 'black', fontWeight: 'bold', marginTop: 10, cursor: 'pointer' }}
+                    >
+                        إعادة المحاولة
+                    </button>
+                    <p style={{ fontSize: '0.8rem', color: '#666', marginTop: 20 }}>تم احتواء الخطأ بنجاح.</p>
+                </div>
+            );
+        }
+        return this.props.children;
+    }
 }
 
 function AppContent() {
     const [selectedObject, setSelectedObject] = useState<CelestialData | null>(null)
     const [isPaused, setIsPaused] = useState(false)
     const [currentDate, setCurrentDate] = useState(new Date())
-    const [hasStarted, setHasStarted] = useState(false) // New Start State
+    const [hasStarted, setHasStarted] = useState(false)
     const { t } = useTranslation()
     const controlsRef = useRef<OrbitControlsType>(null)
     const cameraControllerRef = useRef<CameraControllerHandle>(null)
@@ -60,17 +82,18 @@ function AppContent() {
 
     return (
         <div className="w-full h-screen bg-black relative overflow-hidden touch-none" dir="rtl">
+            <AppEnhancements />
             <ErrorBoundary>
-                {/* 3D Scene - Always rendered for loading, but hidden/paused logic could be added if needed */}
+                {/* 3D Scene */}
                 <Canvas
                     shadows
                     camera={{ position: [0, 40, 140], fov: 60, near: 0.1, far: 6000 }}
-                    dpr={[1, 2]} // Sharp resolution for cinematic look
+                    dpr={[1, 2]}
                     gl={{
-                        antialias: true, // Smooth edges (No jaggies)
-                        powerPreference: "high-performance", // Force discrete GPU for smoothness
+                        antialias: true,
+                        powerPreference: "high-performance",
                         toneMapping: THREE.ACESFilmicToneMapping,
-                        toneMappingExposure: 0.6, // Reduced from 0.9 to prevent Sun white-out
+                        toneMappingExposure: 0.6,
                         outputColorSpace: THREE.SRGBColorSpace
                     }}
                 >
@@ -81,10 +104,9 @@ function AppContent() {
                     <AdaptiveEvents />
 
                     <Suspense fallback={null}>
-                        <TexturePreloader /> {/* FORCE LOAD EVERYTHING HERE */}
                         <SimulationScene
                             onSelect={setSelectedObject}
-                            isPaused={isPaused || !hasStarted} // Pause simulation behind menu
+                            isPaused={isPaused || !hasStarted}
                             onDateChange={setCurrentDate}
                         />
                     </Suspense>
@@ -103,20 +125,35 @@ function AppContent() {
                         enablePan={true}
                         panSpeed={1.0}
                         enableDamping={true}
-                        dampingFactor={0.08} // Silkier, weightier camera movement
+                        dampingFactor={0.08}
                         maxDistance={2000}
                         minDistance={10}
-                        autoRotate={!hasStarted} // Rotate while in menu for cinematic effect? Or false. Let's Set False to keep it still until start.
+                        autoRotate={!hasStarted}
                         autoRotateSpeed={0.3}
-                        enabled={hasStarted} // Disable controls while in menu
-                        regress={true} // Triggers resolution downgrade on movement for stable FPS
+                        enabled={hasStarted}
+                        regress={true}
                     />
+
+                    {/* 🧹 Memory Management & FPS Stability */}
+                    <PerformanceOptimizer />
+
+                    {/* ✨ Post-Processing: Cinematic Bloom (Glow) */}
+                    <EffectComposer>
+                        <Bloom
+                            luminanceThreshold={0.2}
+                            mipmapBlur
+                            intensity={1.5}
+                            radius={0.6}
+                        />
+                    </EffectComposer>
                 </Canvas>
             </ErrorBoundary>
 
-            {/* Main Menu Overlay */}
+            {/* Main Menu Overlay (Cinematic Home) */}
             {!hasStarted && (
-                <MainMenu onStart={() => setHasStarted(true)} />
+                <div className="absolute inset-0 z-50">
+                    <CinematicHome onStart={() => setHasStarted(true)} />
+                </div>
             )}
 
             {/* UI Layer - Only Visible After Start */}
@@ -148,7 +185,7 @@ function AppContent() {
                     {t('app.credits')}
                 </div>
 
-                {/* 🎵 Background Music (Interstellar Theme) */}
+                {/* 🎵 Background Music */}
                 <audio id="bg-music" loop>
                     <source src={`${import.meta.env.BASE_URL}textures/interstellar.mp3`} type="audio/mpeg" />
                 </audio>

@@ -65,7 +65,7 @@ export function NavigationSidebar({ onNavigate }: NavigationSidebarProps) {
                             animate={{ x: 0 }}
                             exit={{ x: '-100%' }}
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            className="absolute top-0 left-0 h-full w-80 bg-black/80 backdrop-blur-xl border-r border-white/10 z-50 shadow-2xl overflow-y-auto"
+                            className="absolute top-0 left-0 h-full w-80 glass-menu border-r-0 z-50 overflow-y-auto"
                             id="navigation-menu"
                             role="dialog"
                             aria-modal="true"

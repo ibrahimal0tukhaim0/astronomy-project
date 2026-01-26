@@ -1,40 +1,38 @@
 import * as THREE from 'three';
 
-// Performance: Switched to 1K textures where possible to save VRAM
+// Singleton LoadingManager for better debugging
 // Helper to get correct path regardless of deployment
-const getPath = (path: string) => `${import.meta.env.BASE_URL}${path}`;
-
 export const planetTextures: Record<string, any> = {
     sun: {
-        map: getPath('textures/sun_real.png'), // High Quality 4K Sun
-        emissiveMap: getPath('textures/sun_real.png'), // Self-illumination
+        map: '/textures/sun_real.png',
+        emissiveMap: '/textures/sun_real.png',
     },
     moon: {
-        map: getPath('textures/moon.jpg'),
-        bumpMap: getPath('textures/moon.jpg'),
+        map: '/textures/moon_nasa_new.jpg', // NASA PIA00405
+        bumpMap: '/textures/moon_nasa_new.jpg',
     },
     earth: {
-        map: getPath('textures/earth.jpg'),
-        clouds: getPath('textures/earth_clouds.jpg'),
-        specular: getPath('textures/earth_specular.jpg'),
-        bumpMap: getPath('textures/earth.jpg'),
+        map: '/textures/earth_recreated.png', // RECREATED
+        // clouds: '/textures/earth_clouds.jpg', 
+        specular: '/textures/earth_specular.jpg',
+        bumpMap: '/textures/earth_recreated.png',
     },
-    mercury: { map: getPath('textures/mercury.jpg') },
+    mercury: { map: '/textures/mercury.jpg' },
     venus: {
-        map: getPath('textures/venus.jpg'),
-        atmosphere: getPath('textures/venus_atmosphere.jpg')
+        map: '/textures/venus.jpg',
+        atmosphere: '/textures/venus_atmosphere.jpg'
     },
-    mars: { map: getPath('textures/mars.jpg') },
-    jupiter: { map: getPath('textures/jupiter.jpg') },
+    mars: { map: '/textures/mars_final.png' }, // KEPT
+    jupiter: { map: '/textures/jupiter_recreated.png' }, // RECREATED
     saturn: {
-        map: getPath('textures/saturn.jpg'),
-        ring: getPath('textures/saturn_ring.png')
+        map: '/textures/saturn_recreated.png', // RECREATED
+        ring: '/textures/saturn_ring_detailed.png' // Keeping geometry ring but using image for map
     },
-    uranus: { map: getPath('textures/uranus.jpg') },
-    neptune: { map: getPath('textures/neptune.jpg') },
-    pluto: { map: getPath('textures/pluto.jpg') },
-    ceres: { map: getPath('textures/pluto.jpg') }, // Use Pluto (generic rock) instead of Moon to avoid confusion
-    stars: { map: getPath('textures/stars.jpg') },
+    uranus: { map: '/textures/uranus_recreated.png' }, // RECREATED
+    neptune: { map: '/textures/neptune.jpg' },
+    pluto: { map: '/textures/pluto.jpg' },
+    ceres: { map: '/textures/pluto.jpg' },
+    stars: { map: '/textures/stars.jpg' },
 };
 
 // Singleton LoadingManager for better debugging

@@ -54,7 +54,7 @@ export const celestialObjects: CelestialData[] = [
             color: '#A5A5A5',
             scale: 1.5, // 3x Original (0.5)
             orbitRadius: 14, // Gap: Sun(5) + Buffer < 14. Safe.
-            orbitSpeed: 0.8,
+            orbitSpeed: 0.8, // RESTORED
             orbitInclination: 2.0,
             orbitPhase: Math.random() * Math.PI * 2,
         },
@@ -69,7 +69,7 @@ export const celestialObjects: CelestialData[] = [
             color: '#E3BB76',
             scale: 2.7, // 3x Original (0.9)
             orbitRadius: 22,
-            orbitSpeed: 0.6,
+            orbitSpeed: 0.6, // RESTORED
             orbitInclination: 1.0,
             orbitPhase: Math.random() * Math.PI * 2,
         },
@@ -84,7 +84,7 @@ export const celestialObjects: CelestialData[] = [
             color: '#2271B3',
             scale: 3.0, // 3x Original (1.0)
             orbitRadius: 30,
-            orbitSpeed: 0.4,
+            orbitSpeed: 0.4, // RESTORED
             orbitInclination: 0,
             orbitPhase: Math.random() * Math.PI * 2,
             rotationSpeed: 0.01,
@@ -115,7 +115,7 @@ export const celestialObjects: CelestialData[] = [
             color: '#E27B58',
             scale: 2.4, // 3x Original (0.8)
             orbitRadius: 40,
-            orbitSpeed: 0.3,
+            orbitSpeed: 0.3, // RESTORED
             orbitInclination: 1.8,
             orbitPhase: Math.random() * Math.PI * 2,
         },
@@ -203,9 +203,10 @@ export const celestialObjects: CelestialData[] = [
             color: '#73C6D9',
             scale: 3.6, // 3x Original (1.2)
             orbitRadius: 110,
-            orbitSpeed: 0.1,
+            orbitSpeed: 0.0005, // Background Slow
             orbitInclination: 0.8,
             orbitPhase: Math.random() * Math.PI * 2,
+            // rotationSpeed removed (back to default)
         },
         initialPosition: [110, 0, 0],
     },
@@ -218,9 +219,10 @@ export const celestialObjects: CelestialData[] = [
             color: '#4b70dd',
             scale: 3.3, // 3x Original (1.1)
             orbitRadius: 130,
-            orbitSpeed: 0.08,
+            orbitSpeed: 0.0004, // Background Slow
             orbitInclination: 1.8,
             orbitPhase: Math.random() * Math.PI * 2,
+            // rotationSpeed removed
         },
         initialPosition: [130, 0, 0],
     },
@@ -233,9 +235,10 @@ export const celestialObjects: CelestialData[] = [
             color: '#D0D0D0',
             scale: 1.2, // 3x Original (0.4)
             orbitRadius: 145,
-            orbitSpeed: 0.04,
+            orbitSpeed: 0.0002, // Background Slow
             orbitInclination: 17.0,
             orbitPhase: Math.random() * Math.PI * 2,
+            rotationSpeed: 0.0001, // DEEP FREEZE
         },
         initialPosition: [145, 4, 0],
     },

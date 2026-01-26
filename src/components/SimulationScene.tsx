@@ -3,6 +3,8 @@ import * as THREE from 'three'
 import { useFrame } from '@react-three/fiber'
 import { useTexture } from '@react-three/drei'
 import gsap from 'gsap'
+import { Meteors } from './Meteors';
+import { SpaceLightning } from './SpaceLightning';
 import { AsteroidBelts } from './AsteroidBelts'
 
 import type { CelestialData } from '../data/objects'
@@ -16,7 +18,8 @@ interface SimulationSceneProps {
 }
 
 // Base time scale: 1 = Real Time (1 second = 1 second)
-const BASE_TIME_SCALE = 1;
+// Base time scale: 1 = Real Time. 2 = Double Speed (Requested)
+const BASE_TIME_SCALE = 2.0;
 
 // 🌌 Procedural Particle Starfield (SoumyaEXE Implementation)
 // 🌌 360 Space Background (High Res)
@@ -145,6 +148,12 @@ export default function SimulationScene({ onSelect, isPaused, onDateChange }: Si
 
             {/* ☄️ Procedural Asteroid Belts (Main, Trojans, Kuiper, Oort) */}
             <AsteroidBelts />
+
+            {/* 🌠 Shooting Stars (Every 15s) */}
+            <Meteors />
+
+            {/* ⚡ Space Lightning (Random Flashes) */}
+            <SpaceLightning />
 
             {/* 🪐 Orbit Rings (Visual Paths) */}
             <PlanetOrbits />

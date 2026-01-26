@@ -54,7 +54,8 @@ function ProceduralBelt({ count, innerRadius, outerRadius, minSize, maxSize, col
     useFrame(() => {
         if (!groupRef.current) return;
         // Simple overall rotation for performance (approximating individual orbits)
-        groupRef.current.rotation.y += 0.0005 * 1; // Base slow rotation
+        // DEEP FREEZE: User requested near-zero speed.
+        groupRef.current.rotation.y += 0.000005 * 1;
     });
 
     return (
