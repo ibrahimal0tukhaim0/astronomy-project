@@ -33,9 +33,9 @@ function SoumyaSun({ scale = 1.0 }: { scale?: number }) {
         texture.colorSpace = THREE.SRGBColorSpace;
         texture.anisotropy = 16;
 
-        // Fix Seams: Repeat horizontally, Clamp vertically (Standard Sphere Map)
+        // Fix Seams: Repeat horizontally AND vertically (Force Wrap)
         texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.ClampToEdgeWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
 
         // Ensure no offset drift
         texture.repeat.set(1, 1);
@@ -189,7 +189,7 @@ function TexturedSaturn({ scale = 1.0, textureMap, ringMap }: { scale?: number, 
                         map={ringMap}
                         alphaMap={ringMap}
                         transparent={true}
-                        opacity={0.95} // Prominent Visibility
+                        opacity={0.85} // User requested 0.85
                         side={THREE.DoubleSide}
                         depthWrite={false}
                         roughness={0.6} // Icy reflection
@@ -213,6 +213,35 @@ function TexturedSaturn({ scale = 1.0, textureMap, ringMap }: { scale?: number, 
                     />
                 </mesh>
             )}
+        </group>
+    );
+}
+// 💫 Real Al-Tariq (Neutron Star Sprite)
+function RealAlTariq({ scale = 1.0 }: { scale?: number }) {
+    const texture = useTexture(`${import.meta.env.BASE_URL}textures/al_tariq_real.png`);
+    return (
+        <group>
+            {/* Main Sprite - High Res */}
+            <sprite scale={[scale * 15, scale * 15, 1]}>
+                <spriteMaterial
+                    map={texture}
+                    toneMapped={false}
+                    depthWrite={false}
+                    blending={THREE.AdditiveBlending}
+                    color="#FFFFFF"
+                />
+            </sprite>
+            {/* Subtle Pulse Aura */}
+            <sprite scale={[scale * 25, scale * 25, 1]}>
+                <spriteMaterial
+                    map={texture}
+                    toneMapped={false}
+                    depthWrite={false}
+                    blending={THREE.AdditiveBlending}
+                    opacity={0.3}
+                    color="#00FFFF"
+                />
+            </sprite>
         </group>
     );
 }
@@ -535,8 +564,8 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
             </mesh>
 
 
-            {/* VISUAL MESH - Optimized geometry (Skip for Sun/Moon/Mars/Jupiter/Saturn/OrionStars/Sirius as they have custom handling) */}
-            {data.id !== 'sun' && data.id !== 'moon' && data.id !== 'mars' && data.id !== 'jupiter' && data.id !== 'saturn' && data.id !== 'sirius' && !['alnitak', 'alnilam', 'mintaka'].includes(data.id) && (
+            {/* VISUAL MESH - Optimized geometry (Skip for Sun/Moon/Mars/Jupiter/Saturn/OrionStars/Sirius/Al-Tariq as they have custom handling) */}
+            {data.id !== 'sun' && data.id !== 'moon' && data.id !== 'mars' && data.id !== 'jupiter' && data.id !== 'saturn' && data.id !== 'sirius' && data.id !== 'al-tariq' && !['alnitak', 'alnilam', 'mintaka'].includes(data.id) && (
                 <mesh
                     ref={meshRef}
                     scale={targetScale}
@@ -642,7 +671,7 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
 
                     {/* The Real Star Image (Sprite for exact visual match) */}
                     {textures?.map && (
-                        <sprite scale={[25, 25, 1]}> {/* Slightly larger to command attention */}
+                        <sprite scale={[50, 50, 1]}> {/* Doubled Size (25->50) */}
                             <spriteMaterial
                                 map={textures.map}
                                 color="#FFFFFF"
@@ -664,44 +693,13 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
             )}
 
             {/* Al-Tariq - Neutron Star / Pulsar (The Knocker) */}
-            {/* Al-Tariq - Neutron Star / Pulsar (The Knocker) - EXTREME RADIANCE UPGRADE */}
+            {/* Al-Tariq - Neutron Star / Pulsar (Real Image Replacement) */}
             {data.id === 'al-tariq' && (
-                <>
+                <group>
                     {/* Blinding Light Source (Cyan/White) */}
-                    <pointLight intensity={150.0} distance={6000} decay={1.5} color="#00FFFF" />
-
-                    {/* Pulsar Beam - Core (White Hot Laser) - Fixed Geometry */}
-                    <mesh rotation={[0, 0, Math.PI / 3]} raycast={() => null}>
-                        {/* Thin beam: 0.1 radius, Length 40 */}
-                        <cylinderGeometry args={[0.1, 0.1, 40, 8, 1, true]} />
-                        <meshBasicMaterial color="#FFFFFF" transparent opacity={0.9} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} toneMapped={false} />
-                    </mesh>
-
-                    {/* Pulsar Beam - Outer Glow (Cyan) - Narrow Aura */}
-                    <mesh rotation={[0, 0, Math.PI / 3]} raycast={() => null}>
-                        {/* Slightly wider beam: 0.4 radius, Length 35 */}
-                        <cylinderGeometry args={[0.4, 0.6, 35, 16, 1, true]} />
-                        <meshBasicMaterial color="#00FFFF" transparent opacity={0.3} blending={THREE.AdditiveBlending} depthWrite={false} side={THREE.DoubleSide} toneMapped={false} />
-                    </mesh>
-
-                    {/* Neutron Star Core (Blue-White) */}
-                    <mesh scale={1.2} raycast={() => null}>
-                        <sphereGeometry args={[1, 32, 32]} />
-                        <meshBasicMaterial color="#E0FFFF" toneMapped={false} />
-                    </mesh>
-
-                    {/* Core Glow (Electric Blue Halo) */}
-                    <mesh scale={4.0} raycast={() => null}>
-                        <sphereGeometry args={[1, 32, 32]} />
-                        <meshBasicMaterial color="#0088FF" transparent opacity={0.6} blending={THREE.AdditiveBlending} depthWrite={false} toneMapped={false} />
-                    </mesh>
-
-                    {/* Radiant Shockwave Ring */}
-                    <mesh rotation={[Math.PI / 2, 0, 0]} scale={6.0} raycast={() => null}>
-                        <ringGeometry args={[0.8, 1.0, 64]} />
-                        <meshBasicMaterial color="#00FFFF" transparent opacity={0.3} blending={THREE.AdditiveBlending} side={THREE.DoubleSide} depthWrite={false} toneMapped={false} />
-                    </mesh>
-                </>
+                    <pointLight intensity={100.0} distance={6000} decay={1.5} color="#00FFFF" />
+                    <RealAlTariq scale={targetScale} />
+                </group>
             )}
 
             {/* Alnilam - Blue Supergiant (النظام) */}
@@ -774,8 +772,8 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
                 </group>
             )}
 
-            {/* Atmospheric rim glow for stars */}
-            {data.id !== 'sun' && data.id !== 'moon' && (
+            {/* Atmospheric rim glow for stars (Excluding Sun, Moon, Sirius) */}
+            {data.id !== 'sun' && data.id !== 'moon' && data.id !== 'sirius' && (
                 <mesh scale={targetScale * 1.06} raycast={() => null}>
                     <sphereGeometry args={[1, 32, 32]} />
                     <meshBasicMaterial

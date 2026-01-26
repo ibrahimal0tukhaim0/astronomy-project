@@ -166,14 +166,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'star',
         science: {
             color: '#D9E5FF',
-            scale: 4.0,
+            scale: 8.0, // Doubled from 4.0
             orbitRadius: 0,
             orbitSpeed: 0,
             orbitInclination: 0,
             orbitPhase: 0,
             glowIntensity: 5.0,
         },
-        initialPosition: [-100, 30, -50], // Within view (-100, not 8M)
+        initialPosition: [-100, 52, -50], // Raised 30% from 40 -> 52
     },
 
     // الطارق
@@ -189,7 +189,7 @@ export const celestialObjects: CelestialData[] = [
             orbitPhase: 0,
             glowIntensity: 8.0,
         },
-        initialPosition: [80, -20, -100],
+        initialPosition: [80, 101.25, -100], // Lowered another 10% from 112.5 -> 101.25
     },
     // =============================================================================
     // الكواكب الخارجية (العمالقة الجليدية والكواكب القزمة)
