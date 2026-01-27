@@ -507,183 +507,169 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
 
     const initialPos = new THREE.Vector3(...data.initialPosition);
 
-    if (!textures) {
-        return <meshStandardMaterial
-            color={data.science.color}
-            emissive={data.science.color}
-            emissiveIntensity={0.2}
-        />;
-    }
-
-    if (data.id === 'sirius') return (
-        <meshBasicMaterial color={'#A0C8FF'} toneMapped={false} />
-    );
-
-    if (data.id === 'al-tariq') return (
-        <meshStandardMaterial
-            color={'#FFFFFF'}
-            emissive={'#FFFFFF'}
-            emissiveIntensity={5.0}
-            roughness={0.4}
-            metalness={0.1}
-            toneMapped={false}
-        />
-    );
-
-    if (data.id === 'pluto') return (
-        <meshStandardMaterial color={data.science.color} />
-    );
-
-    if (!textures.map) {
-        return <meshStandardMaterial color={data.science.color} />;
-    }
-
-    return <meshStandardMaterial color={data.science.color} />;
-};
-
-return (
-    <group ref={groupRef} position={initialPos} name={data.id}>
-        {/* منطقة النقر (Hitbox) - مخفية */}
-        <mesh
-            ref={meshRef}
-            scale={data.id === 'sun' || data.id === 'jupiter' ? targetScale * 1.05 : targetScale}
+    // ═══════════════════════════════════════════════════════════════
+    // RENDER: Main Celestial Group
+    // ═══════════════════════════════════════════════════════════════
+    return (
+        <group
+            ref={groupRef}
+            name={data.id} // Essential for CameraController to find it
+            position={initialPos}
+            onPointerOver={(e) => {
+                e.stopPropagation();
+                setHover(true);
+                document.body.style.cursor = 'pointer';
+            }}
+            onPointerOut={(e) => {
+                setHover(false);
+                document.body.style.cursor = 'auto';
+            }}
             onClick={(e) => {
-                e.stopPropagation()
-                onSelect(data)
+                e.stopPropagation();
+                onSelect(data);
             }}
-            onPointerOver={() => {
-                document.body.style.cursor = 'pointer'
-                setHover(true)
-            }}
-            onPointerOut={() => {
-                document.body.style.cursor = 'auto'
-                setHover(false)
-            }}
-            visible={true}
-            frustumCulled={false}
         >
-            <sphereGeometry args={[1, 16, 16]} />
-            <meshBasicMaterial
-                transparent={true}
-                opacity={0.0}
-                depthWrite={false}
-                depthTest={false}
-                color="red"
-                side={THREE.DoubleSide}
-            />
-        </mesh>
-
-        {/* عرض المجسمات حسب النوع (Rendering Logic) */}
-
-        {/* 1. زحل (Saturn) */}
-        {data.id === 'saturn' && (
-            <group><RealSaturn scale={targetScale} /></group>
-        )}
-
-        {/* 2. المشتري (Jupiter) */}
-        {data.id === 'jupiter' && (
-            <group><TexturedJupiter scale={targetScale} textureMap={textures?.map} /></group>
-        )}
-
-        {/* 3. الأرض (Earth) */}
-        {data.id === 'earth' && (
-            <group><RealEarth scale={targetScale} /></group>
-        )}
-
-        {/* 4. الشمس (Sun) */}
-        {data.id === 'sun' && (
-            <>
-                <pointLight
-                    intensity={2.0}
-                    distance={10000}
-                    decay={0.5}
-                    color="#FFF4E6"
-                    castShadow={true}
-                    shadow-bias={-0.0001}
-                    shadow-mapSize-width={2048}
-                    shadow-mapSize-height={2048}
+            {/* منطقة النقر (Hitbox) - مخفية */}
+            <mesh
+                ref={meshRef}
+                scale={data.id === 'sun' || data.id === 'jupiter' ? targetScale * 1.05 : targetScale}
+                onClick={(e) => {
+                    e.stopPropagation()
+                    onSelect(data)
+                }}
+                onPointerOver={() => {
+                    document.body.style.cursor = 'pointer'
+                    setHover(true)
+                }}
+                onPointerOut={() => {
+                    document.body.style.cursor = 'auto'
+                    setHover(false)
+                }}
+                visible={true}
+                frustumCulled={false}
+            >
+                <sphereGeometry args={[1, 16, 16]} />
+                <meshBasicMaterial
+                    transparent={true}
+                    opacity={0.0}
+                    depthWrite={false}
+                    depthTest={false}
+                    color="red"
+                    side={THREE.DoubleSide}
                 />
-                <group><RealSun scale={targetScale} /></group>
-            </>
-        )}
-
-        {/* 5. أورانوس (Uranus) - خاص بسبب الميلان */}
-        {data.id === 'uranus' && (
-            <group><RealUranus scale={targetScale} /></group>
-        )}
-
-        {/* 6. نجوم الحزام (Orion's Belt) */}
-        {['alnitak', 'alnilam', 'mintaka'].includes(data.id) && (
-            <group>
-                <pointLight intensity={1.5} distance={500} decay={2.0} color="#4488ff" />
-                <RealOrionStar scale={targetScale} />
-            </group>
-        )}
-
-        {/* 7. الطارق (Al-Tariq) */}
-        {data.id === 'al-tariq' && (
-            <group>
-                <pointLight intensity={100.0} distance={6000} decay={1.5} color="#00FFFF" />
-                <RealAlTariq scale={targetScale} />
-            </group>
-        )}
-
-        {/* 8. الشعرى (Sirius) - Sprite */}
-        {data.id === 'sirius' && (
-            <>
-                <pointLight intensity={250.0} distance={8000} decay={1.0} color="#dceeff" />
-                {textures?.map && (
-                    <sprite scale={[50, 50, 1]}>
-                        <spriteMaterial
-                            map={textures.map}
-                            color="#FFFFFF"
-                            blending={THREE.AdditiveBlending}
-                            depthWrite={false}
-                            toneMapped={false}
-                        />
-                    </sprite>
-                )}
-            </>
-        )}
-
-        {/* 9. الكواكب العامة (Generic Planets) - دمج المنطق المتكرر */}
-        {data.id === 'mars' && (
-            <GenericPlanet
-                scale={targetScale}
-                texturePath="textures/mars_surface.png"
-                rotationSpeed={0.12}
-                roughness={0.8}
-                metalness={0.05}
-                emissiveColor="#C05030" // Reddish glow for Mars
-                emissiveIntensity={0.2} // Increased visibility
-            />
-        )}
-        {data.id === 'comet' && <RealComet scale={targetScale} />}
-        {data.id === 'venus' && (
-            <GenericPlanet scale={targetScale} texturePath="textures/venus_atmosphere.png" rotationSpeed={0.05} roughness={1.0} metalness={0.0} />
-        )}
-        {data.id === 'mercury' && (
-            <GenericPlanet scale={targetScale} texturePath="textures/mercury_surface.png" rotationSpeed={0.05} roughness={0.9} metalness={0.1} />
-        )}
-        {data.id === 'neptune' && (
-            <GenericPlanet scale={targetScale} texturePath="textures/neptune_surface.png" rotationSpeed={0.12} roughness={0.4} metalness={0.1} />
-        )}
-        {data.id === 'pluto' && (
-            <GenericPlanet scale={targetScale} texturePath="textures/pluto_surface.png" rotationSpeed={0.02} roughness={0.8} metalness={0.05} />
-        )}
-        {data.id === 'moon' && (
-            <GenericPlanet scale={targetScale} texturePath="textures/moon_surface.png" rotationSpeed={0.05} roughness={0.9} metalness={0.05} />
-        )}
-
-        {/* 10. حلقة التحديد (Selection Ring) */}
-        {(hovered || isSelected) && (
-            <mesh rotation={[-Math.PI / 2, 0, 0]} raycast={() => null}>
-                <ringGeometry args={[baseScale * 1.5, baseScale * 1.52, 64]} />
-                <meshBasicMaterial color="#4facfe" side={THREE.DoubleSide} toneMapped={false} />
             </mesh>
-        )}
-    </group>
-);
+
+            {/* عرض المجسمات حسب النوع (Rendering Logic) */}
+
+            {/* 1. زحل (Saturn) */}
+            {data.id === 'saturn' && (
+                <group><RealSaturn scale={targetScale} /></group>
+            )}
+
+            {/* 2. المشتري (Jupiter) */}
+            {data.id === 'jupiter' && (
+                <group><TexturedJupiter scale={targetScale} textureMap={textures?.map} /></group>
+            )}
+
+            {/* 3. الأرض (Earth) */}
+            {data.id === 'earth' && (
+                <group><RealEarth scale={targetScale} /></group>
+            )}
+
+            {/* 4. الشمس (Sun) */}
+            {data.id === 'sun' && (
+                <>
+                    <pointLight
+                        intensity={2.0}
+                        distance={10000}
+                        decay={0.5}
+                        color="#FFF4E6"
+                        castShadow={true}
+                        shadow-bias={-0.0001}
+                        shadow-mapSize-width={2048}
+                        shadow-mapSize-height={2048}
+                    />
+                    <group><RealSun scale={targetScale} /></group>
+                </>
+            )}
+
+            {/* 5. أورانوس (Uranus) - خاص بسبب الميلان */}
+            {data.id === 'uranus' && (
+                <group><RealUranus scale={targetScale} /></group>
+            )}
+
+            {/* 6. نجوم الحزام (Orion's Belt) */}
+            {['alnitak', 'alnilam', 'mintaka'].includes(data.id) && (
+                <group>
+                    <pointLight intensity={1.5} distance={500} decay={2.0} color="#4488ff" />
+                    <RealOrionStar scale={targetScale} />
+                </group>
+            )}
+
+            {/* 7. الطارق (Al-Tariq) */}
+            {data.id === 'al-tariq' && (
+                <group>
+                    <pointLight intensity={100.0} distance={6000} decay={1.5} color="#00FFFF" />
+                    <RealAlTariq scale={targetScale} />
+                </group>
+            )}
+
+            {/* 8. الشعرى (Sirius) - Sprite */}
+            {data.id === 'sirius' && (
+                <>
+                    <pointLight intensity={250.0} distance={8000} decay={1.0} color="#dceeff" />
+                    {textures?.map && (
+                        <sprite scale={[50, 50, 1]}>
+                            <spriteMaterial
+                                map={textures.map}
+                                color="#FFFFFF"
+                                blending={THREE.AdditiveBlending}
+                                depthWrite={false}
+                                toneMapped={false}
+                            />
+                        </sprite>
+                    )}
+                </>
+            )}
+
+            {/* 9. الكواكب العامة (Generic Planets) - دمج المنطق المتكرر */}
+            {data.id === 'mars' && (
+                <GenericPlanet
+                    scale={targetScale}
+                    texturePath="textures/mars_surface.png"
+                    rotationSpeed={0.12}
+                    roughness={0.8}
+                    metalness={0.05}
+                    emissiveColor="#C05030" // Reddish glow for Mars
+                    emissiveIntensity={0.2} // Increased visibility
+                />
+            )}
+            {data.id === 'comet' && <RealComet scale={targetScale} />}
+            {data.id === 'venus' && (
+                <GenericPlanet scale={targetScale} texturePath="textures/venus_atmosphere.png" rotationSpeed={0.05} roughness={1.0} metalness={0.0} />
+            )}
+            {data.id === 'mercury' && (
+                <GenericPlanet scale={targetScale} texturePath="textures/mercury_surface.png" rotationSpeed={0.05} roughness={0.9} metalness={0.1} />
+            )}
+            {data.id === 'neptune' && (
+                <GenericPlanet scale={targetScale} texturePath="textures/neptune_surface.png" rotationSpeed={0.12} roughness={0.4} metalness={0.1} />
+            )}
+            {data.id === 'pluto' && (
+                <GenericPlanet scale={targetScale} texturePath="textures/pluto_surface.png" rotationSpeed={0.02} roughness={0.8} metalness={0.05} />
+            )}
+            {data.id === 'moon' && (
+                <GenericPlanet scale={targetScale} texturePath="textures/moon_surface.png" rotationSpeed={0.05} roughness={0.9} metalness={0.05} />
+            )}
+
+            {/* 10. حلقة التحديد (Selection Ring) */}
+            {(hovered || isSelected) && (
+                <mesh rotation={[-Math.PI / 2, 0, 0]} raycast={() => null}>
+                    <ringGeometry args={[baseScale * 1.5, baseScale * 1.52, 64]} />
+                    <meshBasicMaterial color="#4facfe" side={THREE.DoubleSide} toneMapped={false} />
+                </mesh>
+            )}
+        </group>
+    );
 }
 
 
