@@ -383,7 +383,7 @@ function RealComet({ scale = 1.0 }: { scale?: number }) {
     // Orientation: The glowing tail must always point AWAY from the Sun.
     // We lookAt(0,0,0) (The Sun), so the local +Z axis points to Sun.
     // Therefore, the tail must extend along the local -Z axis.
-    useFrame((state) => {
+    useFrame((_) => {
         if (groupRef.current) {
             groupRef.current.lookAt(0, 0, 0);
         }
@@ -520,7 +520,7 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
                 setHover(true);
                 document.body.style.cursor = 'pointer';
             }}
-            onPointerOut={(e) => {
+            onPointerOut={() => {
                 setHover(false);
                 document.body.style.cursor = 'auto';
             }}
