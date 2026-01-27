@@ -238,7 +238,7 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
             )}
 
             <div className="credit-orbital">
-                صنع بواسطة ابراهيم سليمان الطخيم
+                صنع بواسطة ابراهيم سليمان الطخيم <span className="opacity-50 text-[10px] ml-2">v2.5</span>
             </div>
         </div>
     );
