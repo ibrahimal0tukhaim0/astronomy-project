@@ -18,7 +18,7 @@ export default defineConfig(() => {
       port: 3000,
       open: true,
     },
-    // Use root '/' for Vercel, project path for GitHub Pages
-    base: isVercel ? '/' : '/astronomy-project/',
+    // Optimized for Vercel & Localhost (No custom base path needed)
+    base: '/',
   }
 })
