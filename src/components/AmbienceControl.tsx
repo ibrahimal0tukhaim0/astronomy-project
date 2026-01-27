@@ -81,22 +81,6 @@ export function AmbienceControl() {
                 </span>
             </button>
 
-            {!hasInteracted && !muted && (
-                <div style={{
-                    color: '#FFD700',
-                    fontSize: '13px',
-                    fontWeight: 600,
-                    textShadow: '0 2px 4px rgba(0,0,0,0.8)',
-                    animation: 'bounce 1.5s infinite ease-in-out',
-                    backdropFilter: 'blur(4px)',
-                    padding: '4px 8px',
-                    borderRadius: '8px',
-                    background: 'rgba(0,0,0,0.2)',
-                    fontFamily: '"Cairo", sans-serif'
-                }}>
-                    انقر لتفعيل الصوت
-                </div>
-            )}
 
             <style>{`
               @keyframes bounce {
