@@ -509,12 +509,6 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
 
     const initialPos = new THREE.Vector3(...data.initialPosition);
 
-    // تحديد المواد (Materials) للكائنات غير المخصصة
-    // تحديد المواد (Materials) للكائنات غير المخصصة
-    // Removed unused getMaterial function
-    toneMapped = { false}
-        />
-        );
 
     if (!textures) {
         return <meshStandardMaterial
