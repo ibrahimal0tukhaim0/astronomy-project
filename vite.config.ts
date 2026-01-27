@@ -4,8 +4,6 @@ import tailwindcss from '@tailwindcss/vite'
 
 // https://vitejs.dev/config/
 export default defineConfig(() => {
-  // Check if running on Vercel
-  const isVercel = process.env.VERCEL === '1';
 
   return {
     plugins: [
@@ -18,7 +16,8 @@ export default defineConfig(() => {
       port: 3000,
       open: true,
     },
-    // Optimized for Vercel & Localhost (No custom base path needed)
-    base: '/',
+    // Universal Relative Path (The "Bulletproof" Fix)
+    // Works on ANY domain, subfolder, or hosting (Vercel + GitHub Pages)
+    base: './',
   }
 })
