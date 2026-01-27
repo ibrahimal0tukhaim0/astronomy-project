@@ -1,7 +1,6 @@
 import { useRef, useEffect, useState, memo } from 'react';
-import { createPortal } from 'react-dom';
 import { useFrame } from '@react-three/fiber';
-import { useTexture, Html } from '@react-three/drei';
+import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
 // 🌩️ AUDIO ASSETS ARRAY
