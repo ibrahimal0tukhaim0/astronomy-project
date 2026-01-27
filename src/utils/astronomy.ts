@@ -5,7 +5,7 @@ import { celestialObjects } from '../data/objects'
 // Returns [x, y, z] position in 3D space
 
 // Global speed factor to tune the overall animation speed
-const GLOBAL_SPEED_FACTOR = 0.02;
+const GLOBAL_SPEED_FACTOR = 0.16;
 
 export const getObjectPosition = (
     id: CelestialObjectId,

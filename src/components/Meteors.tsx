@@ -1,5 +1,6 @@
-import { useRef, useEffect, useState, useMemo } from 'react';
+import { useRef, useEffect, useState } from 'react';
 import { useFrame } from '@react-three/fiber';
+import { useTexture } from '@react-three/drei';
 import * as THREE from 'three';
 
 // 🌠 Meteor (Shooting Star) Component
@@ -36,8 +37,8 @@ export function Meteors() {
         // Initial spawn
         spawnMeteor();
 
-        // Loop interval (2000ms = 2s) - M4 Ultra Speed
-        const interval = setInterval(spawnMeteor, 2000);
+        // Loop interval (6000ms = 6s) - Balanced for visibility
+        const interval = setInterval(spawnMeteor, 6000);
         return () => clearInterval(interval);
     }, []);
 
@@ -50,83 +51,72 @@ export function Meteors() {
     );
 }
 
+// 🌠 Single Real Meteor Component
 function SingleMeteor({ start, end }: { start: THREE.Vector3; end: THREE.Vector3 }) {
-    const meshRef = useRef<THREE.Group>(null);
-    // Optimized: Use Ref instead of State for 60fps animation
+    const meshRef = useRef<THREE.Mesh>(null);
     const progressRef = useRef(0);
 
-    // Procedural Glow Texture (Halo)
-    const glowTexture = useMemo(() => {
-        const canvas = document.createElement('canvas');
-        canvas.width = 128; canvas.height = 128;
-        const context = canvas.getContext('2d');
-        if (context) {
-            const gradient = context.createRadialGradient(64, 64, 0, 64, 64, 64);
-            gradient.addColorStop(0, 'rgba(255, 255, 255, 1)');     // Core White
-            gradient.addColorStop(0.2, 'rgba(200, 240, 255, 0.8)'); // Inner Cyan
-            gradient.addColorStop(0.5, 'rgba(0, 100, 255, 0.2)');   // Outer Blue
-            gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');           // Fade
-            context.fillStyle = gradient;
-            context.fillRect(0, 0, 128, 128);
-        }
-        return new THREE.CanvasTexture(canvas);
-    }, []);
+    // Load the Real Texture
+    const texture = useTexture(`${import.meta.env.BASE_URL}textures/shooting_star_trail.png`);
 
-    // Orient the meteor to face its destination once on mount
+    // Orientation Logic
     useEffect(() => {
         if (meshRef.current) {
+            // 1. Position at start
+            meshRef.current.position.copy(start);
+            // 2. Look at destination
             meshRef.current.lookAt(end);
+            // 3. Rotate 90deg on Y if needed to align the plane's face to camera? 
+            // Actually, for a 3D line effect, we usually use 2 crossed planes or just bilboarding.
+            // But let's stick to the user's request: "PlaneGeometry". 
+            // We rotate X so the plane travels "flat" or "side-on"?
+            // A Plane in XY plane facing Z. `lookAt` points Z to target.
+            // We want the LONG edge (60) to align with Z.
+            // PlaneGeometry(4, 60) -> Width X=4, Height Y=60.
+            // So Y axis is the "long" one. 
+            // If we `lookAt`, Z axis points to target. We need Y axis to point to target (or -Z).
+            // Let's rotate X by -PI/2 to align local Y with local -Z? 
+            meshRef.current.rotateX(-Math.PI / 2);
         }
-    }, [end]);
+    }, [start, end]);
 
     useFrame((_, delta) => {
         if (!meshRef.current) return;
 
-        // Speed factor (Hyper Fast for M4)
-        const speed = 2.5 * delta;
+        // Speed: Slower for visibility (was 2.0 * delta)
+        // Now about 2-3 seconds to cross
+        const speed = 0.5 * delta;
         progressRef.current += speed;
 
-        if (progressRef.current <= 1) {
-            // Linear interpolation for movement
+        if (progressRef.current <= 1.0) {
+            // Move linearly
             meshRef.current.position.lerpVectors(start, end, progressRef.current);
 
-            // Fade out tail near end (Accessing children materials is tricky in React-Three unless declarative)
-            // We'll keep it simple: just scale down slightly at the very end
-            if (progressRef.current > 0.9) {
-                const scale = 1 - ((progressRef.current - 0.9) * 10);
-                meshRef.current.scale.setScalar(Math.max(0, scale));
+            // Fade Out Logic (Opacity)
+            const material = meshRef.current.material as THREE.MeshBasicMaterial;
+            if (material) {
+                // Fade in at start
+                if (progressRef.current < 0.1) material.opacity = progressRef.current * 10;
+                // Fade out at end
+                else if (progressRef.current > 0.8) material.opacity = (1 - progressRef.current) * 5;
+                else material.opacity = 1;
             }
         }
     });
 
-    // Enhanced Visuals: Glowing Head + Long Tail
     return (
-        <group ref={meshRef as any} position={start}>
-            {/* 1. The Meteor Head (Solid Core) */}
-            <mesh>
-                <sphereGeometry args={[1.5, 16, 16]} />
-                <meshBasicMaterial color="#FFFFFF" />
-            </mesh>
-
-            {/* 2. The Super Glow Halo (Sprite) - Replaces the weak light visual */}
-            <sprite scale={[25, 25, 1]}> {/* Large Halo */}
-                <spriteMaterial map={glowTexture} color={0xFFFFFF} blending={THREE.AdditiveBlending} depthWrite={false} />
-            </sprite>
-
-            {/* 3. The Glow Light (Illuminates Planets) */}
-            <pointLight distance={200} intensity={10} color="#AAFFFF" decay={1} />
-
-            {/* 4. The Trail */}
-            <mesh position={[0, 0, 20]} rotation={[Math.PI / 2, 0, 0]}>
-                <cylinderGeometry args={[0.5, 2.5, 60, 8]} />
-                <meshBasicMaterial
-                    color={new THREE.Color(0x88CCFF)}
-                    transparent
-                    opacity={0.6}
-                    blending={THREE.AdditiveBlending}
-                    depthWrite={false}
-                />
-            </mesh>
-        </group>
+        <mesh ref={meshRef} position={start} renderOrder={9999}>
+            {/* PlaneGeometry: Long and thin. Y is length. */}
+            <planeGeometry args={[4, 80]} />
+            <meshBasicMaterial
+                map={texture}
+                color="#FFFFFF"
+                transparent={true}
+                blending={THREE.AdditiveBlending}
+                depthWrite={false}
+                side={THREE.DoubleSide}
+                toneMapped={false}
+            />
+        </mesh>
     );
 }

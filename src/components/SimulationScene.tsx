@@ -33,7 +33,7 @@ function SpaceBackground() {
     const texture = useTexture("https://upload.wikimedia.org/wikipedia/commons/6/60/ESO_-_Milky_Way.jpg")
 
     return (
-        <mesh scale={[4000, 4000, 4000]}> {/* Increased scale to 4000 to be safely behind everything */}
+        <mesh scale={[90000, 90000, 90000]}> {/* Increased scale to 90000 to cover far plane */}
             <sphereGeometry args={[1, 64, 64]} />
             <meshBasicMaterial
                 map={texture}

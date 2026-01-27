@@ -1,7 +1,7 @@
 // Celestial Objects Data Model - Educational Astronomy & Monotheism App
 // Normalized for Visual Representation (Not 1:1 Scale)
 
-export type CelestialObjectId = 'sun' | 'earth' | 'moon' | 'sirius' | 'al-tariq' | 'venus' | 'mars' | 'mercury' | 'jupiter' | 'saturn' | 'uranus' | 'neptune' | 'pluto' | 'alnitak' | 'alnilam' | 'mintaka';
+export type CelestialObjectId = 'sun' | 'earth' | 'moon' | 'sirius' | 'al-tariq' | 'venus' | 'mars' | 'mercury' | 'jupiter' | 'saturn' | 'uranus' | 'neptune' | 'pluto' | 'alnitak' | 'alnilam' | 'mintaka' | 'comet';
 
 export interface CelestialData {
     id: CelestialObjectId;
@@ -32,7 +32,7 @@ export const celestialObjects: CelestialData[] = [
         type: 'star',
         science: {
             color: '#FFCC33',
-            scale: 5.0, // Repo Value: 5
+            scale: 10.0, // Doubled from 5.0
             orbitRadius: 0,
             orbitSpeed: 0,
             orbitInclination: 0,
@@ -52,13 +52,13 @@ export const celestialObjects: CelestialData[] = [
         type: 'planet',
         science: {
             color: '#A5A5A5',
-            scale: 1.5, // 3x Original (0.5)
-            orbitRadius: 14, // Gap: Sun(5) + Buffer < 14. Safe.
-            orbitSpeed: 0.8, // RESTORED
+            scale: 8.0, // Multiplied by 2 (was 4.0)
+            orbitRadius: 90, // Row 2 (Was 60)
+            orbitSpeed: 0.3, // Slowed for distance
             orbitInclination: 2.0,
             orbitPhase: Math.random() * Math.PI * 2,
         },
-        initialPosition: [14, 0, 0],
+        initialPosition: [90, 0, 0],
     },
 
     // 2. الزهرة (Venus)
@@ -67,13 +67,13 @@ export const celestialObjects: CelestialData[] = [
         type: 'planet',
         science: {
             color: '#E3BB76',
-            scale: 2.7, // 3x Original (0.9)
-            orbitRadius: 22,
-            orbitSpeed: 0.6, // RESTORED
+            scale: 15.0, // Multiplied by 2 (was 7.5)
+            orbitRadius: 120, // Row 3 (Was 90)
+            orbitSpeed: 0.2,
             orbitInclination: 1.0,
             orbitPhase: Math.random() * Math.PI * 2,
         },
-        initialPosition: [22, 0, 0],
+        initialPosition: [120, 0, 0],
     },
 
     // 3. الأرض (Earth)
@@ -82,14 +82,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'planet',
         science: {
             color: '#2271B3',
-            scale: 3.0, // 3x Original (1.0)
-            orbitRadius: 30,
-            orbitSpeed: 0.4, // RESTORED
+            scale: 8.5, // Enlarged (was 3.0)
+            orbitRadius: 150, // Row 4 (Was 120)
+            orbitSpeed: 0.15,
             orbitInclination: 0,
             orbitPhase: Math.random() * Math.PI * 2,
             rotationSpeed: 0.01,
         },
-        initialPosition: [30, 0, 0],
+        initialPosition: [150, 0, 0],
     },
 
     // القمر (Moon)
@@ -98,13 +98,13 @@ export const celestialObjects: CelestialData[] = [
         type: 'moon',
         science: {
             color: '#D1D1D1',
-            scale: 0.81, // 3x Original (0.27)
-            orbitRadius: 4.5,
-            orbitSpeed: 4.0,
+            scale: 4.4, // Multiplied by 2 (was 2.2)
+            orbitRadius: 12, // Larger local orbit
+            orbitSpeed: 3.0,
             orbitInclination: 5.1,
             orbitPhase: 0,
         },
-        initialPosition: [34.5, 0, 0],
+        initialPosition: [162, 0, 0], // Earth (150) + 12
     },
 
     // 4. المريخ (Mars)
@@ -113,13 +113,13 @@ export const celestialObjects: CelestialData[] = [
         type: 'planet',
         science: {
             color: '#E27B58',
-            scale: 2.4, // 3x Original (0.8)
-            orbitRadius: 40,
-            orbitSpeed: 0.3, // RESTORED
+            scale: 13.0, // Multiplied by 2 (was 6.5)
+            orbitRadius: 180, // Row 5 (Was 150)
+            orbitSpeed: 0.12,
             orbitInclination: 1.8,
             orbitPhase: Math.random() * Math.PI * 2,
         },
-        initialPosition: [40, 0, 0],
+        initialPosition: [180, 0, 0],
     },
 
     // =============================================================================
@@ -132,13 +132,13 @@ export const celestialObjects: CelestialData[] = [
         type: 'planet',
         science: {
             color: '#D39C7E',
-            scale: 6.0, // 3x Original (2.0)
-            orbitRadius: 65,
-            orbitSpeed: 0.2,
+            scale: 16.0, // Enlarged (was 6.0)
+            orbitRadius: 220,
+            orbitSpeed: 0.08,
             orbitInclination: 1.3,
             orbitPhase: Math.random() * Math.PI * 2,
         },
-        initialPosition: [65, 0, 0],
+        initialPosition: [220, 0, 0],
     },
 
     // 6. زحل (Saturn)
@@ -147,13 +147,13 @@ export const celestialObjects: CelestialData[] = [
         type: 'planet',
         science: {
             color: '#E2BF7D',
-            scale: 5.1, // 3x Original (1.7)
-            orbitRadius: 90,
-            orbitSpeed: 0.15,
+            scale: 13.5, // Reduced by half (was 27.0)
+            orbitRadius: 300,
+            orbitSpeed: 0.06,
             orbitInclination: 2.5,
             orbitPhase: Math.random() * Math.PI * 2,
         },
-        initialPosition: [90, 0, 0],
+        initialPosition: [300, 0, 0],
     },
 
     // =============================================================================
@@ -166,14 +166,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'star',
         science: {
             color: '#D9E5FF',
-            scale: 8.0, // Doubled from 4.0
+            scale: 192.0, // Doubled again (was 96.0)
             orbitRadius: 0,
             orbitSpeed: 0,
             orbitInclination: 0,
             orbitPhase: 0,
             glowIntensity: 5.0,
         },
-        initialPosition: [-100, 52, -50], // Raised 30% from 40 -> 52
+        initialPosition: [400, 235.2, -100], // Raised 40% (168 * 1.4)
     },
 
     // الطارق
@@ -182,14 +182,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'conceptual',
         science: {
             color: '#FFFFFF',
-            scale: 3.0,
+            scale: 20.0, // Doubled (was 10.0)
             orbitRadius: 0,
             orbitSpeed: 0,
             orbitInclination: 0,
             orbitPhase: 0,
             glowIntensity: 8.0,
         },
-        initialPosition: [80, 101.25, -100], // Lowered another 10% from 112.5 -> 101.25
+        initialPosition: [-400, 354.9, -150], // Raised 30% (273 * 1.3)
     },
     // =============================================================================
     // الكواكب الخارجية (العمالقة الجليدية والكواكب القزمة)
@@ -201,14 +201,13 @@ export const celestialObjects: CelestialData[] = [
         type: 'planet',
         science: {
             color: '#73C6D9',
-            scale: 3.6, // 3x Original (1.2)
-            orbitRadius: 110,
-            orbitSpeed: 0.0005, // Background Slow
+            scale: 9.0,
+            orbitRadius: 360,
+            orbitSpeed: 0.04,
             orbitInclination: 0.8,
             orbitPhase: Math.random() * Math.PI * 2,
-            // rotationSpeed removed (back to default)
         },
-        initialPosition: [110, 0, 0],
+        initialPosition: [360, 0, 0],
     },
 
     // 8. نبتون (Neptune)
@@ -217,14 +216,13 @@ export const celestialObjects: CelestialData[] = [
         type: 'planet',
         science: {
             color: '#4b70dd',
-            scale: 3.3, // 3x Original (1.1)
-            orbitRadius: 130,
-            orbitSpeed: 0.0004, // Background Slow
+            scale: 17.0,
+            orbitRadius: 410,
+            orbitSpeed: 0.03,
             orbitInclination: 1.8,
             orbitPhase: Math.random() * Math.PI * 2,
-            // rotationSpeed removed
         },
-        initialPosition: [130, 0, 0],
+        initialPosition: [410, 0, 0],
     },
 
     // 9. بلوتو (Pluto)
@@ -233,14 +231,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'planet',
         science: {
             color: '#D0D0D0',
-            scale: 1.2, // 3x Original (0.4)
-            orbitRadius: 145,
-            orbitSpeed: 0.0002, // Background Slow
+            scale: 9.0,
+            orbitRadius: 450,
+            orbitSpeed: 0.02,
             orbitInclination: 17.0,
             orbitPhase: Math.random() * Math.PI * 2,
-            rotationSpeed: 0.0001, // DEEP FREEZE
+            rotationSpeed: 0.0001,
         },
-        initialPosition: [145, 4, 0],
+        initialPosition: [450, 12, 0],
     },
 
     // =============================================================================
@@ -253,14 +251,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'star',
         science: {
             color: '#66ccff',
-            scale: 4.5,
+            scale: 18.0, // Doubled (was 9.0)
             orbitRadius: 0,
             orbitSpeed: 0,
             orbitInclination: 0,
             orbitPhase: 0,
             glowIntensity: 6.0,
         },
-        initialPosition: [-150, 60, -200], // Distant background
+        initialPosition: [-31.2, 301.7, 400], // Spaced 20% & Raised 30%
     },
 
     // النظام (Alnilam)
@@ -269,14 +267,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'star',
         science: {
             color: '#66ccff',
-            scale: 4.6,
+            scale: 18.4, // Doubled (was 9.2)
             orbitRadius: 0,
             orbitSpeed: 0,
             orbitInclination: 0,
             orbitPhase: 0,
             glowIntensity: 6.0,
         },
-        initialPosition: [-135, 65, -200], // Middle star
+        initialPosition: [0, 327.6, 400], // Raised 30% (252 * 1.3)
     },
 
     // المنطقة (Mintaka)
@@ -285,13 +283,31 @@ export const celestialObjects: CelestialData[] = [
         type: 'star',
         science: {
             color: '#66ccff',
-            scale: 4.4,
+            scale: 17.6, // Doubled (was 8.8)
             orbitRadius: 0,
             orbitSpeed: 0,
             orbitInclination: 0,
             orbitPhase: 0,
             glowIntensity: 6.0,
         },
-        initialPosition: [-120, 70, -200], // Right star
+        initialPosition: [31.2, 353.5, 400], // Spaced 20% & Raised 30%
+    },
+    // =============================================================================
+    // المذنب (The Traveler)
+    // =============================================================================
+    {
+        id: 'comet',
+        type: 'conceptual', // Using conceptual to allow custom logic if needed, or treated as planet
+        science: {
+            color: '#A0E0FF', // Icy Blue
+            scale: 6.0,       // Small nucleus but visible
+            orbitRadius: 600, // Distant orbit (Safe zone)
+            orbitSpeed: 0.1,  // Faster than distant planets implies elliptical rush
+            orbitInclination: 20.0, // Highly inclined orbit
+            orbitPhase: Math.random() * Math.PI * 2,
+            glowIntensity: 2.0,
+            texture: 'textures/comet_nucleus.png', // Nucleus Texture
+        },
+        initialPosition: [600, 100, 0],
     },
 ];

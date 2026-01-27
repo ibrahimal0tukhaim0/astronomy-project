@@ -87,7 +87,7 @@ function AppContent() {
                 {/* 3D Scene */}
                 <Canvas
                     shadows
-                    camera={{ position: [0, 40, 140], fov: 60, near: 0.1, far: 6000 }}
+                    camera={{ position: [0, 40, 140], fov: 60, near: 0.1, far: 100000 }}
                     dpr={[1, 2]}
                     gl={{
                         antialias: true,

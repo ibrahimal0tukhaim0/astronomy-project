@@ -19,124 +19,282 @@ interface CelestialObjectProps {
 
 
 
-// ☀️ SoumyaEXE Sun (Optimized & Seamless)
-function SoumyaSun({ scale = 1.0 }: { scale?: number }) {
-    // SUSPENSE: This forces the MainMenu loading bar to WAIT for this texture
-    const texture = useTexture(`${import.meta.env.BASE_URL}textures/sun_real.png`);
+// 🌍 الكوكب العام (Generic Planet Component)
+// يستخدم لجميع الكواكب الصخرية والغازية البسيطة لتقليل تكرار الكود
+interface GenericPlanetProps {
+    scale?: number;
+    texturePath: string;
+    rotationSpeed: number;
+    roughness?: number;
+    metalness?: number;
+    bumpMapPath?: string;
+    atmosphereColor?: string;
+    emissiveColor?: string;
+    emissiveIntensity?: number;
+}
+
+function GenericPlanet({
+    scale = 1.0,
+    texturePath,
+    rotationSpeed,
+    roughness = 0.8,
+    metalness = 0.1,
+    emissiveColor = "#FFFFFF",
+    emissiveIntensity = 0.05,
+}: GenericPlanetProps) {
+    const texture = useTexture(`${import.meta.env.BASE_URL}${texturePath}`);
     const meshRef = useRef<THREE.Mesh>(null);
 
-    // 🛠️ TEXTURE & MATERIAL SETUP
+    // ✅ تنظيف الذاكرة (Memory Cleanup)
     useEffect(() => {
-        if (!texture) return;
-
-        // 1. Texture Config
-        texture.colorSpace = THREE.SRGBColorSpace;
-        texture.anisotropy = 16;
-
-        // Fix Seams: Repeat horizontally AND vertically (Force Wrap)
-        texture.wrapS = THREE.RepeatWrapping;
-        texture.wrapT = THREE.RepeatWrapping;
-
-        // Ensure no offset drift
-        texture.repeat.set(1, 1);
-        texture.offset.set(0, 0);
-
-        texture.minFilter = THREE.LinearFilter;
-        texture.magFilter = THREE.LinearFilter;
-        texture.needsUpdate = true;
+        return () => texture.dispose();
     }, [texture]);
 
-    // 🔄 ROTATION LOOP (Smooth & Passive)
     useFrame((_, delta) => {
         if (meshRef.current) {
-            meshRef.current.rotation.y += delta * 0.005; // Slightly smoother rotation
+            meshRef.current.rotation.y += delta * rotationSpeed;
         }
     });
 
-    // ✨ BLOOM LAYER SETUP
+    return (
+        <mesh ref={meshRef} scale={scale} castShadow={true} receiveShadow={true}>
+            <sphereGeometry args={[1, 64, 64]} />
+            <meshStandardMaterial
+                map={texture}
+                color="#FFFFFF"
+                roughness={roughness}
+                metalness={metalness}
+                emissiveMap={texture}
+                emissive={emissiveColor}
+                emissiveIntensity={emissiveIntensity} // إضاءة خافتة جداً للمناطق المظلمة (أو مخصصة)
+            />
+        </mesh>
+    );
+}
+
+// 🪐 كوكب زحل الحقيقي (Real Saturn)
+// يتضمن الحلقات والكوكب معاً في مجموعة واحدة
+function RealSaturn({ scale = 1.0 }: { scale?: number }) {
+    const surfaceTexture = useTexture(`${import.meta.env.BASE_URL}textures/saturn_surface.png`);
+    const ringTexture = useTexture(`${import.meta.env.BASE_URL}textures/saturn_rings.png`);
+    const groupRef = useRef<THREE.Group>(null);
+    const planetRef = useRef<THREE.Mesh>(null);
+    const ringsRef = useRef<THREE.Mesh>(null);
+
+    // ✅ تنظيف الذاكرة
     useEffect(() => {
-        if (meshRef.current) {
-            meshRef.current.layers.set(1); // Enable Layer 1 (Bloom Layer)
-            meshRef.current.layers.enable(0); // Also Keep Layer 0 to be visible in main camera
-        }
+        return () => {
+            surfaceTexture.dispose();
+            ringTexture.dispose();
+        };
     }, []);
 
-    return (
-        <mesh ref={meshRef} scale={scale} castShadow={false} receiveShadow={false}>
-            {/* High-Res Geometry to minimize UV distortion at poles */}
-            <sphereGeometry args={[1, 64, 64]} />
+    useFrame((_, delta) => {
+        // 1. دوران الكوكب حول نفسه (سريع جداً)
+        if (planetRef.current) {
+            planetRef.current.rotation.y += delta * 2.5;
+        }
 
-            {/* Seamless Basic Material */}
-            <meshBasicMaterial
-                map={texture}
-                color="#ffffff"
-                toneMapped={false}   // 🚨 CRITICAL: Keeps it bright/white
-                side={THREE.DoubleSide} // 🛡️ Fixes holes/black artifacts if normals flip
-                transparent={false}     // 🛡️ Prevents alpha transparency issues
-                fog={false}             // 🛡️ Ignored by scene fog (always bright)
-            />
-        </mesh>
+        // 2. دوران الحلقات (بطيء ومستقل)
+        if (ringsRef.current) {
+            ringsRef.current.rotation.z -= delta * 0.02;
+        }
+    });
+
+    return (
+        <group ref={groupRef}>
+            {/* جسم الكوكب (مفلطح قليلاً عند القطبين) */}
+            <mesh
+                ref={planetRef}
+                scale={[scale * 1.1, scale * 0.9, scale * 1.1]}
+                castShadow={true}
+                receiveShadow={true}
+            >
+                <sphereGeometry args={[1, 64, 64]} />
+                <meshStandardMaterial
+                    map={surfaceTexture}
+                    color="#FFFFFF"
+                    roughness={0.8}
+                    metalness={0.1}
+                    emissiveMap={surfaceTexture}
+                    emissive="#C0A080" // Warm Saturnian color
+                    emissiveIntensity={0.2} // Increased for visibility (approx 0.15-0.25)
+                />
+            </mesh>
+            {/* الحلقات */}
+            <mesh
+                ref={ringsRef}
+                rotation={[-Math.PI / 2, 0, 0]}
+                scale={scale}
+                receiveShadow={true}
+                castShadow={true}
+            >
+                <ringGeometry args={[1.4, 2.3, 128]} />
+                <meshStandardMaterial
+                    map={ringTexture}
+                    transparent={true}
+                    alphaMap={ringTexture}
+                    side={THREE.DoubleSide}
+                    depthWrite={false}
+                    opacity={0.95}
+                    color="#DDDDDD"
+                    emissiveMap={ringTexture}
+                    emissive="#C0A080"
+                    emissiveIntensity={0.3} // Higher intensity for solid definition
+                />
+            </mesh>
+        </group>
     );
 }
-// ... (Moon and other components remain unchanged)
+// ☀️ الشمس الحقيقية (Real Sun)
+function RealSun({ scale = 1.0 }: { scale?: number }) {
+    const texture = useTexture(`${import.meta.env.BASE_URL}textures/sun_surface.png`);
 
+    useEffect(() => {
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        return () => texture.dispose();
+    }, [texture]);
 
-
-// 🌕 Real Textured Moon
-function TexturedMoon({ scale = 1.0, textureMap }: { scale?: number, textureMap?: THREE.Texture | null }) {
-    return (
-        <mesh scale={scale} castShadow={true} receiveShadow={true}>
-            <sphereGeometry args={[1, 64, 64]} />
-            <meshStandardMaterial
-                map={textureMap || undefined}
-                color={textureMap ? "#FFFFFF" : "#DDDDDD"}
-                roughness={0.9}
-                metalness={0.1}
-                emissive="#000000"
-            />
-        </mesh>
-    );
-}
-
-// 🔴 Real Textured Mars
-function TexturedMars({ scale = 1.0, textureMap }: { scale?: number, textureMap?: THREE.Texture | null }) {
     const meshRef = useRef<THREE.Mesh>(null);
-
     useFrame((_, delta) => {
         if (meshRef.current) {
-            meshRef.current.rotation.y += delta * 0.009;
+            meshRef.current.rotation.y += delta * 0.08;
         }
     });
 
     return (
         <mesh ref={meshRef} scale={scale} castShadow={false} receiveShadow={false}>
-            <sphereGeometry args={[1, 64, 64]} />
+            <sphereGeometry args={[5, 64, 64]} />
             <meshStandardMaterial
-                map={textureMap || null}
-                color={textureMap ? "#FFFFFF" : "#D4704A"}
-                roughness={0.75}
-                metalness={0.02}
-                emissive="#000000"
+                map={texture}
+                color="#FFFFFF"
+                roughness={0.2}
+                metalness={0.0}
+                emissiveMap={texture}
+                emissive="#FFDD00"
+                emissiveIntensity={2.0}
+                toneMapped={false}
             />
         </mesh>
     );
 }
 
-// 🪐 Real Textured Jupiter
-function TexturedJupiter({ scale = 1.0, textureMap }: { scale?: number, textureMap?: THREE.Texture | null }) {
-    // Improve texture quality
+// 🌍 الأرض الحقيقية (Real Earth)
+// تتطلب معالجة خاصة للغيوم والنهار
+function RealEarth({ scale = 1.0 }: { scale?: number }) {
+    const dayTexture = useTexture(`${import.meta.env.BASE_URL}textures/earth_daymap.png`);
+    const cloudTexture = useTexture(`${import.meta.env.BASE_URL}textures/earth_clouds.png`);
+    const earthRef = useRef<THREE.Group>(null);
+    const cloudsRef = useRef<THREE.Mesh>(null);
+
     useEffect(() => {
-        if (textureMap) {
-            textureMap.anisotropy = 16;
+        return () => {
+            dayTexture.dispose();
+            cloudTexture.dispose();
+        };
+    }, []);
+
+    useFrame((_, delta) => {
+        if (earthRef.current) earthRef.current.rotation.y += delta * 0.15;
+        if (cloudsRef.current) cloudsRef.current.rotation.y += delta * 0.02;
+    });
+
+    return (
+        <group ref={earthRef}>
+            {/* السطح */}
+            <mesh scale={scale} castShadow={true} receiveShadow={true}>
+                <sphereGeometry args={[1, 64, 64]} />
+                <meshStandardMaterial
+                    map={dayTexture}
+                    color="#FFFFFF"
+                    roughness={0.6}
+                    metalness={0.1}
+                    emissive="#000022"
+                    emissiveIntensity={0.1}
+                />
+            </mesh>
+
+            {/* الغيوم */}
+            <mesh
+                ref={cloudsRef}
+                scale={scale * 1.01}
+                castShadow={true}
+                receiveShadow={true}
+            >
+                <sphereGeometry args={[1, 64, 64]} />
+                <meshStandardMaterial
+                    map={cloudTexture}
+                    transparent={true}
+                    opacity={0.9}
+                    side={THREE.DoubleSide}
+                    depthWrite={false}
+                    blending={THREE.NormalBlending}
+                />
+            </mesh>
+
+            {/* الغلاف الجوي */}
+            <mesh scale={scale * 1.2}>
+                <sphereGeometry args={[1, 64, 64]} />
+                <meshBasicMaterial
+                    color="#4488ff"
+                    transparent
+                    opacity={0.1}
+                    side={THREE.BackSide}
+                    blending={THREE.AdditiveBlending}
+                />
+            </mesh>
+        </group>
+    );
+}
+
+// ❄️ أورانوس الحقيقي (ميلان محوري)
+function RealUranus({ scale = 1.0 }: { scale?: number }) {
+    const texture = useTexture(`${import.meta.env.BASE_URL}textures/uranus_surface.png`);
+
+    useEffect(() => {
+        return () => texture.dispose();
+    }, []);
+
+    const meshRef = useRef<THREE.Mesh>(null);
+    useFrame((_, delta) => {
+        if (meshRef.current) {
+            meshRef.current.rotation.z += delta * 0.15;
         }
+    });
+
+    return (
+        <mesh
+            ref={meshRef}
+            scale={scale}
+            castShadow={true}
+            receiveShadow={true}
+            rotation={[Math.PI / 2 + 0.14, 0, 0]} // ميلان 98 درجة
+        >
+            <sphereGeometry args={[1, 64, 64]} />
+            <meshStandardMaterial
+                map={texture}
+                color="#FFFFFF"
+                roughness={0.6}
+                metalness={0.2}
+                emissiveMap={texture}
+                emissive="#FFFFFF"
+                emissiveIntensity={0.1}
+            />
+        </mesh>
+    );
+}
+
+// 🪐 المشتري (Textures Jupiter)
+function TexturedJupiter({ scale = 1.0, textureMap }: { scale?: number, textureMap?: THREE.Texture | null }) {
+    useEffect(() => {
+        if (textureMap) textureMap.anisotropy = 16;
     }, [textureMap]);
 
     const meshRef = useRef<THREE.Mesh>(null);
 
     useFrame((_, delta) => {
-        if (meshRef.current) {
-            meshRef.current.rotation.y += delta * 0.006;
-        }
+        if (meshRef.current) meshRef.current.rotation.y += delta * 0.006;
     });
 
     return (
@@ -147,81 +305,19 @@ function TexturedJupiter({ scale = 1.0, textureMap }: { scale?: number, textureM
                 color={textureMap ? "#FFFFFF" : "#C88B3A"}
                 roughness={0.9}
                 metalness={0.0}
-                emissive="#000000"
+                emissiveMap={textureMap || null}
+                emissive="#FFFFFF"
+                emissiveIntensity={0.05}
             />
         </mesh>
     );
 }
 
-// 🪐 Real Textured Saturn
-function TexturedSaturn({ scale = 1.0, textureMap, ringMap }: { scale?: number, textureMap?: THREE.Texture | null, ringMap?: THREE.Texture | null }) {
-    const groupRef = useRef<THREE.Group>(null);
-
-    useFrame((_, delta) => {
-        if (groupRef.current) {
-            groupRef.current.rotation.y += delta * 0.007;
-        }
-    });
-
-    return (
-        <group ref={groupRef}>
-            {/* Saturn Planet Body */}
-            <mesh scale={scale} castShadow={true} receiveShadow={true}>
-                <sphereGeometry args={[1, 64, 64]} />
-                <meshStandardMaterial
-                    map={textureMap || undefined}
-                    color={textureMap ? "#FFFFFF" : "#F4D03F"}
-                    roughness={0.9}
-                    metalness={0.0}
-                // Emissive removed to match Repo (Saturn body isn't self-luminous)
-                />
-            </mesh>
-
-            {/* Saturn Rings */}
-            {ringMap ? (
-                <mesh
-                    rotation={[Math.PI / 2, 0, 0]} // STRICT: Math.PI / 2 as requested
-                    scale={scale}
-                    receiveShadow={true}
-                >
-                    <ringGeometry args={[1.4, 2.4, 128]} />
-                    <meshStandardMaterial
-                        map={ringMap}
-                        alphaMap={ringMap}
-                        transparent={true}
-                        opacity={0.85} // User requested 0.85
-                        side={THREE.DoubleSide}
-                        depthWrite={false}
-                        roughness={0.6} // Icy reflection
-                        metalness={0.1}
-                        color="#F0F0F0" // Slightly off-white for realism
-                    />
-                </mesh>
-            ) : (
-                // Fallback procedural ring
-                <mesh
-                    rotation={[-Math.PI / 2.3, 0.1, 0]}
-                    scale={scale}
-                    receiveShadow={true}
-                >
-                    <ringGeometry args={[1.3, 2.4, 64]} />
-                    <meshStandardMaterial
-                        color="#C0B090"
-                        side={THREE.DoubleSide}
-                        transparent
-                        opacity={0.5}
-                    />
-                </mesh>
-            )}
-        </group>
-    );
-}
-// 💫 Real Al-Tariq (Neutron Star Sprite)
+// 💫 الطارق (Real Al-Tariq - Sprite)
 function RealAlTariq({ scale = 1.0 }: { scale?: number }) {
     const texture = useTexture(`${import.meta.env.BASE_URL}textures/al_tariq_real.png`);
     return (
         <group>
-            {/* Main Sprite - High Res */}
             <sprite scale={[scale * 15, scale * 15, 1]}>
                 <spriteMaterial
                     map={texture}
@@ -231,7 +327,6 @@ function RealAlTariq({ scale = 1.0 }: { scale?: number }) {
                     color="#FFFFFF"
                 />
             </sprite>
-            {/* Subtle Pulse Aura */}
             <sprite scale={[scale * 25, scale * 25, 1]}>
                 <spriteMaterial
                     map={texture}
@@ -246,33 +341,141 @@ function RealAlTariq({ scale = 1.0 }: { scale?: number }) {
     );
 }
 
+// 🌟 نجم الجبار (Real Orion Star)
+function RealOrionStar({ scale = 1.0 }: { scale?: number }) {
+    const texture = useTexture(`${import.meta.env.BASE_URL}textures/blue_supergiant_surface.png`);
+
+    useEffect(() => {
+        return () => texture.dispose();
+    }, []);
+
+    const meshRef = useRef<THREE.Mesh>(null);
+    useFrame((_, delta) => {
+        if (meshRef.current) meshRef.current.rotation.y += delta * 0.05;
+    });
+
+    return (
+        <mesh ref={meshRef} scale={scale} castShadow={false} receiveShadow={false}>
+            <sphereGeometry args={[1, 64, 64]} />
+            <meshStandardMaterial
+                map={texture}
+                color="#FFFFFF"
+                roughness={0.2}
+                metalness={0.1}
+                emissiveMap={texture}
+                emissive="#FFFFFF"
+                emissiveIntensity={2.0}
+                toneMapped={false}
+            />
+        </mesh>
+    );
+}
+// ☄️ المذنب (Real Comet - The Traveler)
+// "Clean Slate" Implementation: Strict separation of Head (Solid) and Tail (Glow)
+function RealComet({ scale = 1.0 }: { scale?: number }) {
+    // 1. Asset Sourcing: Using 'pluto_surface' for the solid rocky/icy head
+    // and 'shooting_star_trail' for the gaseous tail.
+    const nucleusTexture = useTexture(`${import.meta.env.BASE_URL}textures/pluto_surface.png`);
+    const tailTexture = useTexture(`${import.meta.env.BASE_URL}textures/shooting_star_trail.png`);
+
+    const groupRef = useRef<THREE.Group>(null);
+
+    // Orientation: The glowing tail must always point AWAY from the Sun.
+    // We lookAt(0,0,0) (The Sun), so the local +Z axis points to Sun.
+    // Therefore, the tail must extend along the local -Z axis.
+    useFrame((state) => {
+        if (groupRef.current) {
+            groupRef.current.lookAt(0, 0, 0);
+        }
+    });
+
+    return (
+        <group ref={groupRef}>
+            {/* 1. The Nucleus (The Head): Solid Object */}
+            <mesh
+                castShadow
+                receiveShadow
+                scale={scale}
+                renderOrder={20} // 🔴 Priority: Draw ON TOP of the tail
+            >
+                <sphereGeometry args={[1, 64, 64]} />
+                <meshStandardMaterial
+                    map={nucleusTexture}
+                    color="#DDDDDD" // Light grey base for rock/ice
+                    roughness={0.6} // Semi-rough
+                    metalness={0.2}
+                    emissiveMap={nucleusTexture}
+                    emissive="#112233" // Very subtle inner glow, keeps it looking "Solid"
+                    emissiveIntensity={0.5}
+                />
+            </mesh>
+
+            {/* 2. The Tail: Glowing Gas Stream */}
+            <group position={[0, 0, 0]}>
+                {/* Gap: The tail geometry starts at Z = -2 and extends to -28 (Center at -15, Height 26) */}
+
+                {/* Main Tail Stream */}
+                <mesh
+                    position={[0, 0, -15]}
+                    rotation={[-Math.PI / 2, 0, 0]}
+                    scale={[scale, scale, scale]}
+                    renderOrder={10} // 🔴 Priority: Draw BEHIND the head
+                >
+                    <planeGeometry args={[5, 26]} />
+                    <meshBasicMaterial
+                        map={tailTexture}
+                        transparent={true}
+                        opacity={0.8}
+                        side={THREE.DoubleSide}
+                        depthWrite={false} // 🔴 Vital: No Z-write to prevent clipping
+                        blending={THREE.AdditiveBlending} // 🔴 Vital: Light addition
+                        color="#88CCFF" // Cyan/Blue Gas
+                    />
+                </mesh>
+
+                {/* Volumetric Cross Section */}
+                <mesh
+                    position={[0, 0, -15]}
+                    rotation={[0, -Math.PI / 2, -Math.PI / 2]}
+                    scale={[scale, scale, scale]}
+                    renderOrder={10}
+                >
+                    <planeGeometry args={[5, 26]} />
+                    <meshBasicMaterial
+                        map={tailTexture}
+                        transparent={true}
+                        opacity={0.6}
+                        side={THREE.DoubleSide}
+                        depthWrite={false}
+                        blending={THREE.AdditiveBlending}
+                        color="#66AAFF"
+                    />
+                </mesh>
+            </group>
+
+            {/* 3. Interaction Hitbox (Invisible & Large) */}
+            <mesh visible={false} scale={scale * 1.5} onClick={(e) => e.stopPropagation()}>
+                <sphereGeometry args={[1, 16, 16]} />
+                <meshBasicMaterial color="red" wireframe />
+            </mesh>
+        </group>
+    );
+}
+
 export function CelestialObject({ data, onSelect, dateRef, isSelected }: CelestialObjectProps) {
     const meshRef = useRef<THREE.Mesh>(null)
-    const cloudsRef = useRef<THREE.Mesh>(null) // Earth clouds
     const groupRef = useRef<THREE.Group>(null)
 
     const [hovered, setHover] = useState(false)
     const [textures, setTextures] = useState<any>(null)
-    // Load textures with enhanced error handling and logging
-    // 🌍 TEXTURE LOADING & SELECTION
-    // --------------------------------------------------------------------------------
 
-    // 🔄 RE-VERIFY: Sometimes hooks cache old values. 
-    // We force specific textures for key objects to prevent "Generic Rock" syndrome.
-
-
-    // 🌍 TEXTURE LOADING & SELECTION
+    // تحميل النسيج (Textures)
     useEffect(() => {
         const loadTextures = async () => {
             try {
-                // Standard Loader
                 const loadedTextures = await loadCelestialTextures(data.id);
                 if (loadedTextures) {
-                    // Update refs if needed
-                    // @ts-ignore
-                    // @ts-ignore
                     if (loadedTextures.map) {
-                        // @ts-ignore
                         loadedTextures.map.colorSpace = THREE.SRGBColorSpace;
                     }
                     setTextures(loadedTextures);
@@ -286,108 +489,51 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
         loadTextures();
     }, [data.id]);
 
-    // Force material update when texture changes
-    useEffect(() => {
-        if (meshRef.current) {
-            const mat = meshRef.current.material as THREE.Material;
-            mat.needsUpdate = true;
-        }
-    }, [textures, data.id]);
-
-    // Direct scale from data (no multipliers needed in new system)
     const baseScale = data.science.scale;
-
-    // If highlighted/hovered, grow slightly
     const targetScale = hovered || isSelected ? baseScale * 1.1 : baseScale;
 
-
-
+    // تحديث الموقع والدوران
     useFrame((_, delta) => {
-        // 1. UPDATE POSITION directly from ref logic
-        // This avoids React Prop overhead
         if (groupRef.current && dateRef.current) {
-            // Using the current simulation date from the ref
             const newPos = getObjectPosition(data.id, dateRef.current);
-            // Optional: Lerp position for super smoothness if calc is choppy, 
-            // but usually direct set is fine for this scale/framerate
             groupRef.current.position.set(newPos[0], newPos[1], newPos[2]);
         }
 
-        // 2. Local Animations (Rotate, Clean Scale)
         if (meshRef.current) {
-            // Rotation
             const rotateSpeed = 0.2;
-
-            // Dynamic Sun Scaling removed
             let finalScale = targetScale;
-
-            // Unique Rotation: Uranus rolls on its side (98 degrees)
-            if (data.id === 'uranus') {
-                meshRef.current.rotation.x = Math.PI / 2 + 0.14; // ~98 degrees tilt (PI/2 = 90)
-                meshRef.current.rotation.z += delta * rotateSpeed; // Rotate along Z when tilted on X
-            } else {
-                meshRef.current.rotation.y += delta * rotateSpeed;
-            }
-
-            // Smooth scale transition
+            meshRef.current.rotation.y += delta * rotateSpeed;
             meshRef.current.scale.lerp(new THREE.Vector3(finalScale, finalScale, finalScale), 10 * delta);
-        }
-
-        // 3. Earth Clouds Rotation
-        if (cloudsRef.current) {
-            cloudsRef.current.rotation.y += delta * 0.03; // Clouds move slightly faster than surface
         }
     })
 
-
-    // Initial position is just fallback now
     const initialPos = new THREE.Vector3(...data.initialPosition);
 
-    // Material Logic
+    // تحديد المواد (Materials) للكائنات غير المخصصة
     const getMaterial = () => {
-        // ORION'S BELT STARS: Blue Supergiants (Alnitak, Alnilam, Mintaka)
         if (['alnitak', 'alnilam', 'mintaka'].includes(data.id)) return (
             <meshStandardMaterial
                 color={'#66ccff'}
                 emissive={'#66ccff'}
-                emissiveIntensity={4.0} // Blindingly bright
+                emissiveIntensity={4.0}
                 roughness={0.1}
-                metalness={0.8} // Metallic shine for star core feel
+                metalness={0.8}
                 toneMapped={false}
             />
         );
 
-
-        // Fallback or missing textures
         if (!textures) {
             return <meshStandardMaterial
                 color={data.science.color}
                 emissive={data.science.color}
-                emissiveIntensity={0.2} // Prevent total darkness
+                emissiveIntensity={0.2}
             />;
         }
 
-        // EARTH: Realistic Rocky Planet (Reference Repo Style)
-        if (data.id === 'earth') return (
-            <meshStandardMaterial // Switched to Standard to match Repo
-                map={textures.map || undefined}
-                // specularMap={textures.specular || undefined} // Repo doesn't use specular map
-                // normalMap={textures.normal || undefined}
-                roughness={0.5}
-                metalness={0.01}
-                emissive="#000000"
-            />
-        );
-
-        // SIRIUS: Enhanced bright star with intense luminosity
         if (data.id === 'sirius') return (
-            <meshBasicMaterial // Switched to Basic per user request
-                color={'#A0C8FF'}
-                toneMapped={false}
-            />
+            <meshBasicMaterial color={'#A0C8FF'} toneMapped={false} />
         );
 
-        // AL-TARIQ: Enhanced piercing star with powerful radiance
         if (data.id === 'al-tariq') return (
             <meshStandardMaterial
                 color={'#FFFFFF'}
@@ -399,144 +545,23 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
             />
         );
 
-
-
-        // VENUS: Thick atmospheric planet with golden sulfuric clouds
-        // Check BEFORE generic fallback so Venus always gets its dedicated material
-        // VENUS: Surface + Atmosphere Layer
-        if (data.id === 'venus') return (
-            <group>
-                {/* Surface */}
-                <mesh>
-                    <sphereGeometry args={[1, 64, 64]} />
-                    <meshStandardMaterial
-                        map={textures?.map || null}
-                        color={textures?.map ? '#FFFFFF' : '#E3BB76'}
-                        roughness={0.7}
-                        metalness={0.4}
-                    />
-                </mesh>
-                {/* Atmosphere Cloud Layer */}
-                {textures?.atmosphere && (
-                    <mesh scale={[1.02, 1.02, 1.02]}>
-                        <sphereGeometry args={[1, 64, 64]} />
-                        <meshStandardMaterial
-                            map={textures.atmosphere}
-                            transparent={true}
-                            opacity={0.85} // Dense clouds
-                            side={THREE.DoubleSide}
-                            roughness={1}
-                        />
-                    </mesh>
-                )}
-            </group>
-        );
-
-        // MARS: Fully illuminated from all angles
-        // MARS: Reference Repo Style
-        if (data.id === 'mars') return (
-            <meshStandardMaterial // Switched from Basic to Standard per Repo
-                map={textures?.map || null}
-                roughness={0.75}
-                metalness={0.02}
-                emissive="#000000"
-            />
-        );
-
-        // MERCURY: The Swift Planet - Rocky and Cratered
-        // MERCURY: Reference Repo Style
-        if (data.id === 'mercury') return (
-            <meshStandardMaterial
-                map={textures?.map || null}
-                roughness={0.7}
-                metalness={0.4}
-                // HACK: Fill texture gaps with matching rock color
-                color={textures?.map ? '#C4AFA0' : data.science.color}
-                // HACK: Force opacity to hide holes in bad user texture
-                transparent={false}
-                side={THREE.DoubleSide} // Ensure inside isn't invisible if wrap fails
-                emissive="#000000"
-            />
-        );
-
-        // JUPITER: Basic Texture Mapping (Simplified - No Displacement)
-        // JUPITER: Reference Repo Style
-        if (data.id === 'jupiter') return (
-            <meshStandardMaterial
-                map={textures?.map || null}
-                roughness={0.7}
-                metalness={0.4}
-                emissive="#000000"
-            />
-        );
-
-        // JUPITER: Basic Texture Mapping (Simplified - No Displacement)
-        // SATURN: Reference Repo Style
-        if (data.id === 'saturn') return (
-            <meshStandardMaterial
-                map={textures?.map || null}
-                roughness={0.7}
-                metalness={0.4}
-            // Emissive removed to match Repo (Saturn body isn't self-luminous)
-            />
-        );
-
-        // URANUS: Pale Cyan with 98 Degree Tilt
-        // URANUS: Ice Giant - Frozen Appearance
-        // URANUS: Reference Repo Style
-        if (data.id === 'uranus') return (
-            <meshStandardMaterial
-                map={textures?.map || null}
-                roughness={0.7}
-                metalness={0.4}
-                color={textures?.map ? '#FFFFFF' : data.science.color}
-                emissive="#000000"
-            />
-        );
-
-        // NEPTUNE: Deep Blue Ice Giant
-        // NEPTUNE: Ice Giant - Deep Frozen Blue
-        // NEPTUNE: Reference Repo Style
-        if (data.id === 'neptune') return (
-            <meshStandardMaterial
-                map={textures?.map || null}
-                roughness={0.7}
-                metalness={0.4}
-                color={textures?.map ? '#FFFFFF' : data.science.color}
-                emissive="#000000"
-            />
-        );
-
-        // PLUTO: Rocky Dwarf - Grey/Brownish
-        // PLUTO: Rocky Dwarf
         if (data.id === 'pluto') return (
-            <meshStandardMaterial
-                map={textures?.map || null}
-                color={textures?.map ? '#FFFFFF' : data.science.color}
-                roughness={0.7}
-                metalness={0.4}
-                emissive={'#806050'}
-                emissiveIntensity={0.1}
-            />
+            <meshStandardMaterial color={data.science.color} />
         );
 
         if (!textures.map) {
             return <meshStandardMaterial color={data.science.color} />;
         }
 
-        // No other objects need special materials - fallback below will handle
-
         return <meshStandardMaterial color={data.science.color} />;
     };
 
     return (
         <group ref={groupRef} position={initialPos}>
-            {/* HITBOX - Invisible Interactor */}
+            {/* منطقة النقر (Hitbox) - مخفية */}
             <mesh
                 ref={meshRef}
-                scale={
-                    data.id === 'sun' || data.id === 'jupiter' ? targetScale * 1.05 : targetScale /* Scale hitbox 5% larger to avoid z-fighting */
-                }
+                scale={data.id === 'sun' || data.id === 'jupiter' ? targetScale * 1.05 : targetScale}
                 onClick={(e) => {
                     e.stopPropagation()
                     onSelect(data)
@@ -549,129 +574,81 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
                     document.body.style.cursor = 'auto'
                     setHover(false)
                 }}
-                visible={true} // Must be visible to catch clicks
+                visible={true}
                 frustumCulled={false}
             >
                 <sphereGeometry args={[1, 16, 16]} />
                 <meshBasicMaterial
                     transparent={true}
                     opacity={0.0}
-                    depthWrite={false} // CRITICAL: Do not write to depth buffer
-                    depthTest={false}  // CRITICAL: Always pass depth test (render on top invisible)
+                    depthWrite={false}
+                    depthTest={false}
                     color="red"
                     side={THREE.DoubleSide}
                 />
             </mesh>
 
+            {/* عرض المجسمات حسب النوع (Rendering Logic) */}
 
-            {/* VISUAL MESH - Optimized geometry (Skip for Sun/Moon/Mars/Jupiter/Saturn/OrionStars/Sirius/Al-Tariq as they have custom handling) */}
-            {data.id !== 'sun' && data.id !== 'moon' && data.id !== 'mars' && data.id !== 'jupiter' && data.id !== 'saturn' && data.id !== 'sirius' && data.id !== 'al-tariq' && !['alnitak', 'alnilam', 'mintaka'].includes(data.id) && (
-                <mesh
-                    ref={meshRef}
-                    scale={targetScale}
-                    castShadow={true}
-                    receiveShadow={true}
-                    raycast={() => null}
-                    frustumCulled={false}
-                >
-                    <sphereGeometry args={[1, 32, 32]} />
-                    {getMaterial()}
-                </mesh>
-            )}
-
-            {/* Mars - Real Textured Surface */}
-            {data.id === 'mars' && (
-                <group>
-                    <TexturedMars scale={targetScale} textureMap={textures?.map} />
-                </group>
-            )}
-
-            {/* Saturn - Real Textured Surface */}
+            {/* 1. زحل (Saturn) */}
             {data.id === 'saturn' && (
-                <group>
-                    <TexturedSaturn
-                        scale={targetScale}
-                        textureMap={textures?.map}
-                        ringMap={textures?.ring}
-                    />
-                </group>
+                <group><RealSaturn scale={targetScale} /></group>
             )}
 
-            {/* Jupiter - Real Textured Surface (High-Res, No Z-Fighting) */}
+            {/* 2. المشتري (Jupiter) */}
             {data.id === 'jupiter' && (
-                <group>
-                    <TexturedJupiter scale={targetScale} textureMap={textures?.map} />
-                </group>
+                <group><TexturedJupiter scale={targetScale} textureMap={textures?.map} /></group>
             )}
 
-            {/* Moon - Real Textured Surface */}
-            {data.id === 'moon' && (
-                <group>
-                    <TexturedMoon scale={targetScale} textureMap={textures?.map} />
-                </group>
+            {/* 3. الأرض (Earth) */}
+            {data.id === 'earth' && (
+                <group><RealEarth scale={targetScale} /></group>
             )}
 
-            {/* 💡 SUN LIGHT - Reference Repo Settings */}
+            {/* 4. الشمس (Sun) */}
             {data.id === 'sun' && (
                 <>
                     <pointLight
-                        intensity={2.0} // Reduced from 10 to prevent Bloom Whiteout
-                        distance={1000}
+                        intensity={2.0}
+                        distance={10000}
                         decay={0.5}
                         color="#FFF4E6"
                         castShadow={true}
                         shadow-bias={-0.0001}
-                        shadow-mapSize-width={1024} // Optimized for Mobile (was 2048)
-                        shadow-mapSize-height={1024} // Optimized for Mobile
+                        shadow-mapSize-width={2048}
+                        shadow-mapSize-height={2048}
                     />
-
-                    {/* CORE: Real Textured Sun */}
-                    <group>
-                        <SoumyaSun scale={targetScale} />
-                    </group>
+                    <group><RealSun scale={targetScale} /></group>
                 </>
             )}
 
-
-
-            {/* Earth - Clouds & Atmosphere */}
-            {data.id === 'earth' && (
-                <>
-                    {/* Cloud Layer */}
-                    <mesh ref={cloudsRef} scale={targetScale * 1.015} raycast={() => null}>
-                        <sphereGeometry args={[1, 64, 64]} />
-                        <meshStandardMaterial
-                            map={textures?.clouds || null}
-                            transparent={true}
-                            opacity={0.8}
-                            side={THREE.DoubleSide}
-                            blending={THREE.NormalBlending}
-                            depthWrite={false}
-                        />
-                    </mesh>
-                    {/* Atmospheric Glow */}
-                    <mesh scale={targetScale * 1.15} raycast={() => null}>
-                        <sphereGeometry args={[1, 64, 64]} />
-                        <meshBasicMaterial
-                            color="#5080ff"
-                            transparent
-                            opacity={0.12}
-                            side={THREE.BackSide}
-                            blending={THREE.AdditiveBlending}
-                        />
-                    </mesh>
-                </>
+            {/* 5. أورانوس (Uranus) - خاص بسبب الميلان */}
+            {data.id === 'uranus' && (
+                <group><RealUranus scale={targetScale} /></group>
             )}
 
-            {/* Sirius - The Brightest Star (Blue-White) - REAL SPRITE ONLY */}
+            {/* 6. نجوم الحزام (Orion's Belt) */}
+            {['alnitak', 'alnilam', 'mintaka'].includes(data.id) && (
+                <group>
+                    <pointLight intensity={1.5} distance={500} decay={2.0} color="#4488ff" />
+                    <RealOrionStar scale={targetScale} />
+                </group>
+            )}
+
+            {/* 7. الطارق (Al-Tariq) */}
+            {data.id === 'al-tariq' && (
+                <group>
+                    <pointLight intensity={100.0} distance={6000} decay={1.5} color="#00FFFF" />
+                    <RealAlTariq scale={targetScale} />
+                </group>
+            )}
+
+            {/* 8. الشعرى (Sirius) - Sprite */}
             {data.id === 'sirius' && (
                 <>
-                    {/* Blinding Light Source */}
                     <pointLight intensity={250.0} distance={8000} decay={1.0} color="#dceeff" />
-
-                    {/* The Real Star Image (Sprite for exact visual match) */}
                     {textures?.map && (
-                        <sprite scale={[50, 50, 1]}> {/* Doubled Size (25->50) */}
+                        <sprite scale={[50, 50, 1]}>
                             <spriteMaterial
                                 map={textures.map}
                                 color="#FFFFFF"
@@ -681,116 +658,41 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
                             />
                         </sprite>
                     )}
-
-                    {/* Fallback only if texture is strictly missing */}
-                    {!textures?.map && (
-                        <mesh scale={3.0}>
-                            <sphereGeometry args={[1, 32, 32]} />
-                            <meshBasicMaterial color="#A0C8FF" toneMapped={false} />
-                        </mesh>
-                    )}
                 </>
             )}
 
-            {/* Al-Tariq - Neutron Star / Pulsar (The Knocker) */}
-            {/* Al-Tariq - Neutron Star / Pulsar (Real Image Replacement) */}
-            {data.id === 'al-tariq' && (
-                <group>
-                    {/* Blinding Light Source (Cyan/White) */}
-                    <pointLight intensity={100.0} distance={6000} decay={1.5} color="#00FFFF" />
-                    <RealAlTariq scale={targetScale} />
-                </group>
+            {/* 9. الكواكب العامة (Generic Planets) - دمج المنطق المتكرر */}
+            {data.id === 'mars' && (
+                <GenericPlanet
+                    scale={targetScale}
+                    texturePath="textures/mars_surface.png"
+                    rotationSpeed={0.12}
+                    roughness={0.8}
+                    metalness={0.05}
+                    emissiveColor="#C05030" // Reddish glow for Mars
+                    emissiveIntensity={0.2} // Increased visibility
+                />
             )}
-
-            {/* Alnilam - Blue Supergiant (النظام) */}
-            {data.id === 'alnilam' && (
-                <>
-                    {/* Massive Blue Point Light */}
-                    <pointLight intensity={10.0} distance={5000} decay={2.0} color="#aaaaff" />
-
-                    {/* Blue Supergiant - Reduced Brightness to show Texture */}
-                    <mesh scale={targetScale} raycast={() => null}>
-                        <sphereGeometry args={[1, 64, 64]} />
-                        <meshStandardMaterial
-                            map={textures?.map || null}
-                            color="#aaaaff"
-                            emissive="#0044ff"
-                            emissiveMap={textures?.map || null}
-                            emissiveIntensity={10.5} // Reduced by 65% from 30.0
-                            roughness={0.2}
-                            metalness={0.1}
-                            toneMapped={false}
-                        />
-                    </mesh>
-                </>
-            )}
-
-            {/* Other Orion Stars - Alnitak, Alnilam & Mintaka */}
-            {['alnitak', 'alnilam', 'mintaka'].includes(data.id) && (
-                <>
-                    {/* Strong Blue Point Light - Makes them real light sources */}
-                    <pointLight intensity={1.0} distance={100} decay={2.0} color="#4488ff" />
-
-                    {/* Single Glowing Sphere - Reduced Brightness */}
-                    <mesh scale={targetScale} raycast={() => null}>
-                        <sphereGeometry args={[1, 32, 32]} />
-                        <meshStandardMaterial
-                            color="#4488ff"
-                            emissive="#0055ff"
-                            emissiveIntensity={3.5} // Reduced from 10.0 to 3.5
-                            roughness={0.5}
-                            metalness={0.2}
-                            toneMapped={false}
-                        />
-                    </mesh>
-                </>
-            )}
-
-            {/* Venus - Thick atmospheric golden glow */}
+            {data.id === 'comet' && <RealComet scale={targetScale} />}
             {data.id === 'venus' && (
-                <>
-                    <pointLight intensity={1.5} distance={1500} decay={0.4} color="#FFD700" />
-                    {/* Inner atmospheric glow - thick sulfuric clouds */}
-                    <mesh scale={1.3} raycast={() => null}>
-                        <sphereGeometry args={[1, 32, 32]} />
-                        <meshBasicMaterial color="#F0D88C" transparent opacity={0.55} blending={THREE.AdditiveBlending} depthWrite={false} />
-                    </mesh>
-                    {/* Outer atmospheric haze - yellowish */}
-                    <mesh scale={1.9} raycast={() => null}>
-                        <sphereGeometry args={[1, 24, 24]} />
-                        <meshBasicMaterial color="#FFE4A0" transparent opacity={0.35} blending={THREE.AdditiveBlending} depthWrite={false} />
-                    </mesh>
-                </>
+                <GenericPlanet scale={targetScale} texturePath="textures/venus_atmosphere.png" rotationSpeed={0.05} roughness={1.0} metalness={0.0} />
             )}
-
-
-
-            {/* 🌕 MOON: Real Textured Moon */}
+            {data.id === 'mercury' && (
+                <GenericPlanet scale={targetScale} texturePath="textures/mercury_surface.png" rotationSpeed={0.05} roughness={0.9} metalness={0.1} />
+            )}
+            {data.id === 'neptune' && (
+                <GenericPlanet scale={targetScale} texturePath="textures/neptune_surface.png" rotationSpeed={0.12} roughness={0.4} metalness={0.1} />
+            )}
+            {data.id === 'pluto' && (
+                <GenericPlanet scale={targetScale} texturePath="textures/pluto_surface.png" rotationSpeed={0.02} roughness={0.8} metalness={0.05} />
+            )}
             {data.id === 'moon' && (
-                <group>
-                    <TexturedMoon />
-                </group>
+                <GenericPlanet scale={targetScale} texturePath="textures/moon_surface.png" rotationSpeed={0.05} roughness={0.9} metalness={0.05} />
             )}
 
-            {/* Atmospheric rim glow for stars (Excluding Sun, Moon, Sirius) */}
-            {data.id !== 'sun' && data.id !== 'moon' && data.id !== 'sirius' && (
-                <mesh scale={targetScale * 1.06} raycast={() => null}>
-                    <sphereGeometry args={[1, 32, 32]} />
-                    <meshBasicMaterial
-                        color={data.science.color}
-                        transparent
-                        opacity={0.1}
-                        side={THREE.BackSide}
-                        blending={THREE.AdditiveBlending}
-                        depthWrite={false}
-                    />
-                </mesh>
-            )}
-
-            {/* Selection Ring - Simplified & Thinner */}
+            {/* 10. حلقة التحديد (Selection Ring) */}
             {(hovered || isSelected) && (
                 <mesh rotation={[-Math.PI / 2, 0, 0]} raycast={() => null}>
-                    {/* Thinner ring: 1.5 to 1.52 instead of 1.55 */}
                     <ringGeometry args={[baseScale * 1.5, baseScale * 1.52, 64]} />
                     <meshBasicMaterial color="#4facfe" side={THREE.DoubleSide} toneMapped={false} />
                 </mesh>
