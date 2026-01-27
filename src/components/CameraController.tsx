@@ -5,8 +5,6 @@ import gsap from 'gsap'
 import type { OrbitControls as OrbitControlsImpl } from 'three-stdlib'
 import type { CelestialData } from '../data/objects'
 import { celestialObjects } from '../data/objects'
-import { getObjectPosition } from '../utils/astronomy'
-import type { CelestialObjectId } from '../data/objects'
 
 interface CameraControllerProps {
     selectedObject: CelestialData | null;
