@@ -21,6 +21,7 @@ const SimulationScene = lazy(() => import('./components/SimulationScene'));
 import { CinematicHome } from './components/CinematicHome'
 import { AppEnhancements } from './components/AppEnhancements'
 import { AmbienceControl } from './components/AmbienceControl'
+import { SplashIntro } from './components/SplashIntro'
 
 // 🛡️ User Requested: Error Boundary to prevent crashes
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
@@ -62,6 +63,7 @@ function AppContent() {
     const [isPaused, setIsPaused] = useState(false)
     const [currentDate, setCurrentDate] = useState(new Date())
     const [hasStarted, setHasStarted] = useState(false)
+    const [introFinished, setIntroFinished] = useState(false) // 🎬 Intro State
     const { t } = useTranslation()
     const controlsRef = useRef<OrbitControlsType>(null)
     const cameraControllerRef = useRef<CameraControllerHandle>(null)
@@ -110,21 +112,26 @@ function AppContent() {
             style={{ height: 'calc(var(--vh, 1vh) * 100)' }} // Mobile 100vh Fix
         >
             <AppEnhancements />
+
+            {/* 🎬 Cinematic Splash Intro */}
+            {!introFinished && (
+                <SplashIntro onComplete={() => setIntroFinished(true)} />
+            )}
+
             {/* 🎛️ Fixed Ambience HUD - Renders outside Canvas for stability */}
-            <AmbienceControl />
+            {introFinished && <AmbienceControl />}
             <ErrorBoundary>
                 {/* 3D Scene */}
                 <Canvas
                     shadows
                     camera={{ position: [0, 40, 140], fov: 60, near: 0.1, far: 100000 }}
-                    // 🚀 PERFORMANCE: Smart DPR for Mobile vs Desktop
-                    // Clamps to 1.5 on mobile to save battery/heat, 2.0 on Desktop
-                    dpr={[1, window.innerWidth < 768 ? 1.5 : 2]}
+                    // 🌟 4K RENDER UPGRADE: Use full devicePixelRatio (Max 3)
+                    dpr={[1, Math.min(window.devicePixelRatio, 3)]}
                     gl={{
-                        antialias: true, // Kept true as requested for quality
+                        antialias: true,
                         powerPreference: "high-performance",
                         toneMapping: THREE.ACESFilmicToneMapping,
-                        toneMappingExposure: 0.6,
+                        toneMappingExposure: 0.8, // Slightly brighter for 4K pop
                         outputColorSpace: THREE.SRGBColorSpace,
                         // Mobile optimization: preserveDrawingBuffer false is faster
                         preserveDrawingBuffer: false
