@@ -124,16 +124,25 @@ function AppContent() {
                 {/* 3D Scene */}
                 <Canvas
                     shadows
-                    camera={{ position: [0, 40, 140], fov: 60, near: 0.1, far: 100000 }}
+                    camera={{
+                        // 🎥 CAMERA INTRO: Panorama Mode (Ultra Wide Max)
+                        // Intro: Wide FOV (75) + Far Z (660) + High Y (92)
+                        position: hasStarted ? [0, 40, 140] : [0, 92, 660],
+                        fov: hasStarted ? 60 : 75,
+                        near: 0.1,
+                        far: 100000
+                    }}
                     // 🌟 4K RENDER UPGRADE: Use full devicePixelRatio (Max 3)
                     dpr={[1, Math.min(window.devicePixelRatio, 3)]}
                     gl={{
-                        antialias: true,
+                        // PERFORMANCE: Auto-disable Antialias on High-DPI screens (Retina/4K)
+                        // At dpr > 1, pixels are so small that MSAA is redundant and costly.
+                        antialias: window.devicePixelRatio < 2,
                         powerPreference: "high-performance",
+                        precision: "highp", // Force high precision for gradients/shaders
                         toneMapping: THREE.ACESFilmicToneMapping,
-                        toneMappingExposure: 0.8, // Slightly brighter for 4K pop
+                        toneMappingExposure: 0.8,
                         outputColorSpace: THREE.SRGBColorSpace,
-                        // Mobile optimization: preserveDrawingBuffer false is faster
                         preserveDrawingBuffer: false
                     }}
                 >

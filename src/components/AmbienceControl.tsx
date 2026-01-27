@@ -69,7 +69,7 @@ export function AmbienceControl() {
                     alignItems: 'center',
                     gap: '8px',
                     boxShadow: '0 4px 16px 0 rgba(0, 0, 0, 0.2)',
-                    fontFamily: '"SF Pro Display", "Inter", system-ui, sans-serif'
+                    fontFamily: '"Cairo", "SF Pro Display", sans-serif'
                 }}
             >
                 <span style={{ fontSize: '14px' }}>{muted ? "🔇" : "🔊"}</span>
@@ -77,7 +77,7 @@ export function AmbienceControl() {
                     opacity: 0.9,
                     textShadow: '0 2px 4px rgba(0,0,0,0.2)'
                 }}>
-                    {muted ? "Sound Off" : "Ambience On"}
+                    {muted ? "الصوت مكتوم" : "صوت المحيط"}
                 </span>
             </button>
 
@@ -91,9 +91,10 @@ export function AmbienceControl() {
                     backdropFilter: 'blur(4px)',
                     padding: '4px 8px',
                     borderRadius: '8px',
-                    background: 'rgba(0,0,0,0.2)'
+                    background: 'rgba(0,0,0,0.2)',
+                    fontFamily: '"Cairo", sans-serif'
                 }}>
-                    Tap to Start Audio
+                    انقر لتفعيل الصوت
                 </div>
             )}
 

@@ -172,9 +172,12 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
                     text-transform: uppercase;
                 }
 
-                /* 5. Minimalist Button */
+                /* 5. Minimalist Button (Relocated to Bottom Center) */
                 .orbital-button {
-                    margin-top: 50px;
+                    position: absolute;
+                    bottom: 10%;
+                    left: 50%;
+                    transform: translateX(-50%);
                     padding: 15px 50px;
                     background: rgba(255,255,255,0.05);
                     border: 1px solid rgba(255,255,255,0.2);
@@ -185,7 +188,8 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
                     letter-spacing: 2px;
                     backdrop-filter: blur(10px);
                     transition: all 0.5s ease;
-                    position: relative; overflow: hidden;
+                    z-index: 20;
+                    overflow: hidden;
                 }
 
                 .orbital-button:hover {
@@ -197,7 +201,7 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
 
                 .credit-orbital {
                     position: absolute; bottom: 20px; width: 100%; text-align: center;
-                    color: rgba(255,255,255,0.3); font-size: 0.8rem; letter-spacing: 1px;
+                    color: rgba(255,255,255,0.3); font-size: 0.9rem; letter-spacing: 1px;
                     z-index: 10;
                 }
 
@@ -205,6 +209,8 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
                 @media (max-width: 768px) {
                     .hero-title { font-size: 3rem; letter-spacing: 5px; }
                     .orbital-planet { bottom: -55vh; }
+                    /* Ensure button doesn't overlap on very small screens */
+                    .orbital-button { bottom: 12%; padding: 12px 40px; font-size: 1rem; }
                 }
 
             `}</style>
@@ -212,36 +218,27 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
             {/* Glassmorphism Background - Blurs the Scene slightly */}
             <div style={{ position: 'absolute', inset: 0, backdropFilter: 'blur(8px)', zIndex: -1 }} />
 
-            {/* Background - Transparent to show 3D Scene */}
-            {/* <div className="deep-space-bg" /> */}
-
-            {/* The Sunrise Light - REMOVED for Transparency */}
-            {/* <div className="orbital-sunrise" /> */}
-
-            {/* The Planet (Earth) - REMOVED for Transparency */}
-            {/* <div className="orbital-planet">
-                <div className="orbital-clouds" />
-            </div> */}
-
             {/* UI Content */}
             <div className="hero-text-container">
                 <h1 className="hero-title">فلك وآية</h1>
-                <p className="hero-subtitle">THE ORBITAL EXPERIENCE</p>
+                {/* Subtitle Removed as requested */}
 
-                {!isLoaded ? (
+                {!isLoaded && (
                     <div className="mt-10 opacity-70" style={{ letterSpacing: 3 }}>
                         جاري ضبط المدار... {progress}%
                     </div>
-                    // <LoadingScreen progress={progress} /> // Keeping minimal text for this style unless full screen requested
-                ) : (
-                    <button onClick={handleStartClick} className="orbital-button">
-                        انطلاق
-                    </button>
                 )}
             </div>
 
+            {/* Start Button - Moved to Bottom Center independent of Text */}
+            {isLoaded && (
+                <button onClick={handleStartClick} className="orbital-button">
+                    انطلاق
+                </button>
+            )}
+
             <div className="credit-orbital">
-                Designed by Ibrahim Al-Tukhaim
+                صنع بواسطة ابراهيم سليمان الطخيم
             </div>
         </div>
     );
