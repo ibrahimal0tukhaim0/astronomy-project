@@ -4,7 +4,6 @@ import { useState, useEffect } from 'react';
 // This is a pure HTML Overlay, guaranteed to be fixed.
 export function AmbienceControl() {
     const [muted, setMuted] = useState(false);
-    const [hasInteracted, setHasInteracted] = useState(false);
 
     // Sync with global event bus
     useEffect(() => {
@@ -18,7 +17,6 @@ export function AmbienceControl() {
     const toggleMute = () => {
         const newState = !muted;
         setMuted(newState);
-        setHasInteracted(true);
         // Dispatch event for SpaceLightning to hear
         window.dispatchEvent(new CustomEvent('ambience-toggle', { detail: { muted: newState } }));
     };
