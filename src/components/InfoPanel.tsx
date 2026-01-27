@@ -23,12 +23,26 @@ export function InfoPanel({ selectedObject, onClose }: InfoPanelProps) {
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: i18n.language === 'ar' ? '-100%' : '100%', opacity: 0 }}
                 transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                className={`absolute top-0 ${i18n.language === 'ar' ? 'left-0 border-r' : 'right-0 border-l'} h-full w-full md:w-[520px] bg-black/90 backdrop-blur-xl border-white/10 text-white overflow-y-auto z-50 shadow-2xl`}
+                className={`absolute top-0 ${i18n.language === 'ar' ? 'left-0 border-r' : 'right-0 border-l'} h-full w-full md:w-[520px] bg-black/90 backdrop-blur-xl border-white/10 text-white overflow-y-auto z-50 shadow-2xl mobile-scaled-panel origin-top-right`}
                 role="dialog"
                 aria-modal="true"
                 aria-labelledby="info-panel-title"
             >
-                <div className="p-6 md:p-8 pb-20 space-y-6 md:space-y-8">
+                {/* 📱 Mobile Scaling Styles */}
+                <style>{`
+                    @media (max-width: 768px) {
+                        .mobile-scaled-panel {
+                            transform: scale(0.85);
+                            transform-origin: top ${i18n.language === 'ar' ? 'left' : 'right'};
+                        }
+                        .safe-area-padding {
+                            padding-top: calc(24px + env(safe-area-inset-top));
+                            padding-bottom: calc(80px + env(safe-area-inset-bottom));
+                        }
+                    }
+                `}</style>
+
+                <div className="p-6 md:p-8 pb-20 space-y-6 md:space-y-8 safe-area-padding">
                     {/* Header - Object Name */}
                     <div className="flex justify-between items-start">
                         <div className="flex-1">

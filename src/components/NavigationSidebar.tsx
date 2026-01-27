@@ -20,11 +20,24 @@ export function NavigationSidebar({ onNavigate }: NavigationSidebarProps) {
 
     return (
         <>
+            {/* 📱 Mobile Scaling & Safe Area Utilities */}
+            <style>{`
+                @media (max-width: 768px) {
+                    .mobile-scaled-ui {
+                        transform: scale(0.85);
+                        transform-origin: top left;
+                    }
+                    .safe-area-top {
+                        padding-top: env(safe-area-inset-top);
+                    }
+                }
+            `}</style>
+
             {/* Hamburger Button (Top-Left for RTL Balance) */}
             <button
                 onClick={toggleMenu}
                 style={{ top: 'calc(1rem + env(safe-area-inset-top))' }}
-                className="absolute left-6 z-50 p-3 bg-black/30 hover:bg-black/50 backdrop-blur-md rounded-full text-white transition-all duration-300 border border-white/10 hover:border-white/30"
+                className="absolute left-6 z-50 p-3 bg-black/30 hover:bg-black/50 backdrop-blur-md rounded-full text-white transition-all duration-300 border border-white/10 hover:border-white/30 mobile-scaled-ui"
                 aria-label="Menu"
                 aria-expanded={isOpen}
                 aria-controls="navigation-menu"
@@ -65,13 +78,13 @@ export function NavigationSidebar({ onNavigate }: NavigationSidebarProps) {
                             animate={{ x: 0 }}
                             exit={{ x: '-100%' }}
                             transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            className="absolute top-0 left-0 h-full w-80 glass-menu border-r-0 z-50 overflow-y-auto"
+                            className="absolute top-0 left-0 h-full w-80 glass-menu border-r-0 z-50 overflow-y-auto mobile-scaled-ui origin-top-left"
                             id="navigation-menu"
                             role="dialog"
                             aria-modal="true"
                             aria-label="Celestial Navigation"
                         >
-                            <div className="p-8">
+                            <div className="p-8 safe-area-top">
                                 <h2 className="text-2xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-white mb-8 border-b border-white/10 pb-4">
                                     {t('app.title')}
                                 </h2>

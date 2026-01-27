@@ -27,7 +27,6 @@ export const CameraController = forwardRef<CameraControllerHandle, CameraControl
     const { camera } = useThree();
     const timelineRef = useRef<gsap.core.Timeline | null>(null);
     const hasIntroRun = useRef(false);
-    const isFlying = useRef(false); // 🟢 Moved to top
 
     // 🎬 1. CINEMATIC INTRO ANIMATION (Fly-in)
     useEffect(() => {
@@ -77,7 +76,13 @@ export const CameraController = forwardRef<CameraControllerHandle, CameraControl
         }
     }));
 
-    // 🎯 3. SMOOTH GLIDE FOCUS LOGIC
+    // 📌 STATE: Track locking status
+    const lockedObjectId = useRef<string | null>(null);
+    const currentOffset = useRef(new THREE.Vector3());
+    const lastTargetPos = useRef<THREE.Vector3 | null>(null); // To track movement delta
+    const { scene } = useThree();
+
+    // 🎯 3. SMOOTH GLIDE FOCUS LOGIC (OFFSET-BASED TRACKING)
     const handleFocus = (objectId: string) => {
         const targetObj = celestialObjects.find(o => o.id === objectId);
         if (!targetObj || !controlsRef.current) return;
@@ -85,105 +90,116 @@ export const CameraController = forwardRef<CameraControllerHandle, CameraControl
         // Clean prev
         timelineRef.current?.kill();
 
-        // Calculate dynamic position
-        const rawPos = getObjectPosition(objectId as CelestialObjectId, new Date());
-        const targetCenter = new THREE.Vector3(...rawPos);
+        // 1. Set Lock ID & Reset Delta Tracker
+        lockedObjectId.current = objectId;
+        lastTargetPos.current = null; // Will be set on first frame
 
-        // Smart Offset: Determine optimal distance based on object scale
-        // "Scale * 4.0" is a good cinematic distance
-        const dist = targetObj.science.scale * 4.0 + 5.0; // +5 buffer
+        // 2. Calculate Final Desired Offset (Cinematic Angle)
+        // Fixed Beauty Shot: (0.0, 0.4, 1.0) normalized
+        // We removed X offset to be centered, and increased Y (0.4) to look slightly down
+        // This prevents cutting through Saturn's rings (which are on X-Z plane).
+        const approachVector = new THREE.Vector3(0.0, 0.4, 1.0).normalize();
+        const finalDist = targetObj.science.scale * 6.0 + 25.0; // Safe distance
+        const finalOffset = approachVector.multiplyScalar(finalDist);
 
-        // Calculate new Camera Position (maintain current angle relative to object if possible, or fly in)
-        const currentOffset = new THREE.Vector3().subVectors(camera.position, controlsRef.current.target).normalize();
+        // 3. Initialize current offset
+        const sceneObj = scene.getObjectByName(objectId);
+        if (!sceneObj) return;
 
-        // Cinematic Destination: Position camera at optimal distance, slightly elevated
-        const destination = targetCenter.clone().add(currentOffset.multiplyScalar(dist));
+        const targetPos = new THREE.Vector3();
+        sceneObj.getWorldPosition(targetPos);
 
-        // 🚀 ANIMATION START
-        const duration = 2.5; // Smooth 2.5s travel
-        controlsRef.current.enabled = false; // Lock controls
+        // Initialize tracker
+        lastTargetPos.current = targetPos.clone();
 
-        // Kill existing
-        timelineRef.current?.kill();
+        // Calculate where we are relative to it NOW
+        currentOffset.current.subVectors(camera.position, targetPos);
+
+        // 🛑 Stop Rotation/Input
+        controlsRef.current.autoRotate = false;
+        controlsRef.current.enabled = false;
+
+        // Create Animation Timeline
         const tl = gsap.timeline({
             onComplete: () => {
                 if (controlsRef.current) {
-                    controlsRef.current.enabled = true; // Unlock
-                    // START ORBITING AROUND TARGET
-                    // We can set autoRotate on controls, but we need to ensure target is kept updated.
-                    controlsRef.current.autoRotate = true;
-                    controlsRef.current.autoRotateSpeed = 1.0; // Slow orbit
+                    controlsRef.current.enabled = true;
+                    if (selectedObject?.id === objectId) {
+                        controlsRef.current.autoRotate = true;
+                        controlsRef.current.autoRotateSpeed = 2.0;
+                    }
+                    timelineRef.current = null;
                 }
-                isFlying.current = false;
             }
         });
 
-        isFlying.current = true;
-
-        // Animate Cam Position
-        tl.to(camera.position, {
-            x: destination.x,
-            y: destination.y,
-            z: destination.z,
-            duration: duration,
-            ease: "power2.inOut",
-            onUpdate: () => {
-                // While flying, manual update might be needed if controls are disabled?
-                // Actually controls.update() is unneeded if disabled.
-                // But let's just leave empty or simple log for now.
-            }
-        }, 0);
-
-        // Animate Control Target (LookAt)
-        tl.to(controlsRef.current.target, {
-            x: targetCenter.x,
-            y: targetCenter.y,
-            z: targetCenter.z,
-            duration: duration, // Sync with position
-            ease: "power2.inOut"
-        }, 0);
+        // Animate the Offset Vector
+        tl.to(currentOffset.current, {
+            x: finalOffset.x,
+            y: finalOffset.y,
+            z: finalOffset.z,
+            duration: 2.5,
+            ease: "power3.inOut"
+        });
 
         timelineRef.current = tl;
-    }
+    };
 
-    // 🔄 4. AUTO-TRACKING LOOP
-    // Trigger flyTo when prop changes
+    // 🛑 4. EXIT LOGIC
     useEffect(() => {
-        if (selectedObject) {
-            handleFocus(selectedObject.id);
+        if (!selectedObject) {
+            if (controlsRef.current) controlsRef.current.autoRotate = false;
+            lockedObjectId.current = null;
+            lastTargetPos.current = null;
         } else {
-            // Reset? Or stay? Maybe stop autoRotate
-            if (controlsRef.current) {
-                controlsRef.current.autoRotate = false;
-            }
+            // Ensure lock is in sync
+            lockedObjectId.current = selectedObject.id;
         }
     }, [selectedObject]);
 
-    // 🧹 5. CLEANUP ON UNMOUNT
+    // 🧹 5. DEEP CLEANUP
     useEffect(() => {
         return () => {
-            if (timelineRef.current) {
-                timelineRef.current.kill();
-                timelineRef.current = null;
-            }
-        };
+            timelineRef.current?.kill();
+        }
     }, []);
 
+    // 🔄 6. UPDATE LOOP (DELTA TRACKING)
     useFrame(() => {
-        if (!controlsRef.current) return;
+        if (controlsRef.current && lockedObjectId.current) {
+            const sceneObj = scene.getObjectByName(lockedObjectId.current);
+            if (sceneObj) {
+                const targetPos = new THREE.Vector3();
+                sceneObj.getWorldPosition(targetPos);
 
-        // If we are locked on an object (and not currently mid-flight transition),
-        // we should update the target to the object's NEW spherical position.
-        // This ensures resizing/orbiting works around the MOVING planet.
-        if (selectedObject && !isFlying.current) {
-            const rawPos = getObjectPosition(selectedObject.id as CelestialObjectId, new Date());
-            // We smoothly lerp the target to the new position to avoid jitter
-            controlsRef.current.target.lerp(new THREE.Vector3(...rawPos), 0.1);
+                // A. DELTA TRACKING: Move camera by the EXACT amount the object moved
+                if (lastTargetPos.current) {
+                    const delta = new THREE.Vector3().subVectors(targetPos, lastTargetPos.current);
+
+                    // Apply delta to camera (carry it along)
+                    camera.position.add(delta);
+
+                    // Update controls target to center
+                    controlsRef.current.target.copy(targetPos);
+                }
+
+                // If controls disabled (flying), we also need to apply the animation offset
+                if (!controlsRef.current.enabled) {
+                    // During flight, `camera.position` = `active target` + `animated offset`
+                    // We override the delta logic slightly here to ensure strictly smooth animation
+                    camera.position.copy(targetPos).add(currentOffset.current);
+                }
+
+                // Update last pos for next frame
+                if (!lastTargetPos.current) lastTargetPos.current = new THREE.Vector3();
+                lastTargetPos.current.copy(targetPos);
+            }
         }
 
-        // Always update controls if damping is enabled
-        controlsRef.current.update();
+        if (controlsRef.current) {
+            controlsRef.current.update();
+        }
     });
 
-    return null; // Logic only component
+    return null;
 });

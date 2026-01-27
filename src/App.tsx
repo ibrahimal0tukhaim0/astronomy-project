@@ -1,6 +1,6 @@
 import { Canvas } from '@react-three/fiber'
 import { OrbitControls, Loader, AdaptiveDpr, AdaptiveEvents } from '@react-three/drei'
-import React, { useState, Suspense, useRef, lazy } from 'react'
+import React, { useState, Suspense, useRef, lazy, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { CelestialData } from './data/objects'
 import { InfoPanel } from './components/InfoPanel'
@@ -20,6 +20,7 @@ import * as THREE from 'three'
 const SimulationScene = lazy(() => import('./components/SimulationScene'));
 import { CinematicHome } from './components/CinematicHome'
 import { AppEnhancements } from './components/AppEnhancements'
+import { AmbienceControl } from './components/AmbienceControl'
 
 // 🛡️ User Requested: Error Boundary to prevent crashes
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
@@ -80,21 +81,53 @@ function AppContent() {
         });
     };
 
+    // 📱 MOBILE OPTIMIZATION: Immediate Resize Handler
+    // Ensures Camera Aspect Ratio & Renderer size update accurately on rotation
+    useEffect(() => {
+        const handleResize = () => {
+            // Force layout recalculation for mobile browser bars (100vh fix)
+            const vh = window.innerHeight * 0.01;
+            document.documentElement.style.setProperty('--vh', `${vh}px`);
+        };
+
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('orientationchange', handleResize);
+
+        // Init
+        handleResize();
+
+        return () => {
+            window.removeEventListener('resize', handleResize);
+            window.removeEventListener('orientationchange', handleResize);
+        };
+    }, []);
+
     return (
-        <div className="w-full h-screen bg-black relative overflow-hidden touch-none" dir="rtl">
+        // touch-none prevents "pull-to-refresh" on mobile which ruins the 3D experience
+        <div
+            className="w-full bg-black relative overflow-hidden touch-none"
+            dir="rtl"
+            style={{ height: 'calc(var(--vh, 1vh) * 100)' }} // Mobile 100vh Fix
+        >
             <AppEnhancements />
+            {/* 🎛️ Fixed Ambience HUD - Renders outside Canvas for stability */}
+            <AmbienceControl />
             <ErrorBoundary>
                 {/* 3D Scene */}
                 <Canvas
                     shadows
                     camera={{ position: [0, 40, 140], fov: 60, near: 0.1, far: 100000 }}
-                    dpr={[1, 2]}
+                    // 🚀 PERFORMANCE: Smart DPR for Mobile vs Desktop
+                    // Clamps to 1.5 on mobile to save battery/heat, 2.0 on Desktop
+                    dpr={[1, window.innerWidth < 768 ? 1.5 : 2]}
                     gl={{
-                        antialias: true,
+                        antialias: true, // Kept true as requested for quality
                         powerPreference: "high-performance",
                         toneMapping: THREE.ACESFilmicToneMapping,
                         toneMappingExposure: 0.6,
-                        outputColorSpace: THREE.SRGBColorSpace
+                        outputColorSpace: THREE.SRGBColorSpace,
+                        // Mobile optimization: preserveDrawingBuffer false is faster
+                        preserveDrawingBuffer: false
                     }}
                 >
                     <color attach="background" args={['#000814']} />

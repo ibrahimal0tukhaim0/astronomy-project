@@ -383,7 +383,7 @@ function RealComet({ scale = 1.0 }: { scale?: number }) {
     // Orientation: The glowing tail must always point AWAY from the Sun.
     // We lookAt(0,0,0) (The Sun), so the local +Z axis points to Sun.
     // Therefore, the tail must extend along the local -Z axis.
-    useFrame(() => {
+    useFrame((state) => {
         if (groupRef.current) {
             groupRef.current.lookAt(0, 0, 0);
         }
@@ -473,7 +473,7 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
     useEffect(() => {
         const loadTextures = async () => {
             try {
-                const loadedTextures = await loadCelestialTextures(data.id) as any;
+                const loadedTextures = await loadCelestialTextures(data.id);
                 if (loadedTextures) {
                     if (loadedTextures.map) {
                         loadedTextures.map.colorSpace = THREE.SRGBColorSpace;
@@ -509,13 +509,55 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
 
     const initialPos = new THREE.Vector3(...data.initialPosition);
 
+    // تحديد المواد (Materials) للكائنات غير المخصصة
+    const getMaterial = () => {
+        if (['alnitak', 'alnilam', 'mintaka'].includes(data.id)) return (
+            <meshStandardMaterial
+                color={'#66ccff'}
+                emissive={'#66ccff'}
+                emissiveIntensity={4.0}
+                roughness={0.1}
+                metalness={0.8}
+                toneMapped={false}
+            />
+        );
 
-    // ----------------------------------------------------------------
-    // MAIN RENDER
-    // ----------------------------------------------------------------
+        if (!textures) {
+            return <meshStandardMaterial
+                color={data.science.color}
+                emissive={data.science.color}
+                emissiveIntensity={0.2}
+            />;
+        }
+
+        if (data.id === 'sirius') return (
+            <meshBasicMaterial color={'#A0C8FF'} toneMapped={false} />
+        );
+
+        if (data.id === 'al-tariq') return (
+            <meshStandardMaterial
+                color={'#FFFFFF'}
+                emissive={'#FFFFFF'}
+                emissiveIntensity={5.0}
+                roughness={0.4}
+                metalness={0.1}
+                toneMapped={false}
+            />
+        );
+
+        if (data.id === 'pluto') return (
+            <meshStandardMaterial color={data.science.color} />
+        );
+
+        if (!textures.map) {
+            return <meshStandardMaterial color={data.science.color} />;
+        }
+
+        return <meshStandardMaterial color={data.science.color} />;
+    };
 
     return (
-        <group ref={groupRef} position={initialPos}>
+        <group ref={groupRef} position={initialPos} name={data.id}>
             {/* منطقة النقر (Hitbox) - مخفية */}
             <mesh
                 ref={meshRef}
