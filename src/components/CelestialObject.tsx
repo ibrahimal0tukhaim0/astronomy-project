@@ -473,6 +473,7 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
     useEffect(() => {
         const loadTextures = async () => {
             try {
+                const loadedTextures = await loadCelestialTextures(data.id);
                 // Type assertion to bypass strict check if loadCelestialTextures return type is complex
                 const tex = loadedTextures as any;
                 if (tex && tex.map) {
@@ -505,11 +506,6 @@ export function CelestialObject({ data, onSelect, dateRef, isSelected }: Celesti
     })
 
     const initialPos = new THREE.Vector3(...data.initialPosition);
-
-    // Removed unused getMaterial function
-    toneMapped = { false}
-        />
-        );
 
     if (!textures) {
         return <meshStandardMaterial
