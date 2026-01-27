@@ -242,9 +242,6 @@ export const SpaceLightning = memo(function SpaceLightning() {
         setBolts(prev => prev.filter(b => b.id !== id));
     };
 
-    // Ref-like object for Portal to satisfy Type check
-    const bodyRef = useRef(document.body);
-
     return (
         <group>
             {/* UI IS NOW HANDLED BY AmbienceControl.tsx in App.tsx */}
