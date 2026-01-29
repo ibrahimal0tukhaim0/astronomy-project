@@ -11,7 +11,8 @@ function random(seed: number) {
 
 export function AsteroidBelts() {
     // 🌑 Load a generic rock texture (Bennu is perfect for this)
-    const texture = useTexture("textures/asteroids/bennu.jpg");
+    // FIX: Use BASE_URL for correct loading on GitHub Pages
+    const texture = useTexture(`${import.meta.env.BASE_URL}textures/asteroids/bennu.jpg`);
 
     // Refs for InstancedMesh
     const mainBeltRef = useRef<THREE.InstancedMesh>(null!);
@@ -35,8 +36,8 @@ export function AsteroidBelts() {
             // Spread in Y (Vertical thickness)
             const y = (random(i * SEED + 2) - 0.5) * 10;
 
-            // Random Scale (Small rocks)
-            const scale = 0.5 + random(i * SEED + 3) * 1.5;
+            // FIX: Larger Scale for visibility (Was 0.5 - 2.0, Now 2.5 - 8.0)
+            const scale = 2.5 + random(i * SEED + 3) * 5.5;
 
             tempObject.position.set(x, y, z);
             tempObject.scale.set(scale, scale, scale);
@@ -56,7 +57,8 @@ export function AsteroidBelts() {
             const z = Math.sin(angle) * radius;
             const y = (random(i * SEED + 12) - 0.5) * 40; // Thicker belt
 
-            const scale = 1.0 + random(i * SEED + 13) * 3.0; // Larger rocks
+            // FIX: Larger Scale for visibility
+            const scale = 8.0 + random(i * SEED + 13) * 12.0; // Huge rocks for Kuiper
 
             tempObject.position.set(x, y, z);
             tempObject.scale.set(scale, scale, scale);
