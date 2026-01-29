@@ -1,4 +1,4 @@
-import React, { useRef, useLayoutEffect } from 'react'
+import { useRef, useLayoutEffect } from 'react'
 import * as THREE from 'three'
 import { useFrame } from '@react-three/fiber'
 import { useTexture } from '@react-three/drei'
@@ -69,7 +69,7 @@ export function AsteroidBelts() {
     }, []);
 
     // 🔄 Animation: Slowly rotate the entire belts
-    useFrame((state, delta) => {
+    useFrame((_, delta) => {
         if (mainBeltRef.current) mainBeltRef.current.rotation.y += delta * 0.02;     // Fast inner belt
         if (kuiperBeltRef.current) kuiperBeltRef.current.rotation.y += delta * 0.005; // Slow outer belt
     });
