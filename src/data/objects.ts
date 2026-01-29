@@ -148,14 +148,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'star',
         science: {
             color: '#D9E5FF',
-            scale: 600.0, // 🌟 3x Scale (was 200 equivalent)
+            scale: 200.0, // Reduced from 600
             orbitRadius: 0,
             orbitSpeed: 0,
             orbitInclination: 0,
             orbitPhase: 0,
             glowIntensity: 5.0,
         },
-        initialPosition: [1360, 1284, -340], // 🌟 Extreme: 2x Distance
+        initialPosition: [10000, 5000, -30000], // 🌟 Deep Space (Was 1360)
     },
 
     // الطارق
@@ -164,14 +164,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'conceptual',
         science: {
             color: '#FFFFFF',
-            scale: 60.0, // 🌟 3x Scale (was 20)
+            scale: 50.0,
             orbitRadius: 0,
             orbitSpeed: 0,
             orbitInclination: 0,
             orbitPhase: 0,
             glowIntensity: 8.0,
         },
-        initialPosition: [-1360, 1392, -510], // 🌟 Extreme: 2x Distance
+        initialPosition: [-15000, 10000, -35000], // 🌟 Deep Space
     },
     // =============================================================================
     // الكواكب الخارجية (العمالقة الجليدية والكواكب القزمة)
@@ -233,14 +233,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'star',
         science: {
             color: '#66ccff',
-            scale: 54.0, // 🌟 3x Scale (was 18)
+            scale: 200.0,
             orbitRadius: 0,
             orbitSpeed: 0,
             orbitInclination: 0,
             orbitPhase: 0,
             glowIntensity: 6.0,
         },
-        initialPosition: [-148, 1648, 1360], // 🌟 Extreme: 2x Distance & Spacing
+        initialPosition: [-3000, 40000, 45000], // 🌟 Deep Space
     },
 
     // النظام (Alnilam)
@@ -249,14 +249,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'star',
         science: {
             color: '#66ccff',
-            scale: 54.0, // 🌟 3x Scale (was 18)
+            scale: 200.0,
             orbitRadius: 0,
             orbitSpeed: 0,
             orbitInclination: 0,
             orbitPhase: 0,
             glowIntensity: 6.0,
         },
-        initialPosition: [0, 1788, 1360], // 🌟 Extreme: 2x Distance
+        initialPosition: [0, 40000, 45000], // 🌟 Deep Space
     },
 
     // المنطقة (Mintaka)
@@ -265,14 +265,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'star',
         science: {
             color: '#66ccff',
-            scale: 54.0, // 🌟 3x Scale (was 18)
+            scale: 200.0,
             orbitRadius: 0,
             orbitSpeed: 0,
             orbitInclination: 0,
             orbitPhase: 0,
             glowIntensity: 6.0,
         },
-        initialPosition: [148, 1930, 1360], // 🌟 Extreme: 2x Distance & Spacing
+        initialPosition: [3000, 40000, 45000], // 🌟 Deep Space
     },
 
     // =============================================================================
@@ -284,18 +284,18 @@ export const celestialObjects: CelestialData[] = [
         id: 'ceres',
         type: 'planet',
         science: {
-            color: '#FFFFFF', // ☀️ Restored to White for Texture Clarity
-            scale: 224.0, // 2x Scaled (was 112)
-            orbitRadius: 200, // 🌑 Corrected into Main Belt
+            color: '#FFFFFF',
+            scale: 1.2, // 🌑 FIX: Reasonable Scale (was 224 !!!)
+            orbitRadius: 200,
             orbitSpeed: 0.1,
             orbitInclination: 10.6,
-            orbitPhase: 0, // 0 deg (1/9)
+            orbitPhase: 0,
             shapeScale: [1, 1, 1],
             frustumCulled: false,
-            glowIntensity: 0.3,
-            texture: 'textures/asteroids/ceres.jpg' // 🌑 Authentic NASA Texture
+            glowIntensity: 0.1,
+            texture: 'textures/asteroids/ceres.jpg'
         },
-        initialPosition: [1764, 50, 0], // Y-offset +50
+        initialPosition: [200, 50, 0],
     },
 
     // 2. فيستا (Vesta) - كروي مفلطح
@@ -303,18 +303,18 @@ export const celestialObjects: CelestialData[] = [
         id: 'vesta',
         type: 'planet',
         science: {
-            color: '#FFFFFF', // ☀️ Restored to White for Texture Clarity
-            scale: 179.2, // 2x Scaled
-            orbitRadius: 208, // 🌑 Corrected into Main Belt
+            color: '#FFFFFF',
+            scale: 1.1, // 🌑 FIX: Reasonable Scale
+            orbitRadius: 208,
             orbitSpeed: 0.09,
             orbitInclination: 7.1,
-            orbitPhase: 0.698, // 40 deg (2/9)
+            orbitPhase: 0.698,
             shapeScale: [1.1, 1.0, 1.0],
             frustumCulled: false,
-            glowIntensity: 0.3,
-            texture: 'textures/asteroids/vesta.jpg' // 🌑 Authentic NASA Texture
+            glowIntensity: 0.1,
+            texture: 'textures/asteroids/vesta.jpg'
         },
-        initialPosition: [1890, -40, 0], // Y-offset -40
+        initialPosition: [208, -40, 0],
     },
 
     // 3. بالاس (Pallas) - غير منتظم قليلاً
@@ -322,18 +322,18 @@ export const celestialObjects: CelestialData[] = [
         id: 'pallas',
         type: 'planet',
         science: {
-            color: '#888888', // 🌑 Darkened: High-albedo texture correction
-            scale: 179.2, // 2x Scaled
-            orbitRadius: 212, // 🌑 Corrected into Main Belt
+            color: '#888888',
+            scale: 1.1, // 🌑 FIX: Reasonable Scale
+            orbitRadius: 212,
             orbitSpeed: 0.08,
             orbitInclination: 34.8,
-            orbitPhase: 1.396, // 80 deg (3/9)
+            orbitPhase: 1.396,
             shapeScale: [1.1, 1.0, 0.9],
             frustumCulled: false,
-            glowIntensity: 0.3,
-            texture: 'textures/asteroids/pallas.jpg' // 🌑 Generic High-Res Asteroid Texture (Fallback)
+            glowIntensity: 0.1,
+            texture: 'textures/asteroids/pallas.jpg'
         },
-        initialPosition: [1995, 80, 0], // Y-offset +80
+        initialPosition: [212, 80, 0],
     },
 
     // 4. جونو (Juno)
@@ -341,18 +341,18 @@ export const celestialObjects: CelestialData[] = [
         id: 'juno',
         type: 'planet',
         science: {
-            color: '#FFFFFF', // ☀️ Restored to White for Texture Clarity
-            scale: 140.8, // 2x Scaled
-            orbitRadius: 195, // 🌑 Corrected into Main Belt
+            color: '#FFFFFF',
+            scale: 0.9, // 🌑 FIX: Reasonable Scale
+            orbitRadius: 195,
             orbitSpeed: 0.11,
             orbitInclination: 13.0,
-            orbitPhase: 2.094, // 120 deg (4/9)
+            orbitPhase: 2.094,
             shapeScale: [1.0, 1.0, 0.9],
             frustumCulled: false,
-            glowIntensity: 0.3,
-            texture: 'textures/asteroids/juno.jpg' // 🌑 Generic High-Res Asteroid Texture (Fallback)
+            glowIntensity: 0.1,
+            texture: 'textures/asteroids/juno.jpg'
         },
-        initialPosition: [2100, -60, 0], // Y-offset -60
+        initialPosition: [195, -60, 0],
     },
 
     // 5. إيروس (Eros) - متطاول جداً (شكل حبة الفول السوداني)
@@ -360,18 +360,18 @@ export const celestialObjects: CelestialData[] = [
         id: 'eros',
         type: 'planet',
         science: {
-            color: '#888888', // 🌑 Darkened: High-albedo texture correction
-            scale: 96.0, // 2x Scaled
-            orbitRadius: 192, // 🌑 Corrected into Main Belt
+            color: '#888888',
+            scale: 0.6, // 🌑 FIX: Reasonable Scale
+            orbitRadius: 192,
             orbitSpeed: 0.11,
             orbitInclination: 10.8,
-            orbitPhase: 2.792, // 160 deg (5/9)
+            orbitPhase: 2.792,
             shapeScale: [2.5, 1.0, 1.0],
             frustumCulled: false,
-            glowIntensity: 0.3,
-            texture: 'textures/asteroids/eros.jpg' // 🌑 Authentic NASA Texture
+            glowIntensity: 0.1,
+            texture: 'textures/asteroids/eros.jpg'
         },
-        initialPosition: [2226, 30, 0], // Y-offset +30
+        initialPosition: [192, 30, 0],
     },
 
     // 6. إيدا (Ida) - متطاول (شكل البطاطس)
@@ -379,18 +379,18 @@ export const celestialObjects: CelestialData[] = [
         id: 'ida',
         type: 'planet',
         science: {
-            color: '#888888', // 🌑 Darkened: High-albedo texture correction
-            scale: 115.2, // 2x Scaled
-            orbitRadius: 205, // 🌑 Corrected into Main Belt
+            color: '#888888',
+            scale: 0.7, // 🌑 FIX: Reasonable Scale
+            orbitRadius: 205,
             orbitSpeed: 0.09,
             orbitInclination: 2.0,
-            orbitPhase: 3.490, // 200 deg (6/9)
+            orbitPhase: 3.490,
             shapeScale: [2.2, 1.0, 1.0],
             frustumCulled: false,
-            glowIntensity: 0.3,
-            texture: 'textures/asteroids/ida.jpg' // 🌑 Authentic NASA Texture
+            glowIntensity: 0.1,
+            texture: 'textures/asteroids/ida.jpg'
         },
-        initialPosition: [2352, -20, 0], // Y-offset -20
+        initialPosition: [205, -20, 0],
     },
 
     // 7. جاسبرا (Gaspra) - غير منتظم جداً
@@ -398,18 +398,18 @@ export const celestialObjects: CelestialData[] = [
         id: 'gaspra',
         type: 'planet',
         science: {
-            color: '#FFFFFF', // ☀️ Restored to White for Texture Clarity
-            scale: 89.6, // 2x Scaled
-            orbitRadius: 198, // 🌑 Corrected into Main Belt
+            color: '#FFFFFF',
+            scale: 0.5, // 🌑 FIX: Reasonable Scale
+            orbitRadius: 198,
             orbitSpeed: 0.1,
             orbitInclination: 5.0,
-            orbitPhase: 4.188, // 240 deg (7/9)
+            orbitPhase: 4.188,
             shapeScale: [1.8, 1.1, 0.9],
             frustumCulled: false,
-            glowIntensity: 0.3,
-            texture: 'textures/asteroids/gaspra.jpg' // 🌑 Authentic NASA Texture
+            glowIntensity: 0.1,
+            texture: 'textures/asteroids/gaspra.jpg'
         },
-        initialPosition: [2467.5, 70, 0], // Y-offset +70
+        initialPosition: [198, 70, 0],
     },
 
     // 8. بينو (Bennu) - شكل الماسة (معين)
@@ -417,18 +417,18 @@ export const celestialObjects: CelestialData[] = [
         id: 'bennu',
         type: 'planet',
         science: {
-            color: '#888888', // 🌑 Darkened: High-albedo texture correction
-            scale: 76.8, // 2x Scaled
-            orbitRadius: 190, // 🌑 Corrected into Main Belt
+            color: '#888888',
+            scale: 0.5, // 🌑 FIX: Reasonable Scale
+            orbitRadius: 190,
             orbitSpeed: 0.12,
             orbitInclination: 6.0,
-            orbitPhase: 4.886, // 280 deg (8/9)
+            orbitPhase: 4.886,
             shapeScale: [1.0, 1.0, 1.0],
             frustumCulled: false,
-            glowIntensity: 0.3,
-            texture: 'textures/asteroids/bennu.jpg' // 🌑 Authentic NASA Texture
+            glowIntensity: 0.1,
+            texture: 'textures/asteroids/bennu.jpg'
         },
-        initialPosition: [2583, -90, 0], // Y-offset -90
+        initialPosition: [190, -90, 0],
     },
 
     // 9. ريوجو (Ryugu) - شكل الماسة
@@ -436,18 +436,18 @@ export const celestialObjects: CelestialData[] = [
         id: 'ryugu',
         type: 'planet',
         science: {
-            color: '#888888', // 🌑 Darkened: High-albedo texture correction
-            scale: 83.2, // 2x Scaled
-            orbitRadius: 215, // 🌑 Corrected into Main Belt
+            color: '#888888',
+            scale: 0.5, // 🌑 FIX: Reasonable Scale
+            orbitRadius: 215,
             orbitSpeed: 0.08,
             orbitInclination: 5.9,
-            orbitPhase: 5.585, // 320 deg (9/9)
+            orbitPhase: 5.585,
             shapeScale: [1.0, 1.0, 1.0],
             frustumCulled: false,
-            glowIntensity: 0.3,
-            texture: 'textures/asteroids/ryugu.jpg' // 🌑 Authentic NASA Texture
+            glowIntensity: 0.1,
+            texture: 'textures/asteroids/ryugu.jpg'
         },
-        initialPosition: [2709, 45, 0], // Y-offset +45
+        initialPosition: [215, 45, 0],
     },
 
     // 🌟 THE ELITE STARS (Golden Five)
