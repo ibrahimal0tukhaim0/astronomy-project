@@ -286,8 +286,8 @@ export const celestialObjects: CelestialData[] = [
         science: {
             color: '#FFFFFF', // ☀️ Restored to White for Texture Clarity
             scale: 224.0, // 2x Scaled (was 112)
-            orbitRadius: 2470, // +40% Spacing (was 1764)
-            orbitSpeed: 0.02,
+            orbitRadius: 200, // 🌑 Corrected into Main Belt
+            orbitSpeed: 0.1,
             orbitInclination: 10.6,
             orbitPhase: 0, // 0 deg (1/9)
             shapeScale: [1, 1, 1],
@@ -305,8 +305,8 @@ export const celestialObjects: CelestialData[] = [
         science: {
             color: '#FFFFFF', // ☀️ Restored to White for Texture Clarity
             scale: 179.2, // 2x Scaled
-            orbitRadius: 2646, // +40% Spacing (was 1890)
-            orbitSpeed: 0.018,
+            orbitRadius: 208, // 🌑 Corrected into Main Belt
+            orbitSpeed: 0.09,
             orbitInclination: 7.1,
             orbitPhase: 0.698, // 40 deg (2/9)
             shapeScale: [1.1, 1.0, 1.0],
@@ -324,8 +324,8 @@ export const celestialObjects: CelestialData[] = [
         science: {
             color: '#888888', // 🌑 Darkened: High-albedo texture correction
             scale: 179.2, // 2x Scaled
-            orbitRadius: 2793, // +40% Spacing (was 1995)
-            orbitSpeed: 0.017,
+            orbitRadius: 212, // 🌑 Corrected into Main Belt
+            orbitSpeed: 0.08,
             orbitInclination: 34.8,
             orbitPhase: 1.396, // 80 deg (3/9)
             shapeScale: [1.1, 1.0, 0.9],
@@ -343,8 +343,8 @@ export const celestialObjects: CelestialData[] = [
         science: {
             color: '#FFFFFF', // ☀️ Restored to White for Texture Clarity
             scale: 140.8, // 2x Scaled
-            orbitRadius: 2940, // +40% Spacing (was 2100)
-            orbitSpeed: 0.019,
+            orbitRadius: 195, // 🌑 Corrected into Main Belt
+            orbitSpeed: 0.11,
             orbitInclination: 13.0,
             orbitPhase: 2.094, // 120 deg (4/9)
             shapeScale: [1.0, 1.0, 0.9],
@@ -362,8 +362,8 @@ export const celestialObjects: CelestialData[] = [
         science: {
             color: '#888888', // 🌑 Darkened: High-albedo texture correction
             scale: 96.0, // 2x Scaled
-            orbitRadius: 3116, // +40% Spacing (was 2226)
-            orbitSpeed: 0.016,
+            orbitRadius: 192, // 🌑 Corrected into Main Belt
+            orbitSpeed: 0.11,
             orbitInclination: 10.8,
             orbitPhase: 2.792, // 160 deg (5/9)
             shapeScale: [2.5, 1.0, 1.0],
@@ -381,8 +381,8 @@ export const celestialObjects: CelestialData[] = [
         science: {
             color: '#888888', // 🌑 Darkened: High-albedo texture correction
             scale: 115.2, // 2x Scaled
-            orbitRadius: 3293, // +40% Spacing (was 2352)
-            orbitSpeed: 0.015,
+            orbitRadius: 205, // 🌑 Corrected into Main Belt
+            orbitSpeed: 0.09,
             orbitInclination: 2.0,
             orbitPhase: 3.490, // 200 deg (6/9)
             shapeScale: [2.2, 1.0, 1.0],
@@ -400,8 +400,8 @@ export const celestialObjects: CelestialData[] = [
         science: {
             color: '#FFFFFF', // ☀️ Restored to White for Texture Clarity
             scale: 89.6, // 2x Scaled
-            orbitRadius: 3455, // +40% Spacing (was 2467.5)
-            orbitSpeed: 0.016,
+            orbitRadius: 198, // 🌑 Corrected into Main Belt
+            orbitSpeed: 0.1,
             orbitInclination: 5.0,
             orbitPhase: 4.188, // 240 deg (7/9)
             shapeScale: [1.8, 1.1, 0.9],
@@ -419,8 +419,8 @@ export const celestialObjects: CelestialData[] = [
         science: {
             color: '#888888', // 🌑 Darkened: High-albedo texture correction
             scale: 76.8, // 2x Scaled
-            orbitRadius: 3616, // +40% Spacing (was 2583)
-            orbitSpeed: 0.014,
+            orbitRadius: 190, // 🌑 Corrected into Main Belt
+            orbitSpeed: 0.12,
             orbitInclination: 6.0,
             orbitPhase: 4.886, // 280 deg (8/9)
             shapeScale: [1.0, 1.0, 1.0],
@@ -438,8 +438,8 @@ export const celestialObjects: CelestialData[] = [
         science: {
             color: '#888888', // 🌑 Darkened: High-albedo texture correction
             scale: 83.2, // 2x Scaled
-            orbitRadius: 3793, // +40% Spacing (was 2709)
-            orbitSpeed: 0.013,
+            orbitRadius: 215, // 🌑 Corrected into Main Belt
+            orbitSpeed: 0.08,
             orbitInclination: 5.9,
             orbitPhase: 5.585, // 320 deg (9/9)
             shapeScale: [1.0, 1.0, 1.0],
