@@ -18,7 +18,7 @@ export const eliteStars: CelestialData[] = [
             augustNotification: true, // 🌟 Special feature
             realImage: 'textures/stars/canopus_nasa.jpg'
         },
-        initialPosition: [0, -30000, 42000], // 🌟 Deep Space: South
+        initialPosition: [0, -1000, 1400], // South, Distant
     },
 
     // 2. السماك الرامح (Arcturus)
@@ -36,7 +36,7 @@ export const eliteStars: CelestialData[] = [
             lightColor: '#FF4500', // Orange-Red Light
             realImage: 'textures/stars/arcturus_nasa.jpg'
         },
-        initialPosition: [42000, 24000, 0], // 🌟 Deep Space: East
+        initialPosition: [1400, 800, 0], // East, High
     },
 
     // 3. رجل القنطور (Rigil Kentaurus)
@@ -54,7 +54,7 @@ export const eliteStars: CelestialData[] = [
             lightColor: '#ffcc33', // Golden Sun-like
             realImage: 'textures/stars/rigil_nasa.jpg'
         },
-        initialPosition: [-42000, -15000, 15000], // 🌟 Deep Space: West/South
+        initialPosition: [-1400, -500, 500], // West/South
     },
 
     // 4. النسر الواقع (Vega)
@@ -72,7 +72,7 @@ export const eliteStars: CelestialData[] = [
             lightColor: '#4488ff', // Blue Light
             realImage: 'textures/stars/vega_nasa.jpg'
         },
-        initialPosition: [0, 45000, -15000], // 🌟 Deep Space: North High
+        initialPosition: [0, 1500, -500], // North High
     },
 
     // 5. العيوق (Capella)
@@ -91,6 +91,6 @@ export const eliteStars: CelestialData[] = [
             pulsationSpeed: 1.5, // 🌟 Subtle Pulsation
             realImage: 'textures/stars/capella_nasa.jpg'
         },
-        initialPosition: [24000, 45000, 24000], // 🌟 Deep Space: North East
+        initialPosition: [800, 1500, 800], // North East
     },
 ];

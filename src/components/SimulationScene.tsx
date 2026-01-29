@@ -6,7 +6,6 @@ import gsap from 'gsap'
 import { Meteors } from './Meteors';
 import { SpaceLightning } from './SpaceLightning';
 import { SpaceProbe } from './SpaceProbe';
-import { AsteroidBelts } from './AsteroidBelts';
 
 import type { CelestialData } from '../types'
 import { celestialObjects } from '../data/objects'
@@ -174,9 +173,6 @@ export default function SimulationScene({ onSelect, isPaused, onDateChange, isAR
 
             {/* 🚀 Space Probe (Target: Rigil Kentaurus) */}
             <SpaceProbe />
-
-            {/* 🪨 Asteroid Belts (Restored) */}
-            <AsteroidBelts />
 
             {/* 🪐 Orbit Rings (Visual Paths) */}
             <PlanetOrbits />
