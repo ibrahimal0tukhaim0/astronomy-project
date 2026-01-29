@@ -23,6 +23,13 @@ export function InfoPanel({ selectedObject, onClose }: InfoPanelProps) {
                 animate={{ x: 0, opacity: 1 }}
                 exit={{ x: i18n.language === 'ar' ? '-100%' : '100%', opacity: 0 }}
                 transition={{ type: 'spring', damping: 25, stiffness: 200 }}
+                style={{
+                    backgroundImage: selectedObject.science.realImage
+                        ? `linear-gradient(to bottom, rgba(0,0,0,0.8), rgba(0,0,0,0.95)), url(${import.meta.env.BASE_URL}${selectedObject.science.realImage})`
+                        : 'none',
+                    backgroundSize: 'cover',
+                    backgroundPosition: 'center'
+                }}
                 className={`absolute top-0 ${i18n.language === 'ar' ? 'left-0 border-r' : 'right-0 border-l'} h-full w-full md:w-[520px] bg-black/90 backdrop-blur-xl border-white/10 text-white overflow-y-auto z-50 shadow-2xl mobile-scaled-panel origin-top-right`}
                 role="dialog"
                 aria-modal="true"

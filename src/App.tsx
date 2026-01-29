@@ -24,6 +24,7 @@ import { CinematicHome } from './components/CinematicHome'
 import { AppEnhancements } from './components/AppEnhancements'
 import { AmbienceControl } from './components/AmbienceControl'
 import { SplashIntro } from './components/SplashIntro'
+import { WebcamLayer } from './components/WebcamLayer' // 📷 Import Webcam Layer
 
 // 🛡️ User Requested: Error Boundary to prevent crashes
 class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { hasError: boolean }> {
@@ -143,11 +144,19 @@ function AppContent() {
     return (
         // touch-none prevents "pull-to-refresh" on mobile which ruins the 3D experience
         <div
-            className="w-full bg-black relative overflow-hidden touch-none"
+            className={`w-full relative overflow-hidden touch-none ${isARMode ? 'bg-transparent' : 'bg-black'}`}
             dir="rtl"
-            style={{ height: 'calc(var(--vh, 1vh) * 100)' }} // Mobile 100vh Fix
+            style={{
+                height: 'calc(var(--vh, 1vh) * 100)',
+                zIndex: 2, // Ensure App content sits ABOVE the fixed video (Z:1)
+                position: 'relative'
+            }}
         >
-            <AppEnhancements />
+            {/* 🔮 Visual Enhancements & Logic Layer */}
+            <AppEnhancements currentDate={currentDate} />
+
+            {/* 🎥 AR LAYER: HTML Video Background (Outside Canvas) */}
+            {isARMode && <WebcamLayer />}
 
             {/* 🎬 Cinematic Splash Intro */}
             {!introFinished && (
@@ -179,10 +188,12 @@ function AppContent() {
                         toneMapping: THREE.ACESFilmicToneMapping,
                         toneMappingExposure: 0.8,
                         outputColorSpace: THREE.SRGBColorSpace,
-                        preserveDrawingBuffer: false
+                        preserveDrawingBuffer: false,
+                        alpha: true // ✨ Allow Transparent Background for AR
                     }}
                 >
                     {/* In AR Mode, we want transparent background so VideoTexture (or DOM) shows through */}
+                    {/* Background Color handles regular mode. In AR mode, it's transparent. */}
                     {!isARMode && <color attach="background" args={['#000814']} />}
 
                     {/* Performance Optimization for iOS */}
@@ -213,15 +224,17 @@ function AppContent() {
                                 ref={controlsRef}
                                 target={[0, 0, 0]}
                                 enableZoom={true}
-                                enablePan={true}
-                                panSpeed={1.0}
+                                zoomToCursor={true} // 🔍 Pro Feature: Zoom to wherever cursor is
+                                enablePan={true} // ✋ Allow panning (2 fingers on mobile)
+                                panSpeed={1.0} // Screen-space panning
                                 enableDamping={true}
-                                dampingFactor={0.05}
-                                minDistance={20}
+                                dampingFactor={0.05} // 🌊 Smooth inertia
+                                minDistance={20} // 🛡️ Collision Avoidance (Solar Safety Zone)
                                 maxDistance={4000}
                                 autoRotate={!hasStarted}
                                 autoRotateSpeed={0.5}
-                                rotateSpeed={0.4} // 🕹️ Smoother Rotation (User Request)
+                                // 📱 Mobile Optimization: Slower rotation for touch precision (0.5), faster for mouse (0.8)
+                                rotateSpeed={window.matchMedia("(pointer: coarse)").matches ? 0.5 : 0.8}
                                 enabled={true}
                             />
                         </>

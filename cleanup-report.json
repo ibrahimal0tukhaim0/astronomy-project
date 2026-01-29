@@ -1,0 +1,13 @@
+{
+  "timestamp": "2026-01-29T20:44:07.487Z",
+  "totalSourceFiles": 40,
+  "unusedFiles": {
+    "images": [],
+    "videos": [],
+    "fonts": [],
+    "json": [],
+    "other": []
+  },
+  "totalUnused": 0,
+  "totalWasteMB": 0
+}

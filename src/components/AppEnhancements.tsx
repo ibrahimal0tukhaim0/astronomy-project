@@ -1,11 +1,44 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 
 // ═══════════════════════════════════════════════════════════
 // COMPREHENSIVE APP ENHANCEMENT SUITE
 // ═══════════════════════════════════════════════════════════
 // Integrated for React/Three.js Environment
 
-export function AppEnhancements() {
+// 🌟 Canopus Notification Component
+function CanopusAlert({ currentDate }: { currentDate: Date }) {
+    const [show, setShow] = useState(false);
+
+    useEffect(() => {
+        const month = currentDate.getMonth(); // 0-11
+        const day = currentDate.getDate();
+
+        // Check for "Suhail Season" (Approx Aug 24 - Sep 5)
+        if (month === 7 && day >= 24 && day <= 31) {
+            // Avoid spamming
+            const hasSeen = sessionStorage.getItem('seen_canopus_alert');
+            if (!hasSeen) {
+                setShow(true);
+                sessionStorage.setItem('seen_canopus_alert', 'true');
+                setTimeout(() => setShow(false), 8000);
+            }
+        }
+    }, [currentDate]);
+
+    if (!show) return null;
+
+    return (
+        <div className="absolute top-24 left-1/2 -translate-x-1/2 z-50 bg-black/80 text-yellow-300 px-6 py-3 rounded-full border border-yellow-500/50 backdrop-blur-md shadow-[0_0_30px_rgba(255,215,0,0.3)] animate-pulse flex items-center gap-3 dir-rtl">
+            <span className="text-2xl">⭐</span>
+            <div>
+                <strong className="block text-sm font-bold">ظهر سهيل!</strong>
+                <span className="text-xs text-yellow-100">انكسرت حدة الحرارة وبدأ موسم اعتدال الجو.</span>
+            </div>
+        </div>
+    );
+}
+
+export function AppEnhancements({ currentDate }: { currentDate?: Date }) {
     useEffect(() => {
         // ═══════════════════════════════════════════════════════════
         // 1. ADVANCED FPS & ANIMATION OPTIMIZATION
@@ -487,5 +520,17 @@ export function AppEnhancements() {
 
     }, []);
 
-    return null; // Headless component
+    return (
+        <>
+            {/* 🌟 Canopus Alert */}
+            {currentDate && <CanopusAlert currentDate={currentDate} />}
+
+            {/* 🌑 2D Parallax Star Background (Performance Optimized) */}
+            <div
+                id="parallax-star-layer"
+                className="fixed inset-0 pointer-events-none z-0 opacity-60 mix-blend-screen"
+                aria-hidden="true"
+            />
+        </>
+    );
 }

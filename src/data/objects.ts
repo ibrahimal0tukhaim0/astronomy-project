@@ -1,4 +1,5 @@
 import type { CelestialData } from '../types';
+import { eliteStars } from './CelestialAtlas';
 
 export const celestialObjects: CelestialData[] = [
     // =============================================================================
@@ -147,14 +148,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'star',
         science: {
             color: '#D9E5FF',
-            scale: 768.0, // 🌟 Doubled (was 384.0)
+            scale: 600.0, // 🌟 3x Scale (was 200 equivalent)
             orbitRadius: 0,
             orbitSpeed: 0,
             orbitInclination: 0,
             orbitPhase: 0,
             glowIntensity: 5.0,
         },
-        initialPosition: [400, 458.6, -100], // 🌟 Raised 30% (352.8 * 1.3)
+        initialPosition: [1360, 1284, -340], // 🌟 Extreme: 2x Distance
     },
 
     // الطارق
@@ -163,14 +164,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'conceptual',
         science: {
             color: '#FFFFFF',
-            scale: 20.0, // Doubled (was 10.0)
+            scale: 60.0, // 🌟 3x Scale (was 20)
             orbitRadius: 0,
             orbitSpeed: 0,
             orbitInclination: 0,
             orbitPhase: 0,
             glowIntensity: 8.0,
         },
-        initialPosition: [-400, 497.0, -150], // Raised 40% (354.9 * 1.4)
+        initialPosition: [-1360, 1392, -510], // 🌟 Extreme: 2x Distance
     },
     // =============================================================================
     // الكواكب الخارجية (العمالقة الجليدية والكواكب القزمة)
@@ -232,14 +233,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'star',
         science: {
             color: '#66ccff',
-            scale: 18.0, // Doubled (was 9.0)
+            scale: 54.0, // 🌟 3x Scale (was 18)
             orbitRadius: 0,
             orbitSpeed: 0,
             orbitInclination: 0,
             orbitPhase: 0,
             glowIntensity: 6.0,
         },
-        initialPosition: [-52.73, 588.32, 400], // Spaced +30% (-40.56 * 1.3) & Raised +30% (452.55 * 1.3)
+        initialPosition: [-148, 1648, 1360], // 🌟 Extreme: 2x Distance & Spacing
     },
 
     // النظام (Alnilam)
@@ -248,14 +249,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'star',
         science: {
             color: '#66ccff',
-            scale: 18.4, // Doubled (was 9.2)
+            scale: 54.0, // 🌟 3x Scale (was 18)
             orbitRadius: 0,
             orbitSpeed: 0,
             orbitInclination: 0,
             orbitPhase: 0,
             glowIntensity: 6.0,
         },
-        initialPosition: [0, 638.82, 400], // Raised +30% (491.4 * 1.3)
+        initialPosition: [0, 1788, 1360], // 🌟 Extreme: 2x Distance
     },
 
     // المنطقة (Mintaka)
@@ -264,14 +265,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'star',
         science: {
             color: '#66ccff',
-            scale: 17.6, // Doubled (was 8.8)
+            scale: 54.0, // 🌟 3x Scale (was 18)
             orbitRadius: 0,
             orbitSpeed: 0,
             orbitInclination: 0,
             orbitPhase: 0,
             glowIntensity: 6.0,
         },
-        initialPosition: [52.73, 689.33, 400], // Spaced +30% (40.56 * 1.3) & Raised +30% (530.25 * 1.3)
+        initialPosition: [148, 1930, 1360], // 🌟 Extreme: 2x Distance & Spacing
     },
 
     // =============================================================================
@@ -449,5 +450,6 @@ export const celestialObjects: CelestialData[] = [
         initialPosition: [2709, 45, 0], // Y-offset +45
     },
 
-    // 10. مذنب هالي (Halley's Comet) - DELETED per user request
+    // 🌟 THE ELITE STARS (Golden Five)
+    ...eliteStars
 ];

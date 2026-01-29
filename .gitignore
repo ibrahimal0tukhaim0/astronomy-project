@@ -36,3 +36,4 @@ astronomy-source-code*
 
 # CRITICAL PERFORMANCE CORE - DO NOT IGNORE
 !src/utils/performance-core.ts
+.vercel

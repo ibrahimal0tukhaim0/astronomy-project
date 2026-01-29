@@ -1,0 +1,46 @@
+
+       summary               unimported v1.31.0 (node)
+───────────────────────────
+       entry file          : src/main.tsx
+
+       unresolved imports  : 0
+       unused dependencies : 11
+       unimported files    : 12
+
+
+─────┬─────────────────────
+     │ 11 unused dependencies
+─────┼─────────────────────
+   1 │ @capacitor/cli
+   2 │ @capacitor/ios
+   3 │ @tailwindcss/vite
+   4 │ @types/three
+   5 │ astronomy-engine
+   6 │ autoprefixer
+   7 │ clsx
+   8 │ i18next-browser-languagedetector
+   9 │ lamina
+  10 │ tailwind-merge
+  11 │ tailwindcss
+─────┴─────────────────────
+
+
+─────┬─────────────────────
+     │ 12 unimported files
+─────┼─────────────────────
+   1 │ /Users/ibrahimaltukhaim/.gemini/antigravity/scratch/astronomy-app/src/components/AsteroidBelts.tsx
+   2 │ /Users/ibrahimaltukhaim/.gemini/antigravity/scratch/astronomy-app/src/components/AuroraLayer.tsx
+   3 │ /Users/ibrahimaltukhaim/.gemini/antigravity/scratch/astronomy-app/src/components/AuroraVideoLayer.tsx
+   4 │ /Users/ibrahimaltukhaim/.gemini/antigravity/scratch/astronomy-app/src/components/CameraIntro.tsx
+   5 │ /Users/ibrahimaltukhaim/.gemini/antigravity/scratch/astronomy-app/src/components/CanvasAurora.tsx
+   6 │ /Users/ibrahimaltukhaim/.gemini/antigravity/scratch/astronomy-app/src/components/ErrorBoundary.tsx
+   7 │ /Users/ibrahimaltukhaim/.gemini/antigravity/scratch/astronomy-app/src/components/MainMenu.tsx
+   8 │ /Users/ibrahimaltukhaim/.gemini/antigravity/scratch/astronomy-app/src/components/OrbitalTrails.tsx
+   9 │ /Users/ibrahimaltukhaim/.gemini/antigravity/scratch/astronomy-app/src/hooks/useAdaptiveQuality.ts
+  10 │ /Users/ibrahimaltukhaim/.gemini/antigravity/scratch/astronomy-app/src/utils/ContentValidator.ts
+  11 │ /Users/ibrahimaltukhaim/.gemini/antigravity/scratch/astronomy-app/src/utils/PerformanceManager.ts
+  12 │ /Users/ibrahimaltukhaim/.gemini/antigravity/scratch/astronomy-app/src/utils/textureLoader.ts
+─────┴─────────────────────
+
+
+       Inspect the results and run npx unimported -u to update ignore lists

@@ -241,6 +241,49 @@ function RealEarth({ scale = 1.0 }: { scale?: number }) {
     );
 }
 
+// 🌟 Generic Star for Elite Stars (Customizable)
+function GenericStar({ scale = 1.0, color = "#FFFFFF", lightColor = "#FFFFFF", glowIntensity = 2.0, pulsationSpeed = 0, roughness = 0.2 }: {
+    scale?: number, color?: string, lightColor?: string, glowIntensity?: number, pulsationSpeed?: number, roughness?: number
+}) {
+    const meshRef = useRef<THREE.Mesh>(null);
+    const lightRef = useRef<THREE.PointLight>(null);
+
+    // Pulse Effect
+    useFrame(({ clock }, delta) => {
+        if (meshRef.current) {
+            meshRef.current.rotation.y += delta * 0.05;
+        }
+        if (pulsationSpeed > 0 && lightRef.current) {
+            const time = clock.getElapsedTime();
+            const pulse = 1 + Math.sin(time * pulsationSpeed) * 0.15;
+            lightRef.current.intensity = glowIntensity * pulse;
+        }
+    });
+
+    return (
+        <group>
+            <pointLight
+                ref={lightRef}
+                intensity={glowIntensity}
+                distance={10000}
+                decay={0.8}
+                color={lightColor}
+            />
+            <mesh ref={meshRef} scale={scale}>
+                <sphereGeometry args={[1, 64, 64]} />
+                <meshStandardMaterial
+                    color={color}
+                    roughness={roughness}
+                    metalness={0.1}
+                    emissive={color}
+                    emissiveIntensity={2.0}
+                    toneMapped={false}
+                />
+            </mesh>
+        </group>
+    );
+}
+
 // 🪐 المشتري الحقيقي (Real Jupiter) - 4K Upgrade
 // Storms, Great Red Spot, and proper Gas Giant PBR properties
 // 🪐 المشتري الحقيقي (Real Jupiter) - Robust Implementation
@@ -398,24 +441,23 @@ function GenericAsteroid({
     scale = 1.0,
     texturePath,
     color = "#FFFFFF",
-    roughness = 1.0,
-    metalness = 0.1,
     dimensions = [1, 1, 1],
     // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    // glowIntensity removed
     name
 }: {
     scale?: number,
     texturePath: string,
     color?: string,
-    roughness?: number,
-    metalness?: number, // ✨ Added Prop
     dimensions?: [number, number, number],
-    // glowIntensity removed
     name: string
 }) {
     // 🔍 Texture Injection System
     const [texture, setTexture] = useState<THREE.Texture | null>(null);
+
+    // 🎨 Matte Mode Tint
+    // We tint pure white (#FFFFFF) to Light Grey (#BBBBBB) to prevent sunlight overexposure.
+    // This acts like a "Moon Filter".
+    const displayColor = color === '#FFFFFF' ? '#BBBBBB' : color;
 
     useEffect(() => {
         // 🔄 Use Shared Manager
@@ -428,6 +470,14 @@ function GenericAsteroid({
             fullPath,
             (tex) => {
                 tex.colorSpace = THREE.SRGBColorSpace;
+
+                // 🔄 TEXTURE TILING (The Pro Camera Script)
+                // Since asteroids are huge now (2x), we tile the texture 2x to keep details sharp
+                tex.wrapS = THREE.RepeatWrapping;
+                tex.wrapT = THREE.RepeatWrapping;
+                tex.repeat.set(2, 2);
+                tex.needsUpdate = true;
+
                 setTexture(tex);
             },
             undefined,
@@ -453,9 +503,14 @@ function GenericAsteroid({
 
     return (
         <group>
+            {/* 💡 CINEMATIC LIGHTING (The Pro Camera Script) */}
+            {/* Strong searchlight to reveal surface details */}
+            <pointLight color="#a3ccf5" intensity={2.0} distance={40} decay={2} />
+
             <mesh ref={meshRef} scale={[scale * dimensions[0], scale * dimensions[1], scale * dimensions[2]]} castShadow={true} receiveShadow={true}>
-                {/* 🌐 High-Res Sphere for Displacement Mapping */}
-                <sphereGeometry args={[1, 128, 128]} />
+                {/* 🌐 High-Res Sphere for Displacement Mapping (The Pro Camera Fix) */}
+                {/* Increased segments to 64x64 for smooth wrapping of tiled texture */}
+                <sphereGeometry args={[1, 64, 64]} />
                 <meshStandardMaterial
                     map={texture || undefined}
 
@@ -467,16 +522,15 @@ function GenericAsteroid({
                     bumpMap={texture || undefined}
                     bumpScale={0.02}
 
-                    // 💡 VISIBILITY: Balanced Ambient Glow
-                    // Using white emissive at low intensity allows the TEXTURE COLORS to pop
-                    // without overcoming the shading.
+                    // 💡 VISIBILITY: Matte Mode (Moon-like)
+                    // Low emissive allows shadows to exist.
                     emissiveMap={texture || undefined}
-                    emissive="#FFFFFF" // ☀️ Allow texture colors to show
-                    emissiveIntensity={texture ? 0.21 : 0.0} // ⚖️ +40% Shine Boost
+                    emissive="#222222" // 🌑 Deep Dark Glow (Just enough to prevent black crush)
+                    emissiveIntensity={texture ? 0.1 : 0.0} // ⚖️ Minimal glow to restore contrast
 
-                    color={color || "#FFFFFF"}
-                    roughness={roughness} // High roughness for dry rock
-                    metalness={metalness}
+                    color={displayColor} // 🎨 Applied Color (Grey Tint #BBBBBB to prevent whiteout)
+                    roughness={0.9} // 🧱 High Roughness (Matte/Chalky) to stop shiny glare
+                    metalness={0.0} // ⬇️ Zero metalness (Dry Rock)
                     flatShading={false}
                 />
             </mesh>
@@ -727,8 +781,20 @@ export function CelestialObject(props: CelestialObjectProps) {
                 </group>
             )}
 
+            {/* 🌟 7.5. النجوم الخماسية (The Elite Stars) */}
+            {['canopus', 'arcturus', 'rigil', 'vega', 'capella'].includes(data.id) && (
+                <GenericStar
+                    scale={data.science.scale} // Use raw scale from data (already adjusted)
+                    color={data.science.color}
+                    lightColor={data.science.lightColor}
+                    glowIntensity={data.science.glowIntensity}
+                    pulsationSpeed={data.science.pulsationSpeed}
+                    roughness={data.science.roughness}
+                />
+            )}
+
             {/* 8. الشعرى (Sirius) - Sprite */}
-            {data.id === 'sirius' && <SiriusSprite scale={200} />}
+            {data.id === 'sirius' && <SiriusSprite scale={data.science.scale} />}
 
             {/* 9. الكواكب العامة (Generic Planets) - دمج المنطق المتكرر */}
             {data.id === 'mars' && (
@@ -812,8 +878,6 @@ export function CelestialObject(props: CelestialObjectProps) {
                 <GenericAsteroid
                     scale={targetScale}
                     texturePath={data.science.texture || `textures/${data.id}_surface.png`}
-                    roughness={0.7} // ✨ Glossy 30%
-                    metalness={0.3} // ✨ Metallic Shine
                     color={data.science.color} // ✨ User Request: Full True Color via Data
                     dimensions={data.science.shapeScale}
                     name={data.id} // ✨ For Logging

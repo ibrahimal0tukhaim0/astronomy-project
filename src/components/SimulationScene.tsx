@@ -5,6 +5,7 @@ import { useTexture } from '@react-three/drei'
 import gsap from 'gsap'
 import { Meteors } from './Meteors';
 import { SpaceLightning } from './SpaceLightning';
+import { SpaceProbe } from './SpaceProbe';
 
 import type { CelestialData } from '../types'
 import { celestialObjects } from '../data/objects'
@@ -169,6 +170,9 @@ export default function SimulationScene({ onSelect, isPaused, onDateChange, isAR
                     <SpaceLightning />
                 </Suspense>
             </ComponentBoundary>
+
+            {/* 🚀 Space Probe (Target: Rigil Kentaurus) */}
+            <SpaceProbe />
 
             {/* 🪐 Orbit Rings (Visual Paths) */}
             <PlanetOrbits />

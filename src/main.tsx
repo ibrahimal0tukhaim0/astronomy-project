@@ -3,6 +3,7 @@ import { createRoot } from 'react-dom/client'
 import './index.css'
 import './i18n'
 import './utils/performance-core' // 🚀 Performance Engine Core (20+ Optimizations)
+import './utils/ProductionOptimizer' // 🚀 DOM & Memory Optimization
 import App from './App.tsx'
 
 

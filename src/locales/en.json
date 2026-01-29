@@ -486,22 +486,75 @@
             },
             "monotheism_message": "Its precise geometric shape is evidence of the Creator's perfection."
         },
-        "halley": {
-            "name": "Halley's Comet",
-            "historical_name": "The Famous Comet",
+        "canopus": {
+            "name": "Canopus (Suhail)",
+            "historical_name": "Suhail",
             "science": {
-                "type": "Periodic Comet",
-                "distance": "Variable",
-                "size": "15x8 km",
-                "orbital_period": "76 Years"
+                "type": "Bright Giant (F0II)",
+                "distance": "310 light-years",
+                "size": "71x Solar Radius"
             },
-            "description": "The most famous comet in history, returning every 76 years. Recorded by civilizations for millennia.",
+            "description": "The second brightest star in the sky. In Arab culture, its rising marks the end of scorching summer heat.",
             "history": {
-                "worshipped_by": "Omen of Doom",
-                "reason": "Associated with fall of empires",
-                "verdict": "Superstition. It follows a fixed timeline."
+                "verdict": "A seasonal marker."
             },
-            "monotheism_message": "Its punctual return every 76 years is like a cosmic clock, testifying to the order of Allah's creation."
+            "monotheism_message": "Allah set the stars as markers for seasons, showing His mercy to creation."
+        },
+        "arcturus": {
+            "name": "Arcturus",
+            "historical_name": "Bear Guard",
+            "science": {
+                "type": "Orange Giant (K0III)",
+                "distance": "36.7 light-years",
+                "size": "25x Solar Radius"
+            },
+            "description": "A Red Giant moving rapidly through the galaxy. It is older than our Sun.",
+            "history": {
+                "verdict": "A giant celestial body."
+            },
+            "monotheism_message": "Its immense age and size remind us of the Eternal nature of the Creator."
+        },
+        "rigil": {
+            "name": "Rigil Kentaurus (Alpha Centauri)",
+            "historical_name": "Foot of the Centaur",
+            "science": {
+                "type": "Triple Star System",
+                "distance": "4.37 light-years",
+                "size": "Similar to Sun"
+            },
+            "description": "Our nearest stellar neighbor. A target for future interstellar travel.",
+            "history": {
+                "verdict": "Our neighbor."
+            },
+            "monotheism_message": "Being the closest star yet so far shows the vast scale of Allah's universe."
+        },
+        "vega": {
+            "name": "Vega",
+            "historical_name": "The Falling Eagle",
+            "science": {
+                "type": "Blue-White Star (A0V)",
+                "distance": "25 light-years",
+                "size": "2.3x Solar Radius"
+            },
+            "description": "A brilliant blue star that defines the zero point of magnitude scale. It was once our North Star.",
+            "history": {
+                "verdict": "A guiding star."
+            },
+            "monotheism_message": "The shifting of the North Star over millennia shows that only Allah is the Permanent Constant."
+        },
+        "capella": {
+            "name": "Capella",
+            "historical_name": "The Goat Star",
+            "science": {
+                "type": "Quadruple Star System",
+                "distance": "42.9 light-years",
+                "size": "12x Solar Radius"
+            },
+            "description": "A golden giant star system, actually consisting of four stars paired together.",
+            "history": {
+                "verdict": "A golden light."
+            },
+            "monotheism_message": "Its complex orbital dance of four stars attests to the balance Allah placed in the heavens."
         }
     }
 }

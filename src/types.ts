@@ -1,4 +1,4 @@
-export type CelestialObjectId = 'sun' | 'earth' | 'moon' | 'sirius' | 'al-tariq' | 'venus' | 'mars' | 'mercury' | 'jupiter' | 'saturn' | 'uranus' | 'neptune' | 'pluto' | 'alnitak' | 'alnilam' | 'mintaka' | 'comet' | 'ceres' | 'vesta' | 'pallas' | 'juno' | 'eros' | 'ida' | 'gaspra' | 'bennu' | 'ryugu' | 'halley';
+export type CelestialObjectId = 'sun' | 'earth' | 'moon' | 'sirius' | 'al-tariq' | 'venus' | 'mars' | 'mercury' | 'jupiter' | 'saturn' | 'uranus' | 'neptune' | 'pluto' | 'alnitak' | 'alnilam' | 'mintaka' | 'comet' | 'ceres' | 'vesta' | 'pallas' | 'juno' | 'eros' | 'ida' | 'gaspra' | 'bennu' | 'ryugu' | 'halley' | 'canopus' | 'arcturus' | 'rigil' | 'vega' | 'capella';
 
 export interface CelestialData {
     id: CelestialObjectId;
@@ -18,6 +18,11 @@ export interface CelestialData {
         eccentricity?: number; // Optional for elliptical orbits
         shapeScale?: [number, number, number]; // Non-uniform scaling for realistic shapes
         frustumCulled?: boolean; // ✨ User Request: Disable culling for far objects
+        lightColor?: string; // 🌟 Custom PointLight Color
+        roughness?: number; // 🌟 Surface texture roughness
+        pulsationSpeed?: number; // 🌟 Pulse effect speed (for Capella)
+        realImage?: string; // 🌟 NASA Image for Info Panel Background
+        augustNotification?: boolean; // 🌟 Canopus special alert
     };
 
     initialPosition: [number, number, number];
