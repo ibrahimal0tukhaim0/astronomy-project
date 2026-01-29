@@ -1,0 +1,113 @@
+@import url('https://fonts.googleapis.com/css2?family=Amiri:ital,wght@0,400;0,700;1,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Cairo:wght@300;400;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Scheherazade+New:wght@400;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;700&display=swap');
+
+@import "tailwindcss";
+
+@theme {
+    --font-sans: "Outfit", "Cairo", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+    --font-serif: "Outfit", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-arabic: "Amiri", "Scheherazade New", serif;
+}
+
+/* Custom utility classes for Arabic text */
+.font-quran {
+    font-family: var(--font-arabic);
+    line-height: 2.5;
+    letter-spacing: 0.03em;
+}
+
+/* Glassmorphism Menu Style (User Requested) */
+.glass-menu {
+    background: rgba(255, 255, 255, 0.05);
+    /* High Transparency */
+    backdrop-filter: blur(15px);
+    /* Strong Blur for realism */
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 20px;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
+    /* Deep space shadows */
+    color: #fff;
+}
+
+/* Neon Text Style (User Requested) */
+.neon-text {
+    text-shadow: 0 0 10px #ffcc00, 0 0 20px #ffcc00;
+    /* Solar Glow */
+}
+
+/* iOS Safe Areas utilities */
+.pt-safe {
+    padding-top: env(safe-area-inset-top, 20px);
+}
+
+.pb-safe {
+    padding-bottom: env(safe-area-inset-bottom, 20px);
+}
+
+.pl-safe {
+    padding-left: env(safe-area-inset-left, 0px);
+}
+
+.pr-safe {
+    padding-right: env(safe-area-inset-right, 0px);
+}
+
+/* Positioning helpers for absolute elements */
+.top-safe {
+    top: env(safe-area-inset-top, 20px);
+}
+
+.bottom-safe {
+    bottom: env(safe-area-inset-bottom, 20px);
+}
+
+.left-safe {
+    left: env(safe-area-inset-left, 16px);
+}
+
+.right-safe {
+    right: env(safe-area-inset-right, 16px);
+}
+
+/* =========================================
+   PERFORMANCE ENGINE OPTIMIZATIONS
+   ========================================= */
+
+/* Optimization 7: CSS Containment */
+
+/* Contain layout calculations */
+.planet,
+.sun,
+[class*="planet"],
+[class*="orbit"],
+.solar-system {
+    contain: layout style paint;
+    content-visibility: auto;
+}
+
+/* Reduce paint area */
+.home-screen {
+    contain: layout style;
+    isolation: isolate;
+}
+
+/* Optimize animations */
+@media (prefers-reduced-motion: no-preference) {
+    * {
+        animation-timing-function: cubic-bezier(0.4, 0, 0.2, 1);
+    }
+}
+
+/* Force GPU layers */
+.planet,
+.sun,
+[class*="animate"],
+[class*="rotate"],
+[class*="orbit"] {
+    transform: translateZ(0) translate3d(0, 0, 0);
+    backface-visibility: hidden;
+    perspective: 1000px;
+    will-change: transform;
+}

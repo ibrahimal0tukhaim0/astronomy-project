@@ -1,0 +1,507 @@
+{
+    "app": {
+        "title": "Interactive Astronomy & Monotheism",
+        "subtitle": "Explore the cosmos through science and faith",
+        "instruction": "Click on celestial objects to learn about their scientific significance and religious context",
+        "credits": "Made by Ibrahim Sulaiman Altukhaim",
+        "controls": {
+            "zoom": "Scroll to Zoom",
+            "rotate": "Drag to Rotate",
+            "play": "Play",
+            "pause": "Pause"
+        }
+    },
+    "ui": {
+        "scientific_facts": "Scientific Facts",
+        "quranic_reference": "Quranic Reference",
+        "historical_beliefs": "Historical Context",
+        "reflection": "Reflection",
+        "labels": {
+            "type": "Type",
+            "distance": "Distance",
+            "size": "Size",
+            "tafsir": "Tafsir",
+            "worshipped_by": "Worshipped by",
+            "reason": "Reason"
+        },
+        "controls": {
+            "play": "Play",
+            "pause": "Pause"
+        }
+    },
+    "objects": {
+        "sun": {
+            "name": "The Sun",
+            "historical_name": "Ra, Helios, Shamash",
+            "description": "The Sun is a G-type main-sequence star at the center of our solar system, composed primarily of hydrogen and helium undergoing nuclear fusion.",
+            "science": {
+                "type": "G-type Main Sequence Star",
+                "distance": "0 AU (Center of Solar System)",
+                "size": "1.4 million km diameter"
+            },
+            "quran": {
+                "text": "وَالشَّمْسِ وَضُحَاهَا",
+                "reference": "Surah Ash-Shams (91:1)"
+            },
+            "tafsir": {
+                "source": "Ibn Kathir",
+                "text": "Allah swears by the sun and its brightness, a sign of His power and wisdom in creation."
+            },
+            "history": {
+                "belief": "Sun God (Ra/Helios)",
+                "context": "Ancient civilizations worshipped the sun as the source of life and power.",
+                "monotheism": "The sun is a creation of Allah, responding to His command, rising and setting by His will, and will eventually be extinguished."
+            },
+            "monotheism_message": "The sun is a sign of Allah's majesty, not an object of worship. It obeys His laws and serves His creation."
+        },
+        "earth": {
+            "name": "Earth",
+            "historical_name": "Gaia, Terra",
+            "description": "Earth is the only known planet that supports life. Its liquid water, protective atmosphere, and precise distance from the Sun allow stable conditions for living organisms.",
+            "science": {
+                "type": "Rocky Planet",
+                "distance": "149.6 million km (1 AU)",
+                "size": "12,742 km diameter",
+                "temperature": "15°C (Average)",
+                "dayLength": "24 hours",
+                "yearLength": "365.25 days",
+                "moons": "1 (The Moon)"
+            },
+            "quran": {
+                "text": "اللَّهُ الَّذِي خَلَقَ السَّمَاوَاتِ وَالْأَرْضَ بِالْحَقِّ",
+                "reference": "Surah Ibrahim (14:19)"
+            },
+            "tafsir": {
+                "source": "General Consensus",
+                "text": "Allah created the heavens and the earth with truth, meaning for a serious purpose and with divine wisdom, not in vain."
+            },
+            "history": {
+                "belief": "Mother Goddess (Gaia)",
+                "context": "Ancient cultures worshipped the Earth as a divine mother figure providing life.",
+                "monotheism": "Earth is a creation of Allah, prepared as a cradle for life, not a deity to be worshipped."
+            },
+            "monotheism_message": "Earth is a unique sign of Allah's mercy and power, perfectly designed to sustain life. It is a trust from the Creator, not an object of worship."
+        },
+        "moon": {
+            "name": "The Moon",
+            "historical_name": "Luna, Selene, Sin, Chandra",
+            "description": "The Moon is Earth's only natural satellite, orbiting at an average distance of 384,400 km. Its phases have guided calendars and inspired wonder across civilizations.",
+            "science": {
+                "type": "Natural Satellite",
+                "distance": "384,400 km from Earth",
+                "size": "3,474 km diameter"
+            },
+            "tafsir": {
+                "source": "Al-Qurtubi",
+                "text": "Allah ordained precise phases for the moon to measure time and seasons for humanity."
+            },
+            "history": {
+                "worshipped_by": "Mesopotamians, Arabs in pre-Islamic times",
+                "reason": "Its changing phases and influence on tides made it an object of veneration",
+                "verdict": "The moon is subservient to Allah's will, a sign for those who reflect."
+            },
+            "monotheism_message": "The moon's precise orbit is a testament to divine design, not a deity but a creation serving Allah's purpose."
+        },
+        "sirius": {
+            "name": "Sirius (The Dog Star)",
+            "historical_name": "Ash-Shi'ra",
+            "description": "Sirius is the brightest star in the night sky, a binary star system 8.6 light-years away in the constellation Canis Major.",
+            "science": {
+                "type": "Binary Star System (A-type)",
+                "distance": "8.6 light-years",
+                "size": "1.7 times the Sun's diameter"
+            },
+            "quran": {
+                "text": "وَأَنَّهُ هُوَ رَبُّ الشِّعْرَىٰ",
+                "reference": "Surah An-Najm (53:49)"
+            },
+            "tafsir": {
+                "source": "Ibn Abbas",
+                "text": "Allah declares Himself the Lord of Sirius, which was worshipped by some Arab tribes before Islam."
+            },
+            "history": {
+                "worshipped_by": "Ancient Arabs (tribe of Khuza'ah)",
+                "reason": "Its exceptional brightness made it a focal point for star worship",
+                "verdict": "Sirius is merely a creation. Only Allah deserves worship."
+            },
+            "monotheism_message": "Even the brightest star is powerless before Allah. Worship belongs to the Creator alone."
+        },
+        "al-tariq": {
+            "name": "Al-Tariq (The Night Visitor)",
+            "historical_name": "Likely refers to a bright star or planet",
+            "description": "Al-Tariq is mentioned in the Quran as a 'piercing star,' possibly referring to a pulsar or exceptionally bright celestial object.",
+            "science": {
+                "type": "Unidentified (Scholarly debate)",
+                "distance": "Unknown",
+                "size": "Unknown"
+            },
+            "quran": {
+                "text": "وَالسَّمَاءِ وَالطَّارِقِ",
+                "reference": "Surah At-Tariq (86:1)"
+            },
+            "tafsir": {
+                "source": "Al-Jalalayn",
+                "text": "The 'piercing star' is so named because it penetrates the darkness of night with its intense light."
+            },
+            "history": {
+                "worshipped_by": "Not historically worshipped",
+                "reason": "Its mention in the Quran highlights Allah's power over the celestial realm",
+                "verdict": "A reminder that even the most mysterious phenomena are under Allah's command."
+            },
+            "monotheism_message": "The unseen wonders of the universe point to the infinitude of Allah's knowledge and power."
+        },
+        "venus": {
+            "name": "Venus",
+            "historical_name": "Morning Star, Evening Star, Ishtar, Aphrodite",
+            "description": "Venus is the second planet from the Sun and the brightest natural object in the night sky after the Moon. It has a thick, toxic atmosphere of carbon dioxide and sulfuric acid clouds.",
+            "science": {
+                "type": "Rocky Planet (Terrestrial)",
+                "distance": "0.72 AU from Sun (~108 million km)",
+                "size": "12,104 km diameter"
+            },
+            "history": {
+                "worshipped_by": "Babylonians, Pre-Islamic Arabs, Greeks, Romans",
+                "reason": "Its exceptional brightness and prominence as the morning/evening star led many civilizations to associate it with deities of love and beauty",
+                "verdict": "Venus is a created celestial body under Allah's command, not a deity. It orbits in a fixed path determined by divine law."
+            },
+            "monotheism_message": "Venus is a celestial sign of Allah's creation, orbiting in a precise path, bright in the dawn and dusk skies. It is not a god, but a proof of the Creator's greatness and the order in His universe."
+        },
+        "mars": {
+            "name": "Mars",
+            "historical_name": "The Red Planet, Al-Merrikh",
+            "description": "Mars is the fourth planet from the Sun, known for its reddish appearance caused by iron oxide (rust) on its surface. It has a thin atmosphere, inactive volcanoes, and polar ice caps.",
+            "science": {
+                "type": "Rocky Planet (Terrestrial)",
+                "distance": "1.52 AU from Sun (~228 million km)",
+                "size": "6,779 km diameter (Half of Earth)",
+                "moons": "2 (Phobos & Deimos)"
+            },
+            "history": {
+                "worshipped_by": "Romans (Mars), Greeks (Ares), Babylonians (Nergal)",
+                "reason": "Its red color associated it with blood and war in ancient mythologies",
+                "verdict": "Mars is a created world with a specific nature determined by Allah, not a god of war."
+            },
+            "monotheism_message": "Mars, with its rusty dust and mountains, is another diverse world in Allah's kingdom. Its color and orbit are signs of the Creator's artistry, stripped of ancient superstitions."
+        },
+        "mercury": {
+            "name": "Mercury",
+            "historical_name": "Hermes, Nabu",
+            "description": "Mercury is the smallest planet in the Solar System and the closest to the Sun. It has a rocky surface covered in craters and experiences extreme temperature fluctuations.",
+            "science": {
+                "type": "Rocky Planet (Terrestrial)",
+                "distance": "0.39 AU from Sun (~58 million km)",
+                "size": "4,879 km diameter",
+                "orbital_period": "88 Earth days"
+            },
+            "history": {
+                "worshipped_by": "Babylonians (Nabu), Greeks (Hermes), Romans (Mercury)",
+                "reason": "Its rapid motion led ancients to associate it with messenger deities",
+                "verdict": "Mercury is a swift-moving celestial body created by Allah, obeying precise physical laws."
+            },
+            "monotheism_message": "The swift orbit of Mercury demonstrates the precision of Allah's cosmic design. It is a sign for those who reflect on the order of the universe."
+        },
+        "jupiter": {
+            "name": "Jupiter",
+            "historical_name": "The King of Planets, Zeus, Al-Mushtari",
+            "description": "Jupiter is the largest planet in our solar system. A gas giant composed mostly of hydrogen and helium, it features iconic bands of clouds and the Great Red Spot, a giant storm bigger than Earth.",
+            "science": {
+                "type": "Gas Giant",
+                "distance": "778 million km (5.2 AU)",
+                "size": "139,820 km diameter",
+                "orbital_period": "11.86 Earth years"
+            },
+            "history": {
+                "worshipped_by": "Romans (Jupiter), Greeks (Zeus), Babylonians (Marduk)",
+                "reason": "Its slow, majestic movement and brightness led ancients to view it as the king of gods",
+                "verdict": "Jupiter is a massive creation demonstrating Allah's power. Despite its immense size, it follows a precise orbit."
+            },
+            "monotheism_message": "Jupiter, the giant of our system, is but a small speck in Allah's dominion. Its gravity protects Earth, a sign of Allah's mercy and planning."
+        },
+        "saturn": {
+            "name": "Saturn",
+            "historical_name": "The Ringed Jewel, Cronus",
+            "description": "Saturn is the sixth planet from the Sun and the second-largest in the Solar System. It is famous for its prominent ring system, composed mainly of ice particles, rocky debris, and dust.",
+            "science": {
+                "type": "Gas Giant",
+                "distance": "1.4 billion km (9.5 AU)",
+                "size": "116,460 km diameter",
+                "orbital_period": "29.5 Earth years"
+            },
+            "history": {
+                "worshipped_by": "Romans (Saturn), Greeks (Cronus)",
+                "reason": "Associated with time and agriculture due to its slow movement (longest period visible to naked eye)",
+                "verdict": "Saturn is a magnificent creation bound by time, not the god of it. Allah is the Creator of time and space."
+            },
+            "monotheism_message": "The complex beauty of Saturn's rings is a masterpiece of cosmic art. It reminds us that Allah is Al-Musawwir (The Shaper of Beauty), creating wonders beyond imagination."
+        },
+        "neptune": {
+            "name": "Neptune",
+            "historical_name": "Neptune",
+            "description": "Neptune is the eighth and farthest known solar planet from the Sun. It is an ice giant with a deep blue appearance caused by methane in its atmosphere, and features the strongest winds in the solar system.",
+            "science": {
+                "type": "Ice Giant",
+                "distance": "4.5 billion km (30.1 AU)",
+                "size": "49,244 km diameter",
+                "orbital_period": "164.8 Earth years"
+            },
+            "history": {
+                "worshipped_by": "Not historically worshipped (modern discovery)",
+                "reason": "Discovered mathematically in the 19th century",
+                "verdict": "A modern discovery revealing the vastness of Allah's creation beyond what the naked eye can see."
+            },
+            "monotheism_message": "Orbiting in the cold darkness at the edge of our system, Neptune is a sign of Allah's encompassing power. 'And He creates what you do not know' (Quran 16:8)."
+        },
+        "uranus": {
+            "name": "Uranus",
+            "historical_name": "Uranus",
+            "description": "Uranus is the seventh planet from the Sun. It is an ice giant with a pale blue-green color due to methane. Unique among planets, it rotates on its side with an axial tilt of 98 degrees.",
+            "science": {
+                "type": "Ice Giant",
+                "distance": "2.9 billion km (19.2 AU)",
+                "size": "50,724 km diameter",
+                "orbital_period": "84 Earth years"
+            },
+            "history": {
+                "worshipped_by": "Not historically worshipped (modern discovery)",
+                "reason": "Discovered in the 18th century, too dim for ancient identification",
+                "verdict": "Its unique rotation is a wonder of creation, showing the diversity of Allah's design."
+            },
+            "monotheism_message": "Uranus, rolling on its side in deep space, demonstrates that Allah's creation is not bound by a single pattern. He creates what He wills, in infinite variety."
+        },
+        "pluto": {
+            "name": "Pluto",
+            "historical_name": "Pluto",
+            "description": "Pluto is a dwarf planet in the Kuiper belt. Once considered the ninth planet, it is a world of rock and ice with a thin atmosphere and complex surface features including a heart-shaped glacier.",
+            "science": {
+                "type": "Dwarf Planet",
+                "distance": "5.9 billion km (39.5 AU)",
+                "size": "2,377 km diameter",
+                "orbital_period": "248 Earth years"
+            },
+            "history": {
+                "worshipped_by": "Not historically worshipped (modern discovery)",
+                "reason": "Discovered in 1930 by Clyde Tombaugh",
+                "verdict": "A testament to the vastness of the solar system's outer reaches."
+            },
+            "monotheism_message": "Even at the freezing fringes of the solar system, Allah's command holds sway. Pluto's lonely orbit is a sign of the vastness of His dominion."
+        },
+        "alnitak": {
+            "name": "Alnitak",
+            "historical_name": "The Girdle",
+            "description": "The eastern star of Orion's Belt. It is a triple star system and one of the hottest O-type stars known.",
+            "science": {
+                "type": "Blue Supergiant",
+                "distance": "~800 ly",
+                "size": "33x Solar Mass"
+            },
+            "quran": {
+                "text": "But nay! I swear by the setting of the stars...",
+                "reference": "Surah Al-Waqi'ah (56:75)"
+            },
+            "tafsir": {
+                "source": "Ibn Kathir",
+                "text": "A sign of Allah's power in the positions of stars."
+            },
+            "history": {
+                "worshipped_by": "Celestial Marker",
+                "reason": "Navigation",
+                "verdict": "A created servant of Allah."
+            },
+            "monotheism_message": "Its intense heat and light are but a spark of Allah's power."
+        },
+        "alnilam": {
+            "name": "Alnilam",
+            "historical_name": "String of Pearls",
+            "description": "The middle star of the belt. It is a large blue supergiant and the brightest of the three.",
+            "science": {
+                "type": "Blue Supergiant",
+                "distance": "~2000 ly",
+                "size": "40x Solar Mass"
+            },
+            "quran": {
+                "text": "And by the star when it sets",
+                "reference": "Surah An-Najm"
+            },
+            "tafsir": {
+                "source": "General",
+                "text": "Stars are signs for reflection."
+            },
+            "history": {
+                "worshipped_by": "Celestial Marker",
+                "reason": "Navigation",
+                "verdict": "Created by Allah."
+            },
+            "monotheism_message": "Standing in the center of the belt, it shows the order of the cosmos."
+        },
+        "mintaka": {
+            "name": "Mintaka",
+            "historical_name": "The Belt",
+            "description": "The western star of the belt. A multiple star system located very close to the celestial equator.",
+            "science": {
+                "type": "Multiple Star System",
+                "distance": "~1200 ly",
+                "size": "20x Solar Mass"
+            },
+            "quran": {
+                "text": "And He is the Lord of Sirius (and all stars)",
+                "reference": "Surah An-Najm"
+            },
+            "tafsir": {
+                "source": "General",
+                "text": "Allah is the Lord of all celestial bodies."
+            },
+            "history": {
+                "worshipped_by": "Celestial Marker",
+                "reason": "Navigation",
+                "verdict": "Created by Allah."
+            },
+            "monotheism_message": "The alignment of these stars is a sign of divine precision."
+        },
+        "ceres": {
+            "name": "Ceres",
+            "historical_name": "Roman Goddess of Agriculture",
+            "science": {
+                "type": "Dwarf Planet",
+                "distance": "2.7 AU (Main Belt)",
+                "size": "946 km"
+            },
+            "description": "Ceres is the largest object in the asteroid belt between Mars and Jupiter. It is a rocky, icy dwarf planet featuring mysterious bright spots in Occator Crater.",
+            "history": {
+                "worshipped_by": "Romans",
+                "reason": "Symbol of fertility and agriculture",
+                "verdict": "A created world, lifeless and subservient."
+            },
+            "monotheism_message": "Ceres and the asteroid belt are remnants of creation, a testament to Allah's power in forming worlds."
+        },
+        "vesta": {
+            "name": "Vesta",
+            "historical_name": "Goddess of the Hearth",
+            "science": {
+                "type": "Asteroid",
+                "distance": "2.36 AU",
+                "size": "525 km"
+            },
+            "description": "Vesta is the second-largest asteroid and the brightest visible from Earth. It possesses a massive mountain at its south pole, twice the height of Everest.",
+            "history": {
+                "verdict": "A rocky creation in a fixed orbit."
+            },
+            "monotheism_message": "The towering peaks on this small world remind us that Allah casts mountains firmly everywhere."
+        },
+        "pallas": {
+            "name": "Pallas",
+            "historical_name": "Pallas Athena",
+            "science": {
+                "type": "Asteroid",
+                "distance": "2.77 AU",
+                "size": "512 km"
+            },
+            "description": "The third-largest asteroid. Its orbit is highly inclined compared to most other asteroids.",
+            "history": {
+                "verdict": "Subservient to Allah's command."
+            },
+            "monotheism_message": "Its unique, tilted path shows the diversity of trajectories Allah ordained in the cosmos."
+        },
+        "juno": {
+            "name": "Juno",
+            "historical_name": "Juno",
+            "science": {
+                "type": "Asteroid (S-type)",
+                "distance": "2.67 AU",
+                "size": "233 km"
+            },
+            "description": "One of the first four historical asteroids discovered.",
+            "history": {
+                "verdict": "A celestial rock."
+            },
+            "monotheism_message": "Every stone in the heavens glorifies its Lord."
+        },
+        "eros": {
+            "name": "Eros",
+            "historical_name": "God of Love",
+            "science": {
+                "type": "Near-Earth Asteroid",
+                "distance": "1.46 AU",
+                "size": "16.8 km"
+            },
+            "description": "The first asteroid discovered orbiting near Mars, and the first to be landed on by a spacecraft (NEAR). It has an elongated, peanut-like shape.",
+            "history": {
+                "verdict": "Just a floating rock."
+            },
+            "monotheism_message": "Its strange shape is a sign that Allah creates whatever form He wills."
+        },
+        "ida": {
+            "name": "Ida",
+            "historical_name": "Ida",
+            "science": {
+                "type": "Asteroid",
+                "distance": "2.86 AU",
+                "size": "15.7 km",
+                "moons": "1 (Dactyl)"
+            },
+            "description": "Famous for the discovery of its tiny moon, Dactyl, proving that even asteroids can have satellites.",
+            "history": {
+                "verdict": "A cosmic sign."
+            },
+            "monotheism_message": "Even small rocks have companions; Glory be to the Creator of all systems."
+        },
+        "gaspra": {
+            "name": "Gaspra",
+            "historical_name": "Gaspra",
+            "science": {
+                "type": "Asteroid",
+                "distance": "2.21 AU",
+                "size": "12.2 km"
+            },
+            "description": "The first asteroid to be photographed up close by the Galileo probe. It is reddish and heavily cratered.",
+            "history": {
+                "verdict": "Created."
+            },
+            "monotheism_message": "Its reddish hue and irregular form are signs of creation."
+        },
+        "bennu": {
+            "name": "Bennu",
+            "historical_name": "Bennu Bird",
+            "science": {
+                "type": "Carbonaceous Asteroid",
+                "distance": "1.13 AU",
+                "size": "500 m"
+            },
+            "description": "A potentially hazardous asteroid rich in carbon and organic building blocks, visited by the OSIRIS-REx mission.",
+            "history": {
+                "verdict": "Subservient."
+            },
+            "monotheism_message": "Its potential danger reminds us that safety is in Allah's hands alone."
+        },
+        "ryugu": {
+            "name": "Ryugu",
+            "historical_name": "Dragon Palace",
+            "science": {
+                "type": "Asteroid",
+                "distance": "1.19 AU",
+                "size": "900 m"
+            },
+            "description": "A diamond-shaped rubble pile asteroid visited by Hayabusa2. It looks like a spinning top.",
+            "history": {
+                "verdict": "Created object."
+            },
+            "monotheism_message": "Its precise geometric shape is evidence of the Creator's perfection."
+        },
+        "halley": {
+            "name": "Halley's Comet",
+            "historical_name": "The Famous Comet",
+            "science": {
+                "type": "Periodic Comet",
+                "distance": "Variable",
+                "size": "15x8 km",
+                "orbital_period": "76 Years"
+            },
+            "description": "The most famous comet in history, returning every 76 years. Recorded by civilizations for millennia.",
+            "history": {
+                "worshipped_by": "Omen of Doom",
+                "reason": "Associated with fall of empires",
+                "verdict": "Superstition. It follows a fixed timeline."
+            },
+            "monotheism_message": "Its punctual return every 76 years is like a cosmic clock, testifying to the order of Allah's creation."
+        }
+    }
+}
