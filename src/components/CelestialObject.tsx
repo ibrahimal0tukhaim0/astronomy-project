@@ -464,7 +464,8 @@ function GenericAsteroid({
         const loader = new THREE.TextureLoader(textureLoadingManager);
 
         const cleanPath = texturePath.startsWith('/') ? texturePath.slice(1) : texturePath;
-        const fullPath = `${import.meta.env.BASE_URL}${cleanPath}?v=final`;
+        // ✨ Removed query param to prevent local server issues
+        const fullPath = `${import.meta.env.BASE_URL}${cleanPath}`;
 
         loader.load(
             fullPath,
@@ -616,7 +617,13 @@ export function CelestialObject(props: CelestialObjectProps) {
     const groupRef = useRef<THREE.Group>(null)
 
     const [hovered, setHover] = useState(false)
-    // Removed legacy textures state and effect
+
+    // 🔍 Debug Logging for Missing Objects
+    useEffect(() => {
+        if (['canopus', 'bennu'].includes(data.id)) {
+            console.log(`🌟 Rendering Object: ${data.id}`, { visible: groupRef.current?.visible, position: groupRef.current?.position });
+        }
+    }, [data.id]);
 
     const baseScale = data.science.scale;
     const targetScale = hovered || isSelected ? baseScale * 1.1 : baseScale;

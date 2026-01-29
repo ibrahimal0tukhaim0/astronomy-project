@@ -37,9 +37,9 @@ class ErrorBoundary extends React.Component<{ children: React.ReactNode }, { has
         return { hasError: true };
     }
 
-    componentDidCatch(_error: Error, _info: React.ErrorInfo) {
-        // Console log removed
-
+    componentDidCatch(error: Error, info: React.ErrorInfo) {
+        console.error("🔥 APP CRASH DETECTED:", error);
+        console.error("Stack Trace:", info.componentStack);
     }
 
     render() {
