@@ -1,0 +1,430 @@
+<!doctype html>
+<html lang="ar" dir="rtl">
+
+<head>
+  <meta charset="UTF-8" />
+  <link rel="icon" type="image/svg+xml" href="vite.svg" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+  <title>فلك وآية - Astronomy App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link
+    href="https://fonts.googleapis.com/css2?family=Tajawal:wght@300;400;500;700;900&family=Cairo:wght@300;400;600;700;900&display=swap"
+    rel="stylesheet">
+
+  <style>
+    /* Loading Screen Container - Optimized */
+    .loading-screen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100vw;
+      height: 100vh;
+      background: #000428;
+      /* Solid color fallback */
+      background: linear-gradient(135deg, #000428 0%, #001F3F 100%);
+      /* Simpler gradient */
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      z-index: 10000;
+      transition: opacity 0.5s ease;
+      will-change: opacity;
+    }
+
+    .loading-screen.hidden {
+      opacity: 0;
+      pointer-events: none;
+    }
+
+    /* Optimized Stars - Static background to save GPU */
+    .loading-bg-stars {
+      position: absolute;
+      width: 100%;
+      height: 100%;
+      background-image:
+        radial-gradient(1px 1px at 20% 30%, white, transparent),
+        radial-gradient(2px 2px at 50% 50%, white, transparent),
+        radial-gradient(1px 1px at 80% 10%, white, transparent);
+      background-size: 50% 50%;
+      /* Tiling */
+      opacity: 0.5;
+    }
+
+    /* App Title - No expensive text-shadow animation */
+    .loading-title {
+      font-size: 3rem;
+      font-family: 'Cairo', 'Tajawal', 'Amiri', sans-serif;
+      font-weight: bold;
+      color: #FFD700;
+      /* Flat color is faster */
+      margin-bottom: 40px;
+      transform: translateZ(0);
+      /* Force GPU */
+    }
+
+    /* Solar System Animation - GPU Optimized */
+    .loading-solar-system {
+      position: relative;
+      width: 250px;
+      height: 250px;
+      margin-bottom: 50px;
+      transform: translateZ(0);
+      contain: layout paint;
+      /* Browser optimization hint */
+    }
+
+    /* Sun - Simplified Glow */
+    .loading-sun {
+      position: absolute;
+      width: 60px;
+      height: 60px;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      background: #FFD700;
+      border-radius: 50%;
+      /* Basic glow using simple box-shadow is okay, removed animation */
+      box-shadow: 0 0 20px rgba(255, 215, 0, 0.5);
+      z-index: 10;
+    }
+
+    /* Orbits - Simple Border */
+    .loading-orbit {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 50%;
+      transform: translate(-50%, -50%);
+      will-change: transform;
+      /* Important for rotation */
+    }
+
+    .orbit-1 {
+      width: 120px;
+      height: 120px;
+      animation: orbitRotate 4s linear infinite;
+    }
+
+    .orbit-2 {
+      width: 180px;
+      height: 180px;
+      animation: orbitRotate 7s linear infinite;
+    }
+
+    /* Slower */
+    .orbit-3 {
+      width: 240px;
+      height: 240px;
+      animation: orbitRotate 10s linear infinite;
+    }
+
+    /* Slower */
+
+    @keyframes orbitRotate {
+      from {
+        transform: translate(-50%, -50%) rotate(0deg);
+      }
+
+      to {
+        transform: translate(-50%, -50%) rotate(360deg);
+      }
+    }
+
+    /* Planets - No Shadows */
+    .loading-planet {
+      position: absolute;
+      top: 0;
+      left: 50%;
+      transform: translateX(-50%);
+      border-radius: 50%;
+      background: #fff;
+    }
+
+    .planet-1 {
+      width: 10px;
+      height: 10px;
+      background: #8B7355;
+    }
+
+    .planet-2 {
+      width: 14px;
+      height: 14px;
+      background: #4A90E2;
+    }
+
+    .planet-3 {
+      width: 12px;
+      height: 12px;
+      background: #E27B58;
+    }
+
+    /* Percentage */
+    .loading-percentage {
+      font-size: 2.5rem;
+      font-family: 'Cairo', sans-serif;
+      font-weight: bold;
+      color: #FFD700;
+      margin-bottom: 15px;
+    }
+
+    /* Progress Bar */
+    .loading-progress-container {
+      position: relative;
+      width: 300px;
+      /* Reduced width */
+      height: 6px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 10px;
+      overflow: hidden;
+      margin-bottom: 20px;
+    }
+
+    .loading-progress-bar {
+      position: absolute;
+      height: 100%;
+      width: 0%;
+      background: #FFD700;
+      /* Solid color */
+      border-radius: 10px;
+      transition: width 0.2s linear;
+      will-change: width;
+    }
+
+    /* Text */
+    .loading-text {
+      font-size: 1.2rem;
+      font-family: 'Cairo', sans-serif;
+      color: rgba(255, 255, 255, 0.8);
+      margin-top: 10px;
+    }
+
+    .loading-tip {
+      position: absolute;
+      bottom: 30px;
+      width: 90%;
+      text-align: center;
+      font-size: 0.9rem;
+      font-family: 'Cairo', sans-serif;
+      color: rgba(255, 255, 255, 0.5);
+    }
+
+    /* Mobile Responsive */
+    @media (max-width: 768px) {
+      .loading-title {
+        font-size: 2rem;
+      }
+
+      .loading-solar-system {
+        transform: scale(0.8) translateZ(0);
+      }
+    }
+  </style>
+  <script type="module" crossorigin src="./assets/index-C9qJZBkS.js"></script>
+  <link rel="stylesheet" crossorigin href="./assets/index-BvaV5LE8.css">
+</head>
+
+<body style="margin: 0; background-color: #000; color: #fff;">
+
+  <!-- Loading Screen - Add at the very beginning of body -->
+  <div id="loading-screen" class="loading-screen">
+
+    <!-- Background effects -->
+    <div class="loading-bg-stars"></div>
+    <div class="loading-nebula"></div>
+
+    <!-- App title -->
+    <h1 class="loading-title">فلك وآية</h1>
+
+    <!-- Solar system animation -->
+    <div class="loading-solar-system">
+      <div class="loading-sun">
+        <div class="loading-sun-glow"></div>
+      </div>
+      <div class="loading-orbit orbit-1">
+        <div class="loading-planet planet-1"></div>
+      </div>
+      <div class="loading-orbit orbit-2">
+        <div class="loading-planet planet-2"></div>
+      </div>
+      <div class="loading-orbit orbit-3">
+        <div class="loading-planet planet-3"></div>
+      </div>
+    </div>
+
+    <!-- Percentage -->
+    <div class="loading-percentage">0%</div>
+
+    <!-- Progress bar -->
+    <div class="loading-progress-container">
+      <div class="loading-progress-bar"></div>
+      <div class="loading-progress-glow"></div>
+    </div>
+
+    <!-- Loading text -->
+    <div class="loading-text">جاري تحميل الكون...</div>
+
+    <!-- Random tip -->
+    <div class="loading-tip"></div>
+  </div>
+
+  <div id="root"></div>
+
+  <!-- Loading Logic -->
+  <script>
+    // Loading Screen Logic
+    class LoadingScreen {
+      constructor() {
+        this.loadingScreen = document.getElementById('loading-screen');
+        this.progressBar = document.querySelector('.loading-progress-bar');
+        this.progressGlow = document.querySelector('.loading-progress-glow');
+        this.percentage = document.querySelector('.loading-percentage');
+        this.tipElement = document.querySelector('.loading-tip');
+
+        this.currentProgress = 0;
+        this.targetProgress = 0;
+
+        this.tips = [
+          'هل تعلم أن الشمس تمثل 99.86% من كتلة النظام الشمسي؟',
+          'المسافة بين الأرض والشمس تسمى وحدة فلكية (150 مليون كم)',
+          'يمكن أن يتسع كوكب المشتري لأكثر من 1300 كرة أرضية',
+          'الضوء من الشمس يستغرق 8 دقائق للوصول إلى الأرض',
+          'زحل أقل كثافة من الماء - يمكنه أن يطفو!',
+          'يوم واحد على الزهرة أطول من سنة على الزهرة',
+          'قال الله تعالى: "وَالسَّمَاءَ بَنَيْنَاهَا بِأَيْدٍ وَإِنَّا لَمُوسِعُونَ"',
+          'النظام الشمسي عمره حوالي 4.6 مليار سنة'
+        ];
+
+        this.assetsToLoad = [];
+        this.loadedAssets = 0;
+      }
+
+      // Initialize loading
+      init() {
+        this.collectAssets();
+        this.startLoading();
+        this.startTipRotation();
+      }
+
+      // Collect all assets that need loading
+      collectAssets() {
+        // Fake assets for simulation
+        this.assetsToLoad = Array(25).fill('dummy');
+      }
+
+      // Start loading process
+      startLoading() {
+        if (this.assetsToLoad.length === 0) {
+          this.completeLoading();
+          return;
+        }
+
+        // Simulate asset loading with progress
+        this.assetsToLoad.forEach((asset, index) => {
+          setTimeout(() => {
+            this.loadedAssets++;
+            this.targetProgress = Math.floor((this.loadedAssets / this.assetsToLoad.length) * 100);
+            // Progress updated in loop
+
+            // Complete when all loaded
+            if (this.loadedAssets === this.assetsToLoad.length) {
+              setTimeout(() => this.completeLoading(), 800);
+            }
+          }, 100 * index + Math.random() * 200);
+        });
+
+        // Smooth progress animation
+        this.animateProgress();
+      }
+
+      // Animate progress smoothly
+      animateProgress() {
+        const animate = () => {
+          if (this.currentProgress < this.targetProgress) {
+            this.currentProgress += 1;
+            this.updateProgressBar();
+            requestAnimationFrame(animate);
+          } else if (this.currentProgress < 100) {
+            requestAnimationFrame(animate);
+          }
+        };
+        animate();
+      }
+
+      // Update progress bar visual
+      updateProgressBar() {
+        this.progressBar.style.width = this.currentProgress + '%';
+        this.progressGlow.style.width = this.currentProgress + '%';
+        this.percentage.textContent = this.currentProgress + '%';
+      }
+
+      // Start rotating tips
+      startTipRotation() {
+        this.showRandomTip();
+        setInterval(() => {
+          this.showRandomTip();
+        }, 4000);
+      }
+
+      // Show random tip
+      showRandomTip() {
+        const randomTip = this.tips[Math.floor(Math.random() * this.tips.length)];
+        this.tipElement.textContent = randomTip;
+
+        // Fade animation
+        this.tipElement.style.animation = 'none';
+        // Reflow
+        void this.tipElement.offsetWidth;
+        this.tipElement.style.animation = 'tipFade 3s ease-in-out';
+      }
+
+      // Complete loading and hide screen
+      completeLoading() {
+        this.currentProgress = 100;
+        this.targetProgress = 100;
+        this.updateProgressBar();
+
+        setTimeout(() => {
+          this.loadingScreen.classList.add('hidden');
+
+          // Remove from DOM after transition
+          setTimeout(() => {
+            this.loadingScreen.remove();
+          }, 500);
+        }, 800);
+      }
+    }
+
+    // Initialize loading screen on page load
+    window.addEventListener('load', () => {
+      const loader = new LoadingScreen();
+      loader.init();
+    });
+  </script>
+
+  <!-- 🛡️ GLOBAL ERROR CATCHER for GitHub Pages Debugging (PRESERVED) -->
+  <script>
+    window.addEventListener('error', function (e) {
+      if (e.target.tagName === 'SCRIPT' || e.target.tagName === 'LINK') {
+        const url = e.target.src || e.target.href;
+        document.body.innerHTML += `
+          <div style="background:black; color:#ff5555; padding:10px; border-bottom:1px solid #444; font-family:monospace; z-index:99999; position:relative;">
+             <strong>RESOURCE LOAD FAILED (404):</strong><br>
+             ${url}
+          </div>
+        `;
+      }
+    }, true);
+
+    window.onerror = function (msg, url, line, col, error) {
+      if (document.getElementById('loading-screen')) {
+        document.getElementById('loading-screen').innerHTML += `<div style="color:red; background:rgba(0,0,0,0.8); padding:10px;">${msg}</div>`;
+      }
+      return false;
+    };
+  </script>
+</body>
+
+</html>
