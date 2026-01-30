@@ -2,7 +2,7 @@
   "name": "solar-system-explorer",
   "private": true,
   "version": "0.0.0",
-  "homepage": "https://ibrahimal0tukhaim0.github.io/astronomy-project/",
+  "homepage": "https://astronomy-and-ayah.com/",
   "type": "module",
   "scripts": {
     "dev": "vite --host",
