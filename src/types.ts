@@ -23,6 +23,7 @@ export interface CelestialData {
         pulsationSpeed?: number; // 🌟 Pulse effect speed (for Capella)
         realImage?: string; // 🌟 NASA Image for Info Panel Background
         augustNotification?: boolean; // 🌟 Canopus special alert
+        poetry?: string; // 🌟 Arabic poetry
     };
 
     initialPosition: [number, number, number];

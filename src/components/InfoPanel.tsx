@@ -241,6 +241,18 @@ export function InfoPanel({ selectedObject, onClose }: InfoPanelProps) {
                         </p>
                     </section>
 
+                    {/* Arabic Poetry Section */}
+                    {selectedObject.science.poetry && (
+                        <section className="text-center p-6 bg-gradient-to-b from-amber-900/30 to-orange-900/20 rounded-xl border border-amber-400/20">
+                            <h3 className="text-xl font-serif text-amber-200 mb-4 flex items-center justify-center">
+                                <span className="ml-2">📜</span> الشعر العربي
+                            </h3>
+                            <p className="text-lg text-amber-50 font-serif leading-loose whitespace-pre-line" style={{ fontFamily: "'Amiri', serif", lineHeight: '2.5' }}>
+                                {selectedObject.science.poetry}
+                            </p>
+                        </section>
+                    )}
+
                 </div>
             </motion.div>
         </AnimatePresence >

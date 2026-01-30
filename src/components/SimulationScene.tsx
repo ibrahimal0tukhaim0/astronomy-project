@@ -146,17 +146,23 @@ export default function SimulationScene({ onSelect, isPaused, onDateChange, isAR
                 )}
             </Suspense>
 
-            {/* Reference Lighting Setup - Cinematic Deep Space Balance */}
-            <ambientLight intensity={0.42} color="#111122" /> {/* Increased 20% (0.35 -> 0.42) */}
+            {/* Emergency Lighting - High Intensity */}
+            <ambientLight intensity={1.5} color="#FFFFFF" />
 
-            {/* Fill Light (Blueish) - Soft Rim Light */}
-            <pointLight
-                position={[50, 50, -100]}
-                intensity={0.6} // Increased 20% (0.5 -> 0.6)
-                color="#4466ff"
-                distance={500}
-                decay={0.8}
+            <directionalLight
+                position={[100, 100, 100]}
+                intensity={2.0}
+                color="#FFFFFF"
+                castShadow={false}
             />
+
+            <directionalLight
+                position={[-100, 50, -100]}
+                intensity={1.5}
+                color="#AAAAFF"
+                castShadow={false}
+            />
+
 
 
             {/* 🌠 Shooting Stars (Every 15s) */}
