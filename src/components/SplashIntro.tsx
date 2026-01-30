@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
+import { texturePreloader } from '../utils/texturePreloader';
 
 interface SplashIntroProps {
     onComplete: () => void;
@@ -9,6 +10,11 @@ export function SplashIntro({ onComplete }: SplashIntroProps) {
     const [isVisible, setIsVisible] = useState(true);
     const [hasError, setHasError] = useState(false);
     const videoRef = useRef<HTMLVideoElement>(null);
+
+    // 🚀 Start preloading textures immediately when intro starts
+    useEffect(() => {
+        texturePreloader.start();
+    }, []);
 
     const handleVideoEnd = () => {
         setIsVisible(false);

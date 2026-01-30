@@ -165,102 +165,103 @@ function AppContent() {
 
             {/* 🎛️ Fixed Ambience HUD - Renders outside Canvas for stability */}
             {introFinished && <AmbienceControl />}
-            <ErrorBoundary>
-                {/* 3D Scene */}
-                <Canvas
-                    shadows
-                    camera={{
-                        // 🎥 CAMERA INTRO: Panorama Mode (Ultra Wide Max)
-                        // Intro: Wide FOV (75) + Far Z (660) + High Y (92)
-                        position: hasStarted ? [0, 40, 140] : [0, 92, 660],
-                        fov: hasStarted ? 60 : 75,
-                        near: 0.1,
-                        far: 500000 // ✨ Extended Range for Outer Belt
-                    }}
-                    // 🌟 4K RENDER UPGRADE: Optimized Pixel Ratio (User Request: Max 2)
-                    // Reduces GPU load by 30% while maintaining visual sharpness
-                    dpr={[1, Math.min(window.devicePixelRatio, 2)]}
-                    gl={{
-                        // PERFORMANCE: Auto-disable Antialias on High-DPI screens
-                        antialias: window.devicePixelRatio < 2,
-                        powerPreference: "high-performance",
-                        precision: "highp", // Force high precision for gradients/shaders
-                        toneMapping: THREE.ACESFilmicToneMapping,
-                        toneMappingExposure: 0.8,
-                        outputColorSpace: THREE.SRGBColorSpace,
-                        preserveDrawingBuffer: false,
-                        alpha: true // ✨ Allow Transparent Background for AR
-                    }}
-                >
-                    {/* In AR Mode, we want transparent background so VideoTexture (or DOM) shows through */}
-                    {/* Background Color handles regular mode. In AR mode, it's transparent. */}
-                    {!isARMode && <color attach="background" args={['#000814']} />}
+            {introFinished && (
+                <ErrorBoundary>
+                    {/* 3D Scene */}
+                    <Canvas
+                        shadows
+                        camera={{
+                            // 🎥 CAMERA INTRO: Panorama Mode (Ultra Wide Max)
+                            // Intro: Wide FOV (75) + Far Z (660) + High Y (92)
+                            position: hasStarted ? [0, 40, 140] : [0, 92, 660],
+                            fov: hasStarted ? 60 : 75,
+                            near: 0.1,
+                            far: 500000 // ✨ Extended Range for Outer Belt
+                        }}
+                        // 🌟 4K RENDER UPGRADE: Optimized Pixel Ratio (User Request: Max 2)
+                        // Reduces GPU load by 30% while maintaining visual sharpness
+                        dpr={[1, Math.min(window.devicePixelRatio, 2)]}
+                        gl={{
+                            // PERFORMANCE: Auto-disable Antialias on High-DPI screens
+                            antialias: window.devicePixelRatio < 2,
+                            powerPreference: "high-performance",
+                            precision: "highp", // Force high precision for gradients/shaders
+                            toneMapping: THREE.ACESFilmicToneMapping,
+                            toneMappingExposure: 0.8,
+                            outputColorSpace: THREE.SRGBColorSpace,
+                            preserveDrawingBuffer: false,
+                            alpha: true // ✨ Allow Transparent Background for AR
+                        }}
+                    >
+                        {/* In AR Mode, we want transparent background so VideoTexture (or DOM) shows through */}
+                        {/* Background Color handles regular mode. In AR mode, it's transparent. */}
+                        {!isARMode && <color attach="background" args={['#000814']} />}
 
-                    {/* Performance Optimization for iOS */}
-                    <AdaptiveDpr pixelated />
-                    <AdaptiveEvents />
+                        {/* Performance Optimization for iOS */}
+                        <AdaptiveDpr pixelated />
+                        <AdaptiveEvents />
 
-                    <Suspense fallback={null}>
-                        <SimulationScene
-                            onSelect={setSelectedObject}
-                            isPaused={isPaused || !hasStarted}
-                            onDateChange={setCurrentDate}
-                            isARMode={isARMode} // 🎥 AR Pass-through
-                            isMarathonMode={isMarathonMode}
-                        />
-                    </Suspense>
-
-                    {/* 🕹️ CONTROLS SWITCHING */}
-                    {!isARMode ? (
-                        <>
-                            <CameraController
-                                ref={cameraControllerRef}
-                                selectedObject={selectedObject}
-                                objectPosition={selectedObjectPos}
-                                controlsRef={controlsRef as any}
-                                startIntro={hasStarted}
+                        <Suspense fallback={null}>
+                            <SimulationScene
+                                onSelect={setSelectedObject}
+                                isPaused={isPaused || !hasStarted}
+                                onDateChange={setCurrentDate}
+                                isARMode={isARMode} // 🎥 AR Pass-through
+                                isMarathonMode={isMarathonMode}
                             />
-                            <OrbitControls
-                                ref={controlsRef}
-                                target={[0, 0, 0]}
-                                enableZoom={true}
-                                zoomToCursor={true} // 🔍 Pro Feature: Zoom to wherever cursor is
-                                enablePan={true} // ✋ Allow panning (2 fingers on mobile)
-                                panSpeed={1.0} // Screen-space panning
-                                enableDamping={true}
-                                dampingFactor={0.05} // 🌊 Smooth inertia
-                                minDistance={20} // 🛡️ Collision Avoidance (Solar Safety Zone)
-                                maxDistance={4000}
-                                autoRotate={!hasStarted}
-                                autoRotateSpeed={0.5}
-                                // 📱 Mobile Optimization: Slower rotation for touch precision (0.5), faster for mouse (0.8)
-                                rotateSpeed={window.matchMedia("(pointer: coarse)").matches ? 0.5 : 0.8}
-                                enabled={true}
+                        </Suspense>
+
+                        {/* 🕹️ CONTROLS SWITCHING */}
+                        {!isARMode ? (
+                            <>
+                                <CameraController
+                                    ref={cameraControllerRef}
+                                    selectedObject={selectedObject}
+                                    objectPosition={selectedObjectPos}
+                                    controlsRef={controlsRef as any}
+                                    startIntro={hasStarted}
+                                />
+                                <OrbitControls
+                                    ref={controlsRef}
+                                    target={[0, 0, 0]}
+                                    enableZoom={true}
+                                    zoomToCursor={true} // 🔍 Pro Feature: Zoom to wherever cursor is
+                                    enablePan={true} // ✋ Allow panning (2 fingers on mobile)
+                                    panSpeed={1.0} // Screen-space panning
+                                    enableDamping={true}
+                                    dampingFactor={0.05} // 🌊 Smooth inertia
+                                    minDistance={20} // 🛡️ Collision Avoidance (Solar Safety Zone)
+                                    maxDistance={4000}
+                                    autoRotate={!hasStarted}
+                                    autoRotateSpeed={0.5}
+                                    // 📱 Mobile Optimization: Slower rotation for touch precision (0.5), faster for mouse (0.8)
+                                    rotateSpeed={window.matchMedia("(pointer: coarse)").matches ? 0.5 : 0.8}
+                                    enabled={true}
+                                />
+                            </>
+                        ) : (
+                            /* 📱 GYROSCOPE (MOTION) CONTROLS FOR AR */
+                            <DeviceOrientationControls />
+                        )}
+
+                        {/* 🧹 Memory Management & FPS Stability */}
+                        <PerformanceOptimizer />
+                        <SmartRenderingManager />
+
+                        {/* ✨ Post-Processing: Cinematic Bloom (Glow) */}
+                        <EffectComposer>
+                            <Bloom
+                                luminanceThreshold={0.2}
+                                mipmapBlur
+                                intensity={1.5}
+                                radius={0.6}
                             />
-                        </>
-                    ) : (
-                        /* 📱 GYROSCOPE (MOTION) CONTROLS FOR AR */
-                        <DeviceOrientationControls />
-                    )}
-
-                    {/* 🧹 Memory Management & FPS Stability */}
-                    <PerformanceOptimizer />
-                    <SmartRenderingManager />
-
-                    {/* ✨ Post-Processing: Cinematic Bloom (Glow) */}
-                    <EffectComposer>
-                        <Bloom
-                            luminanceThreshold={0.2}
-                            mipmapBlur
-                            intensity={1.5}
-                            radius={0.6}
-                        />
-                    </EffectComposer>
-                </Canvas>
-            </ErrorBoundary>
-
-            {/* Main Menu Overlay (Cinematic Home) */}
-            {!hasStarted && (
+                        </EffectComposer>
+                    </Canvas>
+                </ErrorBoundary>
+            )}
+            {/* Main Menu Overlay (Cinematic Home) - Only after Intro finishes */}
+            {introFinished && !hasStarted && (
                 <div className="absolute inset-0 z-50">
                     <CinematicHome onStart={() => setHasStarted(true)} />
                 </div>

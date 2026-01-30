@@ -18,7 +18,7 @@ interface MeteorData {
 
 export function Meteors() {
     // Texture: Use specific shooting star texture or fallback to a glow
-    const texture = useTexture(`${import.meta.env.BASE_URL}textures/shooting_star_trail.png`);
+    const texture = useTexture(`${import.meta.env.BASE_URL}textures/shooting_star_trail.webp`);
     const [meteors, setMeteors] = useState<MeteorData[]>([]);
     const lastSpawnTime = useRef(0);
 

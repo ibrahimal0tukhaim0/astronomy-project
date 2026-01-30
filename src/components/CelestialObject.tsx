@@ -76,8 +76,8 @@ function GenericPlanet({
 // 🪐 كوكب زحل الحقيقي (Real Saturn)
 // يتضمن الحلقات والكوكب معاً في مجموعة واحدة
 function RealSaturn({ scale = 1.0 }: { scale?: number }) {
-    const surfaceTexture = useTexture(`${import.meta.env.BASE_URL}textures/saturn_surface.png`);
-    const ringTexture = useTexture(`${import.meta.env.BASE_URL}textures/saturn_rings.png`);
+    const surfaceTexture = useTexture(`${import.meta.env.BASE_URL}textures/saturn_surface.webp`);
+    const ringTexture = useTexture(`${import.meta.env.BASE_URL}textures/saturn_rings.webp`);
     const groupRef = useRef<THREE.Group>(null);
     const planetRef = useRef<THREE.Mesh>(null);
     const ringsRef = useRef<THREE.Mesh>(null);
@@ -149,7 +149,7 @@ function RealSaturn({ scale = 1.0 }: { scale?: number }) {
 }
 // ☀️ الشمس الحقيقية (Real Sun)
 function RealSun({ scale = 1.0 }: { scale?: number }) {
-    const texture = useTexture(`${import.meta.env.BASE_URL}textures/sun_surface.png`);
+    const texture = useTexture(`${import.meta.env.BASE_URL}textures/sun_surface.webp`);
 
     useEffect(() => {
         // eslint-disable-next-line react-hooks/immutability
@@ -186,8 +186,8 @@ function RealSun({ scale = 1.0 }: { scale?: number }) {
 // 🌍 الأرض الحقيقية (Real Earth)
 // تتطلب معالجة خاصة للغيوم والنهار
 function RealEarth({ scale = 1.0 }: { scale?: number }) {
-    const dayTexture = useTexture(`${import.meta.env.BASE_URL}textures/earth_daymap.png`);
-    const cloudTexture = useTexture(`${import.meta.env.BASE_URL}textures/earth_clouds.png`);
+    const dayTexture = useTexture(`${import.meta.env.BASE_URL}textures/earth_daymap.webp`);
+    const cloudTexture = useTexture(`${import.meta.env.BASE_URL}textures/earth_clouds.webp`);
     const earthRef = useRef<THREE.Group>(null);
     const cloudsRef = useRef<THREE.Mesh>(null);
 
@@ -379,7 +379,7 @@ function RealUranus({ scale = 1.0 }: { scale?: number }) {
 
 // 💫 الطارق (Real Al-Tariq - Sprite)
 function RealAlTariq({ scale = 1.0 }: { scale?: number }) {
-    const texture = useTexture(`${import.meta.env.BASE_URL}textures/al_tariq_real.png`);
+    const texture = useTexture(`${import.meta.env.BASE_URL}textures/al_tariq_real.webp`);
     return (
         <group>
             <sprite scale={[scale * 15, scale * 15, 1]}>
@@ -407,7 +407,7 @@ function RealAlTariq({ scale = 1.0 }: { scale?: number }) {
 
 // 🌟 نجم الجبار (Real Orion Star)
 function RealOrionStar({ scale = 1.0 }: { scale?: number }) {
-    const texture = useTexture(`${import.meta.env.BASE_URL}textures/blue_supergiant_surface.png`);
+    const texture = useTexture(`${import.meta.env.BASE_URL}textures/blue_supergiant_surface.webp`);
 
     useEffect(() => {
         return () => texture.dispose();
@@ -558,7 +558,7 @@ function HalleyComet({
 
         // 2. Load Tail
         loader.load(
-            `${import.meta.env.BASE_URL}textures/shooting_star_trail.png`,
+            `${import.meta.env.BASE_URL}textures/shooting_star_trail.webp`,
             (tex) => setTailTexture(tex),
             undefined,
             (_err) => { /* Silenced error */ }
@@ -807,7 +807,7 @@ export function CelestialObject(props: CelestialObjectProps) {
             {data.id === 'mars' && (
                 <GenericPlanet
                     scale={targetScale}
-                    texturePath="textures/mars_surface.png"
+                    texturePath="textures/mars_surface.webp"
                     rotationSpeed={0.12}
                     roughness={0.8}
                     metalness={0.05}
@@ -818,7 +818,7 @@ export function CelestialObject(props: CelestialObjectProps) {
             {data.id === 'venus' && (
                 <GenericPlanet
                     scale={targetScale}
-                    texturePath="textures/venus_atmosphere.png"
+                    texturePath="textures/venus_atmosphere.webp"
                     rotationSpeed={0.05}
                     roughness={1.0}
                     metalness={0.0}
@@ -829,7 +829,7 @@ export function CelestialObject(props: CelestialObjectProps) {
             {data.id === 'mercury' && (
                 <GenericPlanet
                     scale={targetScale}
-                    texturePath="textures/mercury_surface.png"
+                    texturePath="textures/mercury_surface.webp"
                     rotationSpeed={0.05}
                     roughness={0.9}
                     metalness={0.1}
@@ -840,7 +840,7 @@ export function CelestialObject(props: CelestialObjectProps) {
             {data.id === 'neptune' && (
                 <GenericPlanet
                     scale={targetScale}
-                    texturePath="textures/neptune_surface.png"
+                    texturePath="textures/neptune_surface.webp"
                     rotationSpeed={0.12}
                     roughness={0.4}
                     metalness={0.1}
@@ -851,7 +851,7 @@ export function CelestialObject(props: CelestialObjectProps) {
             {data.id === 'pluto' && (
                 <GenericPlanet
                     scale={targetScale}
-                    texturePath="textures/pluto_surface.png"
+                    texturePath="textures/pluto_surface.webp"
                     rotationSpeed={0.02}
                     roughness={0.8}
                     metalness={0.05}
@@ -862,7 +862,7 @@ export function CelestialObject(props: CelestialObjectProps) {
             {data.id === 'moon' && (
                 <GenericPlanet
                     scale={targetScale}
-                    texturePath="textures/moon_surface.png"
+                    texturePath="textures/moon_surface.webp"
                     rotationSpeed={0.05}
                     roughness={0.9}
                     metalness={0.05}
@@ -903,7 +903,7 @@ export function CelestialObject(props: CelestialObjectProps) {
 }
 // 🌟 نجم الشعرى (Sirius Sprite Component)
 function SiriusSprite({ scale }: { scale: number }) {
-    const texture = useTexture(`${import.meta.env.BASE_URL}textures/sirius_real.png`);
+    const texture = useTexture(`${import.meta.env.BASE_URL}textures/sirius_real.webp`);
     return (
         <group>
             <pointLight intensity={250.0} distance={8000} decay={1.0} color="#dceeff" />

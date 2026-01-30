@@ -25,7 +25,7 @@ interface LightningBolt {
 // ═══════════════════════════════════════════════════════════════
 export const SpaceLightning = memo(function SpaceLightning() {
     // ⚡ REALISTIC TREE LIGHTNING TEXTURE
-    const texture = useTexture(`${import.meta.env.BASE_URL}textures/lightning_branch.png`);
+    const texture = useTexture(`${import.meta.env.BASE_URL}textures/lightning_branch.webp`);
     const [bolts, setBolts] = useState<LightningBolt[]>([]);
     const nextFlashTime = useRef(0);
 
