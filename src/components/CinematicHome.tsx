@@ -1,7 +1,7 @@
 import { useEffect, useState, useRef, memo } from 'react';
 import { gsap } from 'gsap';
 import { texturePreloader } from '../utils/texturePreloader';
-import cinematicBg from '../assets/cinematic_bg.jpg';
+import appLogoBg from '../assets/app_logo_bg.jpg';
 
 
 
@@ -150,11 +150,11 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
             {/* Background Image with Overlay */}
             <div style={{ position: 'absolute', inset: 0, zIndex: 0, backgroundColor: 'black' }}>
                 <img
-                    src={cinematicBg}
-                    alt="Cosmic Background"
+                    src={appLogoBg}
+                    alt="App Logo Background"
                     className="w-full h-full object-contain"
                 />
-                <div className="absolute inset-0 bg-black/10 backdrop-blur-[0px]" />
+                <div className="absolute inset-0 bg-black/20 backdrop-blur-[0px]" />
             </div>
 
             {/* UI Content */}
