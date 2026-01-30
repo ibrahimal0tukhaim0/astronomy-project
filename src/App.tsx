@@ -172,8 +172,8 @@ function AppContent() {
                         shadows
                         camera={{
                             // 🎥 CAMERA INTRO: Panorama Mode (Ultra Wide Max)
-                            // Intro: Wide FOV (75) + Far Z (660) + High Y (92)
-                            position: hasStarted ? [0, 40, 140] : [0, 92, 660],
+                            // Intro: Wide FOV (75) + Far Z (3500) + High Y (2000)
+                            position: hasStarted ? [0, 400, 900] : [0, 2000, 3500],
                             fov: hasStarted ? 60 : 75,
                             near: 0.1,
                             far: 500000 // ✨ Extended Range for Outer Belt
@@ -230,7 +230,7 @@ function AppContent() {
                                     panSpeed={1.0} // Screen-space panning
                                     enableDamping={true}
                                     dampingFactor={0.05} // 🌊 Smooth inertia
-                                    minDistance={20} // 🛡️ Collision Avoidance (Solar Safety Zone)
+                                    minDistance={60} // 🛡️ Collision Avoidance (Sun Radius is 30)
                                     maxDistance={4000}
                                     autoRotate={!hasStarted}
                                     autoRotateSpeed={0.5}

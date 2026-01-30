@@ -1,6 +1,7 @@
 import { useEffect, useState, useRef, memo } from 'react';
 import { gsap } from 'gsap';
 import { texturePreloader } from '../utils/texturePreloader';
+import cinematicBg from '../assets/cinematic_bg.jpg';
 
 
 
@@ -144,8 +145,17 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
 
             `}</style>
 
-            {/* Glassmorphism Background - Blurs the Scene slightly */}
-            <div style={{ position: 'absolute', inset: 0, backdropFilter: 'blur(8px)', zIndex: -1 }} />
+            {/* Background Image with Overlay */}
+            {/* Background Image with Overlay */}
+            {/* Background Image with Overlay */}
+            <div style={{ position: 'absolute', inset: 0, zIndex: 0, backgroundColor: 'black' }}>
+                <img
+                    src={cinematicBg}
+                    alt="Cosmic Background"
+                    className="w-full h-full object-contain"
+                />
+                <div className="absolute inset-0 bg-black/10 backdrop-blur-[0px]" />
+            </div>
 
             {/* UI Content */}
             <div className="hero-text-container">

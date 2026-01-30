@@ -35,8 +35,9 @@ export const CameraController = forwardRef<CameraControllerHandle, CameraControl
             timelineRef.current?.kill();
 
             // Set Initial State (Far away)
-            const startPos = new THREE.Vector3(0, 300, 600);
-            const targetPos = new THREE.Vector3(0, 40, 140); // Standard view
+            // 🔭 WIDE SHOT: Start far back to see the whole system
+            const startPos = new THREE.Vector3(0, 2000, 3500);
+            const targetPos = new THREE.Vector3(0, 400, 900); // Orbit View (Far back)
 
             camera.position.copy(startPos);
             controlsRef.current.target.set(0, 0, 0);

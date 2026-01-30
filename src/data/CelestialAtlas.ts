@@ -58,6 +58,8 @@ export const eliteStars: CelestialData[] = [
         initialPosition: [-20000, -8000, 8000], // West/South, Very Distant
     },
 
+
+
     // 4. النسر الواقع (Vega)
     {
         id: 'vega',

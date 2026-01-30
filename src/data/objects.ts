@@ -10,7 +10,7 @@ export const celestialObjects: CelestialData[] = [
         type: 'star',
         science: {
             color: '#FFCC33',
-            scale: 10.0,
+            scale: 30.0,
             orbitRadius: 0,
             orbitSpeed: 0,
             orbitInclination: 0,
@@ -31,14 +31,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'planet',
         science: {
             color: '#A5A5A5',
-            scale: 10.0,
-            orbitRadius: 90, // Row 2 (Was 60)
+            scale: 20.0, // 2x (was 10.0)
+            orbitRadius: 286, // +30% (was 220)
             orbitSpeed: 0.3, // Slowed for distance
             orbitInclination: 2.0,
             orbitPhase: Math.random() * Math.PI * 2,
             poetry: 'لو كنت يوماً بالنجوم مصدقـاً .. لزعمت أنك أنت بكر عطارد\n\nارتبط عطارد بالبلاغة والذكاء عند العرب.'
         },
-        initialPosition: [90, 0, 0],
+        initialPosition: [286, 0, 0],
     },
 
     // 2. الزهرة (Venus)
@@ -47,13 +47,13 @@ export const celestialObjects: CelestialData[] = [
         type: 'planet',
         science: {
             color: '#E3BB76',
-            scale: 16.0,
-            orbitRadius: 120, // Row 3 (Was 90)
+            scale: 32.0, // 2x (was 16.0)
+            orbitRadius: 382, // Gap 80->96 (+20%)
             orbitSpeed: 0.2,
             orbitInclination: 1.0,
             orbitPhase: Math.random() * Math.PI * 2,
         },
-        initialPosition: [120, 0, 0],
+        initialPosition: [382, 0, 0],
     },
 
     // 3. الأرض (Earth)
@@ -62,15 +62,15 @@ export const celestialObjects: CelestialData[] = [
         type: 'planet',
         science: {
             color: '#2271B3',
-            scale: 14.0,
-            orbitRadius: 150, // Row 4 (Was 120)
+            scale: 56.0, // 2x (was 28.0)
+            orbitRadius: 480, // Gap 82->98 (+20%)
             orbitSpeed: 0.15,
             orbitInclination: 0,
             orbitPhase: Math.random() * Math.PI * 2,
             rotationSpeed: 0.01,
             poetry: 'والأرضُ فيها لِلمسافرِ مَلجأٌ .. وبها مَقيلٌ للغريبِ ومَأوى\n\nيبرز دور الأرض كمأوى ومسكن آمن للبشر في وسط هذا الفضاء الموحش.'
         },
-        initialPosition: [150, 0, 0],
+        initialPosition: [480, 0, 0],
     },
 
     // القمر (Moon)
@@ -79,14 +79,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'moon',
         science: {
             color: '#D1D1D1',
-            scale: 6.0,
-            orbitRadius: 16.0,
+            scale: 18.0, // +50% (was 12.0)
+            orbitRadius: 81.0, // +20% (was 67.2)
             orbitSpeed: 3.0,
             orbitInclination: 5.1,
             orbitPhase: 0,
             poetry: 'والبدرُ في كبدِ السماءِ كأنهُ .. ملكٌ يطلُّ على الرعيةِ منْ علِ\n\nيصف القمر في وسط السماء كالملك الذي يراقب رعيته بهدوء وهيبة.'
         },
-        initialPosition: [166, 0, 0],
+        initialPosition: [561, 0, 0],
     },
 
     // 4. المريخ (Mars)
@@ -95,14 +95,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'planet',
         science: {
             color: '#E27B58',
-            scale: 12.0,
-            orbitRadius: 180, // Row 5 (Was 150)
+            scale: 24.0, // 2x (was 12.0)
+            orbitRadius: 577, // Gap 81->97 (+20%)
             orbitSpeed: 0.12,
             orbitInclination: 1.8,
             orbitPhase: Math.random() * Math.PI * 2,
             poetry: 'ولنارِ المريخِ من حدثانِ الدّهرِ .. مطفٍ وإن علت في اتقادِ\n\nعُرف المريخ بـ "بهرام" ولونه الأحمر الناري، ورُمز به للقوة والبطش.'
         },
-        initialPosition: [180, 0, 0],
+        initialPosition: [577, 0, 0],
     },
 
     // =============================================================================
@@ -115,14 +115,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'planet',
         science: {
             color: '#D39C7E',
-            scale: 16.0,
-            orbitRadius: 220,
+            scale: 32.0, // 2x (was 16.0)
+            orbitRadius: 723, // Gap 122->146 (+20%)
             orbitSpeed: 0.08,
             orbitInclination: 1.3,
             orbitPhase: Math.random() * Math.PI * 2,
             poetry: 'له كبرياءُ المشتري وسُعوده .. وسورةُ بهرامٍ وظرفُ عطاردِ\n\nوُصف المشتري بكوكب العظمة والملوك والسعد.'
         },
-        initialPosition: [220, 0, 0],
+        initialPosition: [723, 0, 0],
     },
 
     // 6. زحل (Saturn)
@@ -131,14 +131,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'planet',
         science: {
             color: '#E2BF7D',
-            scale: 13.5, // Reduced by half (was 27.0)
-            orbitRadius: 300,
+            scale: 27.0, // 2x (was 13.5)
+            orbitRadius: 966, // Gap 203->243 (+20%)
             orbitSpeed: 0.06,
             orbitInclination: 2.5,
             orbitPhase: Math.random() * Math.PI * 2,
             poetry: 'زحلٌ أشرفُ الكواكبِ داراً .. من لقاء الردى على ميعاد\n\nلُقب زحل بـ "أشرف الكواكب" لارتفاع مداره وبُعده الشديد.'
         },
-        initialPosition: [300, 0, 0],
+        initialPosition: [966, 0, 0],
     },
 
 
@@ -172,7 +172,7 @@ export const celestialObjects: CelestialData[] = [
         type: 'conceptual',
         science: {
             color: '#FFFFFF',
-            scale: 60.0, // 🌟 3x Scale (was 20)
+            scale: 120.0, // 🌟 2x Size (was 60)
             orbitRadius: 0,
             orbitSpeed: 0,
             orbitInclination: 0,
@@ -180,7 +180,7 @@ export const celestialObjects: CelestialData[] = [
             glowIntensity: 8.0,
             poetry: 'وطارقٍ في دُجى الليلِ جِئتُ بهِ .. يثقُبُ ثوبَ الظلامِ بِنورٍ وَقّادِ\n\nيصف النجم الطارق كأنه مسمار من نور يثقب ثوب الظلام الدامس بلمعانه الشديد.'
         },
-        initialPosition: [-1360, 1392, -510], // 🌟 Extreme: 2x Distance
+        initialPosition: [-2448, 2505.6, -918], // 🌟 +80% Distance
     },
     // =============================================================================
     // الكواكب الخارجية (العمالقة الجليدية والكواكب القزمة)
@@ -192,13 +192,13 @@ export const celestialObjects: CelestialData[] = [
         type: 'planet',
         science: {
             color: '#73C6D9',
-            scale: 18.0,
-            orbitRadius: 360,
+            scale: 36.0, // 2x (was 18.0)
+            orbitRadius: 1208, // Gap 202->242 (+20%)
             orbitSpeed: 0.04,
             orbitInclination: 0.8,
             orbitPhase: Math.random() * Math.PI * 2,
         },
-        initialPosition: [360, 0, 0],
+        initialPosition: [1208, 0, 0],
     },
 
     // 8. نبتون (Neptune)
@@ -207,13 +207,13 @@ export const celestialObjects: CelestialData[] = [
         type: 'planet',
         science: {
             color: '#4b70dd',
-            scale: 34.0,
-            orbitRadius: 410,
+            scale: 68.0, // 2x (was 34.0)
+            orbitRadius: 1403, // Gap 163->195 (+20%)
             orbitSpeed: 0.03,
             orbitInclination: 1.8,
             orbitPhase: Math.random() * Math.PI * 2,
         },
-        initialPosition: [410, 0, 0],
+        initialPosition: [1403, 0, 0],
     },
 
     // 9. بلوتو (Pluto)
@@ -222,14 +222,14 @@ export const celestialObjects: CelestialData[] = [
         type: 'planet',
         science: {
             color: '#D0D0D0',
-            scale: 18.0,
-            orbitRadius: 450,
+            scale: 36.0, // 2x (was 18.0)
+            orbitRadius: 1548, // Gap 121->145 (+20%)
             orbitSpeed: 0.02,
             orbitInclination: 17.0,
             orbitPhase: Math.random() * Math.PI * 2,
             rotationSpeed: 0.0001,
         },
-        initialPosition: [450, 12, 0],
+        initialPosition: [1548, 12, 0],
     },
 
     // =============================================================================
@@ -295,7 +295,7 @@ export const celestialObjects: CelestialData[] = [
         science: {
             color: '#FFFFFF', // ☀️ Restored to White for Texture Clarity
             scale: 70.0,
-            orbitRadius: 1120,
+            orbitRadius: 2952, // +20% (was 2460)
             orbitSpeed: 0.1,
             orbitInclination: 10.6,
             orbitPhase: 0,
@@ -304,7 +304,7 @@ export const celestialObjects: CelestialData[] = [
             glowIntensity: 0.42,
             texture: 'textures/asteroids/ceres.webp'
         },
-        initialPosition: [1120, 20, 0],
+        initialPosition: [2952, 20, 0],
     },
 
     // 2. فيستا (Vesta) - كروي مفلطح
@@ -314,7 +314,7 @@ export const celestialObjects: CelestialData[] = [
         science: {
             color: '#FFFFFF', // ☀️ Restored to White for Texture Clarity
             scale: 56.0,
-            orbitRadius: 1159,
+            orbitRadius: 3052, // +20% (was 2544)
             orbitSpeed: 0.09,
             orbitInclination: 7.1,
             orbitPhase: 0.698,
@@ -323,7 +323,7 @@ export const celestialObjects: CelestialData[] = [
             glowIntensity: 0.42,
             texture: 'textures/asteroids/vesta.webp'
         },
-        initialPosition: [1159, -15, 0],
+        initialPosition: [3052, -15, 0],
     },
 
     // 3. بالاس (Pallas) - غير منتظم قليلاً
@@ -333,7 +333,7 @@ export const celestialObjects: CelestialData[] = [
         science: {
             color: '#888888', // 🌑 Darkened: High-albedo texture correction
             scale: 56.0,
-            orbitRadius: 1198,
+            orbitRadius: 3157, // +20% (was 2631)
             orbitSpeed: 0.08,
             orbitInclination: 34.8,
             orbitPhase: 1.396,
@@ -342,7 +342,7 @@ export const celestialObjects: CelestialData[] = [
             glowIntensity: 0.42,
             texture: 'textures/asteroids/pallas.webp'
         },
-        initialPosition: [1198, 30, 0],
+        initialPosition: [3157, 30, 0],
     },
 
     // 4. جونو (Juno)
@@ -352,7 +352,7 @@ export const celestialObjects: CelestialData[] = [
         science: {
             color: '#FFFFFF', // ☀️ Restored to White for Texture Clarity
             scale: 44.0,
-            orbitRadius: 1237,
+            orbitRadius: 3260, // +20% (was 2717)
             orbitSpeed: 0.11,
             orbitInclination: 13.0,
             orbitPhase: 2.094,
@@ -361,7 +361,7 @@ export const celestialObjects: CelestialData[] = [
             glowIntensity: 0.42,
             texture: 'textures/asteroids/juno.webp'
         },
-        initialPosition: [1237, -20, 0],
+        initialPosition: [3260, -20, 0],
     },
 
     // 5. إيروس (Eros) - متطاول جداً (شكل حبة الفول السوداني)
@@ -371,7 +371,7 @@ export const celestialObjects: CelestialData[] = [
         science: {
             color: '#888888', // 🌑 Darkened: High-albedo texture correction
             scale: 30.0,
-            orbitRadius: 1276,
+            orbitRadius: 3361, // +20% (was 2801)
             orbitSpeed: 0.11,
             orbitInclination: 10.8,
             orbitPhase: 2.792,
@@ -380,7 +380,7 @@ export const celestialObjects: CelestialData[] = [
             glowIntensity: 0.42,
             texture: 'textures/asteroids/eros.webp'
         },
-        initialPosition: [1276, 10, 0],
+        initialPosition: [3361, 10, 0],
     },
 
     // 6. إيدا (Ida) - متطاول (شكل البطاطس)
@@ -390,7 +390,7 @@ export const celestialObjects: CelestialData[] = [
         science: {
             color: '#888888', // 🌑 Darkened: High-albedo texture correction
             scale: 36.0,
-            orbitRadius: 1315,
+            orbitRadius: 3464, // +20% (was 2887)
             orbitSpeed: 0.09,
             orbitInclination: 2.0,
             orbitPhase: 3.490,
@@ -399,7 +399,7 @@ export const celestialObjects: CelestialData[] = [
             glowIntensity: 0.42,
             texture: 'textures/asteroids/ida.webp'
         },
-        initialPosition: [1315, -5, 0],
+        initialPosition: [3464, -5, 0],
     },
 
     // 7. جاسبرا (Gaspra) - غير منتظم جداً
@@ -409,7 +409,7 @@ export const celestialObjects: CelestialData[] = [
         science: {
             color: '#FFFFFF', // ☀️ Restored to White for Texture Clarity
             scale: 28.0,
-            orbitRadius: 1354,
+            orbitRadius: 3568, // +20% (was 2974)
             orbitSpeed: 0.1,
             orbitInclination: 5.0,
             orbitPhase: 4.188,
@@ -418,7 +418,7 @@ export const celestialObjects: CelestialData[] = [
             glowIntensity: 0.42,
             texture: 'textures/asteroids/gaspra.webp'
         },
-        initialPosition: [1354, 25, 0],
+        initialPosition: [3568, 25, 0],
     },
 
     // 8. بينو (Bennu) - شكل الماسة (معين)
@@ -428,7 +428,7 @@ export const celestialObjects: CelestialData[] = [
         science: {
             color: '#888888', // 🌑 Darkened: High-albedo texture correction
             scale: 24.0,
-            orbitRadius: 1393,
+            orbitRadius: 3670, // +20% (was 3059)
             orbitSpeed: 0.12,
             orbitInclination: 6.0,
             orbitPhase: 4.886,
@@ -437,7 +437,7 @@ export const celestialObjects: CelestialData[] = [
             glowIntensity: 0.42,
             texture: 'textures/asteroids/bennu.webp'
         },
-        initialPosition: [1393, -30, 0],
+        initialPosition: [3670, -30, 0],
     },
 
     // 9. ريوجو (Ryugu) - شكل الماسة
@@ -447,7 +447,7 @@ export const celestialObjects: CelestialData[] = [
         science: {
             color: '#888888', // 🌑 Darkened: High-albedo texture correction
             scale: 26.0,
-            orbitRadius: 1432,
+            orbitRadius: 3774, // +20% (was 3145)
             orbitSpeed: 0.08,
             orbitInclination: 5.9,
             orbitPhase: 5.585,
@@ -456,7 +456,7 @@ export const celestialObjects: CelestialData[] = [
             glowIntensity: 0.42,
             texture: 'textures/asteroids/ryugu.webp'
         },
-        initialPosition: [1432, 15, 0],
+        initialPosition: [3774, 15, 0],
     },
 
     // 🌟 THE ELITE STARS (Golden Five)
