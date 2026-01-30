@@ -301,7 +301,7 @@ export const celestialObjects: CelestialData[] = [
             orbitPhase: 0,
             shapeScale: [1, 1, 1],
             frustumCulled: false,
-            glowIntensity: 0.3,
+            glowIntensity: 0.42,
             texture: 'textures/asteroids/ceres.webp'
         },
         initialPosition: [1120, 20, 0],
@@ -320,7 +320,7 @@ export const celestialObjects: CelestialData[] = [
             orbitPhase: 0.698,
             shapeScale: [1.1, 1.0, 1.0],
             frustumCulled: false,
-            glowIntensity: 0.3,
+            glowIntensity: 0.42,
             texture: 'textures/asteroids/vesta.webp'
         },
         initialPosition: [1159, -15, 0],
@@ -339,7 +339,7 @@ export const celestialObjects: CelestialData[] = [
             orbitPhase: 1.396,
             shapeScale: [1.1, 1.0, 0.9],
             frustumCulled: false,
-            glowIntensity: 0.3,
+            glowIntensity: 0.42,
             texture: 'textures/asteroids/pallas.webp'
         },
         initialPosition: [1198, 30, 0],
@@ -358,7 +358,7 @@ export const celestialObjects: CelestialData[] = [
             orbitPhase: 2.094,
             shapeScale: [1.0, 1.0, 0.9],
             frustumCulled: false,
-            glowIntensity: 0.3,
+            glowIntensity: 0.42,
             texture: 'textures/asteroids/juno.webp'
         },
         initialPosition: [1237, -20, 0],
@@ -377,7 +377,7 @@ export const celestialObjects: CelestialData[] = [
             orbitPhase: 2.792,
             shapeScale: [2.5, 1.0, 1.0],
             frustumCulled: false,
-            glowIntensity: 0.3,
+            glowIntensity: 0.42,
             texture: 'textures/asteroids/eros.webp'
         },
         initialPosition: [1276, 10, 0],
@@ -396,7 +396,7 @@ export const celestialObjects: CelestialData[] = [
             orbitPhase: 3.490,
             shapeScale: [2.2, 1.0, 1.0],
             frustumCulled: false,
-            glowIntensity: 0.3,
+            glowIntensity: 0.42,
             texture: 'textures/asteroids/ida.webp'
         },
         initialPosition: [1315, -5, 0],
@@ -415,7 +415,7 @@ export const celestialObjects: CelestialData[] = [
             orbitPhase: 4.188,
             shapeScale: [1.8, 1.1, 0.9],
             frustumCulled: false,
-            glowIntensity: 0.3,
+            glowIntensity: 0.42,
             texture: 'textures/asteroids/gaspra.webp'
         },
         initialPosition: [1354, 25, 0],
@@ -434,7 +434,7 @@ export const celestialObjects: CelestialData[] = [
             orbitPhase: 4.886,
             shapeScale: [1.0, 1.0, 1.0],
             frustumCulled: false,
-            glowIntensity: 0.3,
+            glowIntensity: 0.42,
             texture: 'textures/asteroids/bennu.webp'
         },
         initialPosition: [1393, -30, 0],
@@ -453,7 +453,7 @@ export const celestialObjects: CelestialData[] = [
             orbitPhase: 5.585,
             shapeScale: [1.0, 1.0, 1.0],
             frustumCulled: false,
-            glowIntensity: 0.3,
+            glowIntensity: 0.42,
             texture: 'textures/asteroids/ryugu.webp'
         },
         initialPosition: [1432, 15, 0],

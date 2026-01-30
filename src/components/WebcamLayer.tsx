@@ -143,7 +143,7 @@ export function WebcamLayer() {
                 autoPlay
                 playsInline
                 muted
-                className="fixed inset-0 w-full h-full object-cover z-[1] pointer-events-none"
+                className="fixed inset-0 w-full h-full object-cover z-[-1] pointer-events-none"
                 style={{
                     position: 'fixed',
                     top: 0,
@@ -151,7 +151,7 @@ export function WebcamLayer() {
                     width: '100%',
                     height: '100%',
                     objectFit: 'cover',
-                    zIndex: 1,
+                    zIndex: -1, // FIXED: Behind Canvas so planets show on top
                     pointerEvents: 'none',
                     // 🛡️ ANTI-FLICKER: Force GPU Layer
                     willChange: 'transform',

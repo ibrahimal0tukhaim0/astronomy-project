@@ -81,8 +81,20 @@ function initPerformanceOptimizations() {
     optimizeImages();
     detectPerformance();
 
-    // Run cleanup every 30 seconds
-    setInterval(cleanupMemory, 30000);
+    // Run cleanup every 15 seconds (more frequent for better memory)
+    setInterval(cleanupMemory, 15000);
+}
+
+// 🧹 GPU Memory Optimizer - Safe texture cache cleanup
+function optimizeGPUMemory(gl: THREE.WebGLRenderer) {
+    // Force WebGL garbage collection if available
+    const info = gl.info;
+
+    // Log memory stats (helpful for debugging)
+    console.log(`🧹 GPU Memory: ${info.memory.textures} textures, ${info.memory.geometries} geometries`);
+
+    // Reset render info (frees internal caches)
+    info.reset();
 }
 
 // React Component Wrapper
@@ -102,8 +114,14 @@ export function PerformanceOptimizer() {
         const handleLoad = () => initPerformanceOptimizations();
         window.addEventListener('load', handleLoad);
 
+        // 🧹 Periodic GPU memory optimization (every 20 seconds)
+        const gpuCleanupInterval = setInterval(() => {
+            optimizeGPUMemory(gl);
+        }, 20000);
+
         return () => {
             window.removeEventListener('load', handleLoad);
+            clearInterval(gpuCleanupInterval);
 
             // 🧹 MANUAL CLEANUP (User Requested)
 

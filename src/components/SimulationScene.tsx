@@ -138,12 +138,7 @@ export default function SimulationScene({ onSelect, isPaused, onDateChange, isAR
             {/* 🌌 BACKGROUND SYSTEM */}
             {/* If AR Mode: Show Webcam. Else: Show Space Background */}
             <Suspense fallback={null}>
-                {isARMode ? (
-                    // Dynamic Import to avoid SSR/Initial load issues
-                    React.createElement(React.lazy(() => import('./WebcamLayer').then(module => ({ default: module.WebcamLayer }))))
-                ) : (
-                    <SpaceBackground />
-                )}
+                {!isARMode && <SpaceBackground />}
             </Suspense>
 
             {/* Emergency Lighting - High Intensity */}
