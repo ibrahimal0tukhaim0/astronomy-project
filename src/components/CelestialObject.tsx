@@ -1,10 +1,9 @@
-import { useRef, useState, useEffect } from 'react'
+import { useRef, useState, useEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
 import { useTexture } from '@react-three/drei'
 import type { CelestialData } from '../types' // ✨ Refactored Import
 import * as THREE from 'three';
 import { getObjectPosition } from '../utils/astronomy'
-import { textureLoadingManager } from '../utils/textureManager';
 
 // Helper for dynamic assets
 
