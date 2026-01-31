@@ -70,23 +70,26 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
             dir="rtl"
         >
             <style>{`
-                @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;400;900&display=swap');
+                @import url('https://fonts.googleapis.com/css2?family=Cairo:wght@200;400;900&family=Amiri:wght@400;700&display=swap');
                 
                 .home-screen { font-family: 'Cairo', sans-serif; }
 
-                /* 4. Elegant Hero Text */
+                /* Logo in Top Right Corner */
                 .hero-text-container {
-                    position: relative; z-index: 10;
-                    text-align: center;
-                    top: -10vh; /* Move up to clear planet */
+                    position: absolute;
+                    top: 25px;
+                    right: 25px;
+                    z-index: 10;
+                    text-align: right;
                 }
 
                 .hero-title {
-                    font-size: 5rem;
-                    font-weight: 200; /* Thin, Elegant */
-                    letter-spacing: 10px;
+                    font-family: 'Amiri', serif;
+                    font-size: 1.6rem;
+                    font-weight: 400;
+                    letter-spacing: 2px;
                     color: white;
-                    text-shadow: 0 0 30px rgba(0, 150, 255, 0.5);
+                    text-shadow: 0 0 15px rgba(0, 150, 255, 0.4);
                     margin: 0;
                     background: linear-gradient(to bottom, #fff, #aaccff);
                     -webkit-background-clip: text;
@@ -94,12 +97,11 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
                 }
 
                 .hero-subtitle {
-                    font-size: 1.2rem;
+                    font-size: 0.8rem;
                     font-weight: 400;
-                    color: rgba(255,255,255,0.6);
-                    letter-spacing: 4px;
-                    margin-top: 10px;
-                    text-transform: uppercase;
+                    color: rgba(255,255,255,0.5);
+                    letter-spacing: 2px;
+                    margin-top: 5px;
                 }
 
                 /* 5. Minimalist Button (Relocated to Bottom Center) */
@@ -130,14 +132,19 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
                 }
 
                 .credit-orbital {
-                    position: absolute; bottom: 20px; width: 100%; text-align: center;
-                    color: rgba(255,255,255,0.3); font-size: 0.9rem; letter-spacing: 1px;
+                    position: absolute;
+                    bottom: 15px;
+                    left: 15px;
+                    text-align: left;
+                    color: rgba(255,255,255,0.25);
+                    font-size: 0.55rem;
+                    letter-spacing: 0.5px;
                     z-index: 10;
                 }
 
                 /* Mobile Adjustments */
                 @media (max-width: 768px) {
-                    .hero-title { font-size: 3rem; letter-spacing: 5px; }
+                    .hero-title { font-size: 1.2rem; letter-spacing: 1px; }
                     .orbital-planet { bottom: -55vh; }
                     /* Ensure button doesn't overlap on very small screens */
                     .orbital-button { bottom: 12%; padding: 12px 40px; font-size: 1rem; }
@@ -177,7 +184,7 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
             )}
 
             <div className="credit-orbital">
-                صنع بواسطة ابراهيم سليمان الطخيم <span className="opacity-50 text-[10px] ml-2">v2.5</span>
+                جميع الحقوق محفوظة © 2026 تطبيق فلك وآية
             </div>
         </div>
     );
