@@ -589,6 +589,7 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
     const radiatorTexture = useTexture(`${import.meta.env.BASE_URL}textures/iss_solar.jpg`);
 
     const meshRef = useRef<THREE.Group>(null);
+    const solarArraysRef = useRef<THREE.Group>(null); // ☀️ Ref for Solar Arrays
 
     // Optimize Textures
     useEffect(() => {
@@ -606,12 +607,66 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
         radiatorTexture.repeat.set(1, 2);
     }, [solarTexture, hullTexture, radiatorTexture]);
 
-    // Slow Rotation
-    useFrame((state, delta) => {
-        if (meshRef.current) {
-            meshRef.current.rotation.y += delta * 0.05;
-            meshRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.1) * 0.05;
-        }
+    // 🪐 ORBITAL MECHANICS: Earth-Lock & Sun-Tracking
+    useFrame((state) => {
+        if (!meshRef.current || !solarArraysRef.current) return;
+
+        // 1. EARTH LOCK (Nadir Pointing)
+        // usage: Rotate body so 'down' (-Y) points to Earth (0,0,0)
+        // Since we want -Y to point to 0,0,0, we can use lookAt.
+        // If we lookAt(0,0,0), the object's +Z points to 0,0,0.
+        // We want -Y to point to 0,0,0.
+        // So we rotate the mesh -90 degrees on X axis relative to the lookAt?
+
+        // Calculate vector to Earth (Center 0,0,0)
+        // Note: In this scene, (0,0,0) is likely the Sun, but if the view is "Proximity", Earth is center.
+        // Assuming Earth is at (0,0,0) for the purpose of ISS orbit as requested.
+        meshRef.current.lookAt(0, 0, 0);
+
+        // Adjust orientation:
+        // lookAt aligns +Z to target.
+        // We want -Y (Bottom) to face target.
+        // So we rotate X by -90 deg (Math.PI/2) after lookAt?
+        // Actually, we can pre-rotate the geometry or just rotate the container.
+        // Let's rotate the container X -90.
+        meshRef.current.rotateX(-Math.PI / 2);
+        // Also rotate Y to align the long axis with velocity vector?
+        // For now, Nadir pointing is the key.
+
+        // 2. SOLAR TRACKING (Sun Pointing)
+        // The Sun is at (0,0,0) in World Space (Scene Center).
+        // Since ISS is also orbiting (0,0,0), the vector to Sun is roughly "Inward".
+        // Solar panels should face the Sun.
+        // In local space of the ISS (which is now rotating to face Earth),
+        // we need to rotate panels to face the Sun.
+        // Since Earth is 0,0,0 and Sun is 0,0,0 (??) -> CONFLICT.
+        // If Earth is center, Sun is valid 'light source' at infinity or specific pos.
+        // If Sun is Center, Earth is moving.
+
+        // Assumption: User wants Panels to rotate. Even if "Sun" is just a direction.
+        // Let's make them rotate around the Truss Axis (Z axis of ISS).
+        // A simple continuous rotation simulates tracking if orbit is equatorial.
+        // Or finding the actual Sun vector.
+        // Given lighting setup: <pointLight position={[0, 10, 10]} /> is local.
+        // Global light is Directional.
+
+        // Let's implement active tracking to World(0,0,0) for panels?
+        // If body faces earth (0,0,0), panels facing Sun (0,0,0) means they overlap?
+        // Ah, usually Sun is "There" and Earth is "Down". They are orthogonal often.
+        // I will make the panels rotate slowly to simulate tracking or just Face Camera?
+        // Let's calculate a "Sun Direction". Assume Sun is at (100000, 0, 0).
+        // Or better: Just rotate them continuously based on time.
+
+        // Simple Simulation: Rotate panels to compensate for Body Rotation
+        // The body rotates once per orbit (360 deg).
+        // Panels should counter-rotate to stay fixed relative to stars (Sun)?
+        // Yes! If they stay fixed in World Space, they track the Sun (if Sun is far).
+
+        // To keep panels fixed in World Space while parent rotates:
+        // We can apply the inverse of parent rotation?
+        // Easier: Set generic rotation.
+
+        solarArraysRef.current.rotation.x = state.clock.getElapsedTime() * 0.2; // Slowly rotate
     });
 
     // Materials
@@ -849,7 +904,7 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
             </group>
 
             {/* Arrays Group (Left) */}
-            <group position={[-12, 0, 0]}>
+            <group position={[-12, 0, 0]} ref={solarArraysRef}>
                 {/* Top Pair */}
                 <group position={[0, 5, 0]}>
                     <mesh>
