@@ -102,11 +102,7 @@ export function NavigationSidebar({ onNavigate }: NavigationSidebarProps) {
                                     ))}
                                 </nav>
 
-                                <div className="mt-8 pt-6 border-t border-white/10 text-center opacity-40">
-                                    <p className="text-[10px] uppercase tracking-widest">
-                                        جميع الحقوق محفوظة © 2026
-                                    </p>
-                                </div>
+
                             </div>
                         </motion.div>
                     </>
