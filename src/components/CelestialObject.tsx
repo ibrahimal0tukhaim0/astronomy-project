@@ -579,24 +579,144 @@ function GreenComet({ scale = 1.0 }: { scale?: number }) {
     );
 }
 
-// 🛰️ محطة الفضاء الدولية (ISS)
+// 🛰️ محطة الفضاء الدولية (ISS) - Fully Constructed 3D Model
 function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
-    const texture = useTexture(`${import.meta.env.BASE_URL}textures/iss_transparent.webp`);
+    const solarTexture = useTexture(`${import.meta.env.BASE_URL}textures/solar_panel_texture.jpg`);
+    const hullTexture = useTexture(`${import.meta.env.BASE_URL}textures/space_hull_texture.jpg`);
+    const meshRef = useRef<THREE.Group>(null);
+
+    // Optimize Textures
+    useEffect(() => {
+        solarTexture.wrapS = solarTexture.wrapT = THREE.RepeatWrapping;
+        solarTexture.repeat.set(2, 1);
+
+        hullTexture.wrapS = hullTexture.wrapT = THREE.RepeatWrapping;
+        // eslint-disable-next-line react-hooks/immutability
+        hullTexture.repeat.set(4, 1);
+    }, [solarTexture, hullTexture]);
+
+    // Slow Rotation of the Station
+    useFrame((state, delta) => {
+        if (meshRef.current) {
+            meshRef.current.rotation.y += delta * 0.05; // Gentle spin
+            meshRef.current.rotation.z = Math.sin(state.clock.elapsedTime * 0.1) * 0.1; // Slight tilt
+        }
+    });
+
+    const moduleMaterial = new THREE.MeshStandardMaterial({
+        map: hullTexture,
+        metalness: 0.6,
+        roughness: 0.4,
+        color: "#DDDDDD"
+    });
+
+    const solarMaterial = new THREE.MeshStandardMaterial({
+        map: solarTexture,
+        metalness: 0.1,
+        roughness: 0.2,
+        color: "#3344AA", // Blue tint for solar cells
+        emissive: "#112255",
+        emissiveIntensity: 0.2,
+        side: THREE.DoubleSide
+    });
+
+    const trussMaterial = new THREE.MeshStandardMaterial({
+        color: "#888888",
+        metalness: 0.8,
+        roughness: 0.3
+    });
 
     return (
-        <group>
-            {/* Billboard Sprite for always-facing visibility */}
-            <sprite scale={[scale * 2, scale * 1.2, 1]}>
-                <spriteMaterial
-                    map={texture}
-                    toneMapped={false}
-                    transparent={true}
-                    color="#FFFFFF"
-                />
-            </sprite>
+        <group ref={meshRef} scale={scale}>
+            {/* 1. CENTRAL MODULES (The Living Quarters) - Z Axis */}
+            <group rotation={[Math.PI / 2, 0, 0]}>
+                {/* Zarya / Service Module */}
+                <mesh position={[0, -2, 0]}>
+                    <cylinderGeometry args={[0.6, 0.6, 6, 16]} />
+                    <primitive object={moduleMaterial} />
+                </mesh>
+                {/* Unity / Node 1 */}
+                <mesh position={[0, 1.5, 0]}>
+                    <sphereGeometry args={[0.7, 16, 16]} />
+                    <primitive object={moduleMaterial} />
+                </mesh>
+                {/* Destiny / Lab */}
+                <mesh position={[0, 4, 0]}>
+                    <cylinderGeometry args={[0.55, 0.55, 5, 16]} />
+                    <primitive object={moduleMaterial} />
+                </mesh>
+                {/* Columbus / Kibo (Side Modules) */}
+                <mesh position={[1, 2, 0]} rotation={[0, 0, Math.PI / 2]}>
+                    <cylinderGeometry args={[0.5, 0.5, 3, 16]} />
+                    <primitive object={moduleMaterial} />
+                </mesh>
+            </group>
 
-            {/* Blue Tech Glow */}
-            <pointLight distance={300} intensity={2} color="#4488ff" decay={2} />
+            {/* 2. THE TRUSS (The Backbone) - X Axis */}
+            <mesh position={[0, 0, 0]}>
+                <boxGeometry args={[20, 0.5, 0.5]} />
+                <primitive object={trussMaterial} />
+            </mesh>
+
+            {/* 3. SOLAR ARRAYS (The Wings) */}
+            {/* Left Wing Outer */}
+            <group position={[-9, 0, 0]} rotation={[0.5, 0, 0]}>
+                <mesh position={[0, 3, 0]}>
+                    <boxGeometry args={[2, 8, 0.1]} />
+                    <primitive object={solarMaterial} />
+                </mesh>
+                <mesh position={[0, -3, 0]}>
+                    <boxGeometry args={[2, 8, 0.1]} />
+                    <primitive object={solarMaterial} />
+                </mesh>
+            </group>
+            {/* Left Wing Inner */}
+            <group position={[-5, 0, 0]} rotation={[0.5, 0, 0]}>
+                <mesh position={[0, 3, 0]}>
+                    <boxGeometry args={[2, 8, 0.1]} />
+                    <primitive object={solarMaterial} />
+                </mesh>
+                <mesh position={[0, -3, 0]}>
+                    <boxGeometry args={[2, 8, 0.1]} />
+                    <primitive object={solarMaterial} />
+                </mesh>
+            </group>
+
+            {/* Right Wing Inner */}
+            <group position={[5, 0, 0]} rotation={[0.5, 0, 0]}>
+                <mesh position={[0, 3, 0]}>
+                    <boxGeometry args={[2, 8, 0.1]} />
+                    <primitive object={solarMaterial} />
+                </mesh>
+                <mesh position={[0, -3, 0]}>
+                    <boxGeometry args={[2, 8, 0.1]} />
+                    <primitive object={solarMaterial} />
+                </mesh>
+            </group>
+            {/* Right Wing Outer */}
+            <group position={[9, 0, 0]} rotation={[0.5, 0, 0]}>
+                <mesh position={[0, 3, 0]}>
+                    <boxGeometry args={[2, 8, 0.1]} />
+                    <primitive object={solarMaterial} />
+                </mesh>
+                <mesh position={[0, -3, 0]}>
+                    <boxGeometry args={[2, 8, 0.1]} />
+                    <primitive object={solarMaterial} />
+                </mesh>
+            </group>
+
+            {/* 4. RADIATORS (Heat Management) */}
+            <mesh position={[-2, 0, -2]} rotation={[Math.PI / 4, 0, 0]}>
+                <boxGeometry args={[1, 4, 0.1]} />
+                <meshStandardMaterial color="#EEEEEE" roughness={0.9} />
+            </mesh>
+            <mesh position={[2, 0, -2]} rotation={[Math.PI / 4, 0, 0]}>
+                <boxGeometry args={[1, 4, 0.1]} />
+                <meshStandardMaterial color="#EEEEEE" roughness={0.9} />
+            </mesh>
+
+            {/* Lights */}
+            <pointLight distance={50} intensity={1} color="#aaaaff" position={[0, 2, 2]} />
         </group>
     );
 }
