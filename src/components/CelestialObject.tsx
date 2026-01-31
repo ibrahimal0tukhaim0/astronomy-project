@@ -288,24 +288,13 @@ function GenericStar({ scale = 1.0, color = "#FFFFFF", lightColor = "#FFFFFF", g
 // Storms, Great Red Spot, and proper Gas Giant PBR properties
 // 🪐 المشتري الحقيقي (Real Jupiter) - Robust Implementation
 function RealJupiter({ scale = 1.0 }: { scale?: number }) {
-    const [texture, setTexture] = useState<THREE.Texture | null>(null);
-
-    // Fallback if texture fails
-    const fallbackColor = "#C88B3A";
+    // 🔄 Use useTexture for Suspense integration
+    const texture = useTexture("https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg");
 
     useEffect(() => {
-        const loader = new THREE.TextureLoader();
-        loader.load(
-            "https://upload.wikimedia.org/wikipedia/commons/e/e2/Jupiter.jpg",
-            (tex) => {
-                tex.anisotropy = 16;
-                tex.colorSpace = THREE.SRGBColorSpace;
-                setTexture(tex);
-            },
-            undefined,
-            (err) => console.error("Jupiter Texture Failed", err)
-        );
-    }, []);
+        texture.anisotropy = 16;
+        texture.colorSpace = THREE.SRGBColorSpace;
+    }, [texture]);
 
     const meshRef = useRef<THREE.Mesh>(null);
     useFrame((_, delta) => {
@@ -317,11 +306,11 @@ function RealJupiter({ scale = 1.0 }: { scale?: number }) {
             <sphereGeometry args={[1, 128, 128]} />
             <meshStandardMaterial
                 map={texture}
-                color={texture ? "#FFFFFF" : fallbackColor} // Apply fallback color if no texture
+                color="#FFFFFF"
                 roughness={0.3} // ✨ Glossy
                 metalness={0.2} // ✨ Specular
-                emissiveMap={texture || undefined}
-                emissive={fallbackColor} // Always emit base color
+                emissiveMap={texture}
+                emissive="#C88B3A" // Warm fallback/tint
                 emissiveIntensity={0.12} // +20%
                 toneMapped={false}
             />
@@ -329,26 +318,15 @@ function RealJupiter({ scale = 1.0 }: { scale?: number }) {
     );
 }
 
-// ❄️ أورانوس الحقيقي (Real Uranus) - 4K Upgrade
-// Hazy Cyan with correct Axis Tilt
 // ❄️ أورانوس الحقيقي (Real Uranus) - Robust Implementation
 function RealUranus({ scale = 1.0 }: { scale?: number }) {
-    const [texture, setTexture] = useState<THREE.Texture | null>(null);
-    const fallbackColor = "#ACE5EE";
+    // 🔄 Use useTexture for Suspense integration
+    const texture = useTexture("https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg");
 
     useEffect(() => {
-        const loader = new THREE.TextureLoader();
-        loader.load(
-            "https://upload.wikimedia.org/wikipedia/commons/3/3d/Uranus2.jpg",
-            (tex) => {
-                tex.anisotropy = 16;
-                tex.colorSpace = THREE.SRGBColorSpace;
-                setTexture(tex);
-            },
-            undefined,
-            (err) => console.error("Uranus Texture Failed", err)
-        );
-    }, []);
+        texture.anisotropy = 16;
+        texture.colorSpace = THREE.SRGBColorSpace;
+    }, [texture]);
 
     const meshRef = useRef<THREE.Mesh>(null);
     useFrame((_, delta) => {
@@ -366,11 +344,11 @@ function RealUranus({ scale = 1.0 }: { scale?: number }) {
             <sphereGeometry args={[1, 64, 64]} />
             <meshStandardMaterial
                 map={texture}
-                color={texture ? "#FFFFFF" : fallbackColor}
+                color="#FFFFFF"
                 roughness={0.3} // ✨ Glossy
                 metalness={0.2} // ✨ Specular
-                emissiveMap={texture || undefined}
-                emissive={fallbackColor}
+                emissiveMap={texture}
+                emissive="#ACE5EE"
                 emissiveIntensity={0.18} // +20%
             />
         </mesh>
@@ -411,7 +389,7 @@ function RealOrionStar({ scale = 1.0 }: { scale?: number }) {
 
     useEffect(() => {
         return () => texture.dispose();
-    }, []);
+    }, [texture]); // Fix dependency
 
     const meshRef = useRef<THREE.Mesh>(null);
     useFrame((_, delta) => {
@@ -435,7 +413,6 @@ function RealOrionStar({ scale = 1.0 }: { scale?: number }) {
     );
 }
 
-// 🪨 كويكب عام (Generic Asteroid) - Low Poly
 // 🪨 كويكب عام (Generic Asteroid) - Final Authentic Version
 function GenericAsteroid({
     scale = 1.0,
@@ -451,47 +428,21 @@ function GenericAsteroid({
     dimensions?: [number, number, number],
     name: string
 }) {
-    // 🔍 Texture Injection System
-    const [texture, setTexture] = useState<THREE.Texture | null>(null);
-
-    // 🎨 Matte Mode Tint
-    // We tint pure white (#FFFFFF) to Light Grey (#BBBBBB) to prevent sunlight overexposure.
-    // This acts like a "Moon Filter".
-    const displayColor = color === '#FFFFFF' ? '#BBBBBB' : color;
+    // 🔄 Use useTexture for Suspense integration
+    const cleanPath = texturePath.startsWith('/') ? texturePath.slice(1) : texturePath;
+    const fullPath = `${import.meta.env.BASE_URL}${cleanPath}`;
+    const texture = useTexture(fullPath);
 
     useEffect(() => {
-        // 🔄 Use Shared Manager
-        const loader = new THREE.TextureLoader(textureLoadingManager);
+        texture.colorSpace = THREE.SRGBColorSpace;
+        texture.wrapS = THREE.RepeatWrapping;
+        texture.wrapT = THREE.RepeatWrapping;
+        texture.repeat.set(2, 2);
+        texture.needsUpdate = true;
+    }, [texture]);
 
-        const cleanPath = texturePath.startsWith('/') ? texturePath.slice(1) : texturePath;
-        // ✨ Removed query param to prevent local server issues
-        const fullPath = `${import.meta.env.BASE_URL}${cleanPath}`;
-
-        loader.load(
-            fullPath,
-            (tex) => {
-                tex.colorSpace = THREE.SRGBColorSpace;
-
-                // 🔄 TEXTURE TILING (The Pro Camera Script)
-                // Since asteroids are huge now (2x), we tile the texture 2x to keep details sharp
-                tex.wrapS = THREE.RepeatWrapping;
-                tex.wrapT = THREE.RepeatWrapping;
-                tex.repeat.set(2, 2);
-                tex.needsUpdate = true;
-
-                setTexture(tex);
-            },
-            undefined,
-            (_err) => { /* Silenced error */ }
-        );
-
-        // 🧹 MEMORY DISPOSAL: Clean up texture on unmount
-        return () => {
-            if (texture) {
-                texture.dispose();
-            }
-        };
-    }, [texturePath, name]);
+    // 🎨 Matte Mode Tint
+    const displayColor = color === '#FFFFFF' ? '#BBBBBB' : color;
 
     const meshRef = useRef<THREE.Mesh>(null);
 
@@ -504,34 +455,27 @@ function GenericAsteroid({
 
     return (
         <group>
-            {/* 💡 CINEMATIC LIGHTING (The Pro Camera Script) */}
-            {/* Strong searchlight to reveal surface details */}
+            {/* 💡 CINEMATIC LIGHTING */}
             <pointLight color="#a3ccf5" intensity={2.0} distance={40} decay={2} />
 
             <mesh ref={meshRef} scale={[scale * dimensions[0], scale * dimensions[1], scale * dimensions[2]]} castShadow={true} receiveShadow={true}>
-                {/* 🌐 High-Res Sphere for Displacement Mapping (The Pro Camera Fix) */}
-                {/* Increased segments to 64x64 for smooth wrapping of tiled texture */}
+                {/* 🌐 High-Res Sphere for Displacement Mapping */}
                 <sphereGeometry args={[1, 64, 64]} />
                 <meshStandardMaterial
-                    map={texture || undefined}
-
-                    // 🏔️ SHAPE: Displacement Map physically deforms the sphere based on the texture
-                    displacementMap={texture || undefined}
-                    displacementScale={texture ? 0.08 : 0}
-
-                    // 🌑 DETAIL: Bump Map for fine surface noise
-                    bumpMap={texture || undefined}
+                    map={texture}
+                    // 🏔️ SHAPE: Displacement Map
+                    displacementMap={texture}
+                    displacementScale={0.08}
+                    // 🌑 DETAIL: Bump Map
+                    bumpMap={texture}
                     bumpScale={0.02}
-
-                    // 💡 VISIBILITY: Matte Mode (Moon-like)
-                    // Low emissive allows shadows to exist.
-                    emissiveMap={texture || undefined}
-                    emissive="#222222" // 🌑 Deep Dark Glow (Just enough to prevent black crush)
-                    emissiveIntensity={texture ? 0.1 : 0.0} // ⚖️ Minimal glow to restore contrast
-
-                    color={displayColor} // 🎨 Applied Color (Grey Tint #BBBBBB to prevent whiteout)
-                    roughness={0.9} // 🧱 High Roughness (Matte/Chalky) to stop shiny glare
-                    metalness={0.0} // ⬇️ Zero metalness (Dry Rock)
+                    // 💡 VISIBILITY: Matte Mode
+                    emissiveMap={texture}
+                    emissive="#222222"
+                    emissiveIntensity={0.1}
+                    color={displayColor}
+                    roughness={0.9}
+                    metalness={0.0}
                     flatShading={false}
                 />
             </mesh>
@@ -542,35 +486,13 @@ function GenericAsteroid({
 // ☄️ مذنب هالي (Halley's Comet)
 function HalleyComet({
     scale = 1.0,
-    // dimensions, glowIntensity, texturePath removed
     name
 }: {
     scale?: number,
     name: string
 }) {
-    // 🔍 Texture Injection & Verification System
-    const [tailTexture, setTailTexture] = useState<THREE.Texture | null>(null);
-
-    useEffect(() => {
-        const loader = new THREE.TextureLoader(textureLoadingManager);
-
-        // Surface loader removed (unused)
-
-        // 2. Load Tail
-        loader.load(
-            `${import.meta.env.BASE_URL}textures/shooting_star_trail.webp`,
-            (tex) => setTailTexture(tex),
-            undefined,
-            (_err) => { /* Silenced error */ }
-        );
-
-        // Coma loader removed (unused)
-
-        return () => {
-            if (tailTexture) tailTexture.dispose();
-        };
-    }, [name]);
-
+    // 🔄 Use useTexture with Suspense
+    const tailTexture = useTexture(`${import.meta.env.BASE_URL}textures/shooting_star_trail.webp`);
 
     const meshRef = useRef<THREE.Mesh>(null);
 
@@ -582,29 +504,24 @@ function HalleyComet({
 
     return (
         <group>
-            {/* ☄️ User Request: Removed Nucleus and Coma (Head) due to distortion. Only Tail remains. */}
-
-            {/* Tail - Rendered as a fixed Plane (Mesh) instead of Sprite to prevent camera rotation */}
-            {/* Tail - Rendered as a Volumetric Cone to eliminate "overlapping planes" artifacts */}
-            {tailTexture && (
-                <mesh
-                    position={[scale * 10, 0, 0]}
-                    rotation={[0, 0, -Math.PI / 2]} // Pointing trailing direction
-                    renderOrder={-2}
-                >
-                    {/* RadiusTop: 0.5, RadiusBottom: 6 (Flare out), Height: 25 */}
-                    <cylinderGeometry args={[0.5 * scale, 6 * scale, scale * 25, 32, 1, true]} />
-                    <meshBasicMaterial
-                        map={tailTexture}
-                        color="#AADDFF" // Slight blue tint for ice feel
-                        opacity={0.3} // Lower opacity for soft "gas" look
-                        transparent={true}
-                        blending={THREE.AdditiveBlending}
-                        depthWrite={false}
-                        side={THREE.DoubleSide}
-                    />
-                </mesh>
-            )}
+            {/* Tail - Rendered as a Volumetric Cone */}
+            <mesh
+                position={[scale * 10, 0, 0]}
+                rotation={[0, 0, -Math.PI / 2]} // Pointing trailing direction
+                renderOrder={-2}
+            >
+                {/* RadiusTop: 0.5, RadiusBottom: 6 (Flare out), Height: 25 */}
+                <cylinderGeometry args={[0.5 * scale, 6 * scale, scale * 25, 32, 1, true]} />
+                <meshBasicMaterial
+                    map={tailTexture}
+                    color="#AADDFF" // Slight blue tint for ice feel
+                    opacity={0.3} // Lower opacity for soft "gas" look
+                    transparent={true}
+                    blending={THREE.AdditiveBlending}
+                    depthWrite={false}
+                    side={THREE.DoubleSide}
+                />
+            </mesh>
         </group>
     );
 }
