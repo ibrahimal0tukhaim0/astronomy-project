@@ -1,5 +1,6 @@
 // 🎯 Texture Preloader - Starts during Intro, checked by Loading Screen
-// This service loads all textures in the background
+// This service loads all textures in the background using THREE.js Loader Manager
+import { useTexture } from '@react-three/drei';
 
 const texturePaths = [
     'textures/sun_surface.webp',
@@ -14,6 +15,7 @@ const texturePaths = [
     'textures/neptune_surface.webp',
     'textures/pluto_surface.webp',
     'textures/stars.webp',
+    'textures/al_tariq_real.webp', // 🌟 Added Al-Tariq
     // Asteroids
     'textures/asteroids/ceres.webp',
     'textures/asteroids/vesta.webp',
@@ -37,30 +39,32 @@ export const texturePreloader = {
         if (isStarted) return;
         isStarted = true;
 
+        // 🚀 Preload using Drei's system to populate Three cache
         texturePaths.forEach((path) => {
+            const fullPath = `${import.meta.env.BASE_URL}${path}`;
+
+            // We use the Drei preload mechanism which handles the TextureLoader
+            useTexture.preload(fullPath);
+
+            // We also manually track "loading" via a standard fetch/img 
+            // because useTexture.preload is void/fire-and-forget in terms of callbacks usually.
+            // But to keep it simple and reliable for the progress bar, we keep the Image method
+            // heavily relying on browser cache for the second hit by ThreeJS.
             const img = new Image();
             img.onload = () => {
                 loadedCount++;
-                const progress = Math.floor((loadedCount / texturePaths.length) * 100);
-                listeners.forEach(fn => fn(progress));
-                if (loadedCount >= texturePaths.length) {
-                    isComplete = true;
-                }
+                updateProgress();
             };
             img.onerror = () => {
-                loadedCount++;
-                const progress = Math.floor((loadedCount / texturePaths.length) * 100);
-                listeners.forEach(fn => fn(progress));
-                if (loadedCount >= texturePaths.length) {
-                    isComplete = true;
-                }
+                loadedCount++; // Count errors as done to prevent hanging
+                updateProgress();
             };
-            img.src = `${import.meta.env.BASE_URL}${path}`;
+            img.src = fullPath;
         });
     },
 
     // Get current progress (0-100)
-    getProgress: () => Math.floor((loadedCount / texturePaths.length) * 100),
+    getProgress: () => texturePaths.length === 0 ? 100 : Math.floor((loadedCount / texturePaths.length) * 100),
 
     // Check if complete
     isComplete: () => isComplete,
@@ -69,9 +73,21 @@ export const texturePreloader = {
     onProgress: (callback: (progress: number) => void) => {
         listeners.push(callback);
         // Immediately call with current progress
-        callback(Math.floor((loadedCount / texturePaths.length) * 100));
+        if (texturePaths.length > 0) {
+            callback(Math.floor((loadedCount / texturePaths.length) * 100));
+        } else {
+            callback(100);
+        }
         return () => {
             listeners = listeners.filter(fn => fn !== callback);
         };
     }
 };
+
+function updateProgress() {
+    const progress = Math.floor((loadedCount / texturePaths.length) * 100);
+    listeners.forEach(fn => fn(progress));
+    if (loadedCount >= texturePaths.length) {
+        isComplete = true;
+    }
+}
