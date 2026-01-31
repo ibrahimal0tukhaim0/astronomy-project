@@ -580,18 +580,63 @@ function GreenComet({ scale = 1.0 }: { scale?: number }) {
 
 // 🛰️ محطة الفضاء الدولية (ISS) - High Detail & Accuracy
 function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
+    // 🎨 Procedural Hull Texture Generator (Fixes bad image artifacts)
+    const hullTexture = useMemo(() => {
+        const canvas = document.createElement('canvas');
+        canvas.width = 1024;
+        canvas.height = 1024;
+        const ctx = canvas.getContext('2d');
+        if (ctx) {
+            // 1. Base Metal Color
+            ctx.fillStyle = '#AAAAAA';
+            ctx.fillRect(0, 0, 1024, 1024);
+
+            // 2. Add Noise (Grain)
+            for (let i = 0; i < 50000; i++) {
+                ctx.fillStyle = Math.random() > 0.5 ? '#BBBBBB' : '#999999';
+                ctx.fillRect(Math.random() * 1024, Math.random() * 1024, 2, 2);
+            }
+
+            // 3. Draw Panel Lines
+            ctx.strokeStyle = '#888888';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+            // Vertical Lines
+            for (let x = 0; x <= 1024; x += 128) {
+                ctx.moveTo(x, 0);
+                ctx.lineTo(x, 1024);
+            }
+            // Horizontal Lines
+            for (let y = 0; y <= 1024; y += 64) {
+                ctx.moveTo(0, y);
+                ctx.lineTo(1024, y);
+            }
+            ctx.stroke();
+
+            // 4. Rivets
+            ctx.fillStyle = '#666666';
+            for (let x = 0; x <= 1024; x += 32) {
+                for (let y = 0; y <= 1024; y += 64) {
+                    if (Math.random() > 0.8) {
+                        ctx.fillRect(x - 2, y - 2, 4, 4);
+                    }
+                }
+            }
+        }
+        const tex = new THREE.CanvasTexture(canvas);
+        tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+        tex.repeat.set(4, 1);
+        return tex;
+    }, []);
+
     const solarTexture = useTexture(`${import.meta.env.BASE_URL}textures/solar_panel_texture.jpg`);
-    const hullTexture = useTexture(`${import.meta.env.BASE_URL}textures/space_hull_texture.jpg`);
     const meshRef = useRef<THREE.Group>(null);
 
-    // Optimize Textures
+    // Optimize Solar Texture
     useEffect(() => {
         solarTexture.wrapS = solarTexture.wrapT = THREE.RepeatWrapping;
         solarTexture.repeat.set(2, 1);
-
-        hullTexture.wrapS = hullTexture.wrapT = THREE.RepeatWrapping;
-        hullTexture.repeat.set(4, 1);
-    }, [solarTexture, hullTexture]);
+    }, [solarTexture]);
 
     // 🌟 High-Res Texture Clone for Radiators
     const radiatorTexture = useMemo(() => {
