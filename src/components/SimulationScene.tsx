@@ -69,8 +69,6 @@ function HerbigHaroBackground() {
                 opacity={0.15} // 🌫️ Ghostly/Atmospheric (Natural)
                 blending={THREE.NormalBlending} // ☁️ Physical Cloud Look (Not overlay)
                 depthWrite={false}
-                // ✨ Standard Glowing Blend
-                depthWrite={false}
                 side={THREE.DoubleSide}
                 toneMapped={false}
             />
