@@ -47,35 +47,34 @@ function SpaceBackground() {
     )
 }
 
-// 🌌 Secondary Nebula (Herbig-Haro 49/50 - NASA)
-// Positioned laterally as a static deep-space object (Not billboarding)
-function SecondaryNebula() {
-    const texture = useTexture(`${import.meta.env.BASE_URL}textures/herbig_haro_49_50.jpg`);
-
-    return (
-        <mesh
-            position={[-45000, 2000, 0]} // 📍 Left side deep space (Lateral)
-            rotation={[0, Math.PI / 2, 0]} // 🔄 Face the center/camera
-            scale={[40000, 40000, 1]} // Huge scale
-        >
-            <planeGeometry args={[1, 1]} />
-            <meshBasicMaterial
-                map={texture}
-                transparent={true}
-                blending={THREE.AdditiveBlending} // ✨ Additive blending usually works best for space gas
-                opacity={0.8} // Visible but blended
-                depthWrite={false} // Prevent z-fighting
-                side={THREE.DoubleSide}
-                toneMapped={false}
-            />
-        </mesh>
-    );
-}
-
 // 🪐 Planet Orbits (Visual Paths)
 // Renders static rings, optionally animated with dashed lines for "High-Tech Radar" look
 // Bypass TS conflict for <line> element
 const ThreeLine = 'line' as any;
+
+// 🌌 Herbig-Haro 46/47 Background (Webb Image)
+function HerbigHaroBackground() {
+    const texture = useTexture("https://science.nasa.gov/wp-content/uploads/2023/07/hh46_47_original.jpg");
+
+    return (
+        <mesh
+            position={[40000, 5000, -80000]} // Positioned "opposite" and deep in space
+            rotation={[0, -Math.PI / 6, 0]}
+            scale={[1.5, 1.5, 1]}
+        >
+            <planeGeometry args={[60000, 40000]} />
+            <meshBasicMaterial
+                map={texture}
+                transparent={true}
+                opacity={0.5} // Blended
+                blending={THREE.ScreenBlending} // Soft integration with Milky Way
+                depthWrite={false}
+                side={THREE.DoubleSide}
+                toneMapped={false}
+            />
+        </mesh>
+    )
+}
 
 function PlanetOrbits() {
     const groupRef = useRef<THREE.Group>(null);
@@ -164,7 +163,7 @@ export default function SimulationScene({ onSelect, isPaused, onDateChange, isAR
             {/* If AR Mode: Show Webcam. Else: Show Space Background */}
             <Suspense fallback={null}>
                 {!isARMode && <SpaceBackground />}
-                {!isARMode && <SecondaryNebula />}
+                {!isARMode && <HerbigHaroBackground />} {/* 🌌 NASA Webb Layer */}
             </Suspense>
 
             {/* Emergency Lighting - High Intensity */}

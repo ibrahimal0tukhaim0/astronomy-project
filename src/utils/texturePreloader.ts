@@ -16,7 +16,6 @@ const texturePaths = [
     'textures/pluto_surface.webp',
     'textures/stars.webp',
     'textures/al_tariq_real.webp', // 🌟 Added Al-Tariq
-    'textures/herbig_haro_49_50.jpg', // 🌌 Herbig-Haro 49/50 (User Request)
     // Asteroids
     'textures/asteroids/ceres.webp',
     'textures/asteroids/vesta.webp',
