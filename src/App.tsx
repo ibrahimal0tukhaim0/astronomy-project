@@ -177,7 +177,7 @@ function AppContent() {
                                 ? (window.innerWidth < 768 ? 75 : 60)
                                 : (window.innerWidth < 768 ? 90 : 75),
                             near: 0.1,
-                            far: 20000 // ⚡ Performance: Reduced Far Clip (User Request: 20k)
+                            far: 22000 // ⚡ Performance: Far Clip 22k (User Request: Support 16k Zoom)
                         }}
                         // 🌟 4K RENDER UPGRADE: Optimized Pixel Ratio (User Request: 0.85 Factor)
                         // Scales resolution to 85% of native, saving GPU power while looking identical on Retina
