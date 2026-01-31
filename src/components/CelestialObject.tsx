@@ -587,18 +587,18 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
         canvas.height = 1024;
         const ctx = canvas.getContext('2d');
         if (ctx) {
-            // 1. Base Metal Color
-            ctx.fillStyle = '#AAAAAA';
+            // 1. Base Metal Color - 🌑 DARKER to prevent white washout
+            ctx.fillStyle = '#444444';
             ctx.fillRect(0, 0, 1024, 1024);
 
             // 2. Add Noise (Grain)
             for (let i = 0; i < 50000; i++) {
-                ctx.fillStyle = Math.random() > 0.5 ? '#BBBBBB' : '#999999';
+                ctx.fillStyle = Math.random() > 0.5 ? '#555555' : '#333333';
                 ctx.fillRect(Math.random() * 1024, Math.random() * 1024, 2, 2);
             }
 
             // 3. Draw Panel Lines
-            ctx.strokeStyle = '#888888';
+            ctx.strokeStyle = '#222222';
             ctx.lineWidth = 2;
             ctx.beginPath();
             // Vertical Lines
@@ -614,7 +614,7 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
             ctx.stroke();
 
             // 4. Rivets
-            ctx.fillStyle = '#666666';
+            ctx.fillStyle = '#111111';
             for (let x = 0; x <= 1024; x += 32) {
                 for (let y = 0; y <= 1024; y += 64) {
                     if (Math.random() > 0.8) {
