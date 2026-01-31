@@ -615,11 +615,11 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
 
         const solar = new THREE.MeshStandardMaterial({
             map: solarTexture,
-            color: "#050a22", // Dark Blue base
-            emissive: "#050a22",
-            emissiveIntensity: 0.2, // Subtle glow
-            roughness: 0.2,   // Very Shiny (Glass)
-            metalness: 0.8,   // High reflectivity
+            color: "#0a1544", // Slightly brighter blue base
+            emissive: "#112266", // Brighter blue glow
+            emissiveIntensity: 0.5, // 💡 Increased from 0.2 to 0.5
+            roughness: 0.2,
+            metalness: 0.8,
             side: THREE.DoubleSide
         });
 
