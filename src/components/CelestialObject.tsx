@@ -603,37 +603,44 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
 
     // Materials
     // Materials
-    const { moduleMaterial, solarMaterial, trussMaterial, radiatorMaterial, detailMaterial } = useMemo(() => {
+    const { moduleMaterial, solarMaterial, trussMaterial, radiatorMaterial, detailMaterial, darkMetalMaterial } = useMemo(() => {
         const module = new THREE.MeshStandardMaterial({
             map: hullTexture,
-            metalness: 0.5,
-            roughness: 0.4,
-            color: "#EEEEEE"
+            color: "#AAAAAA", // 🌑 Darker base to let texture show
+            roughness: 0.6,   // Less shiny/glossy
+            metalness: 0.3,   // Less metallic wash-out
         });
 
         const solar = new THREE.MeshStandardMaterial({
             map: solarTexture,
-            metalness: 0.2,
-            roughness: 0.2,
-            color: "#223399",
+            color: "#1122AA", // Deep Blue
             emissive: "#050a22",
-            emissiveIntensity: 0.3,
+            emissiveIntensity: 0.5,
+            roughness: 0.2,
+            metalness: 0.8,   // Reflective like glass
             side: THREE.DoubleSide
         });
 
         const truss = new THREE.MeshStandardMaterial({
-            color: "#AAAAAA",
-            metalness: 0.7,
-            roughness: 0.5
+            color: "#555555", // Dark Grey for contrast
+            roughness: 0.7,
+            metalness: 0.4
         });
 
         const radiator = new THREE.MeshStandardMaterial({
-            color: "#FFFFFF", // Ceramic white for thermal control
+            color: "#FFFFFF", // Keep white
+            roughness: 0.3,   // Shiny
+            metalness: 0.1,
+            side: THREE.DoubleSide
+        });
+
+        const detail = new THREE.MeshStandardMaterial({
+            color: "#222222", // Almost black
             roughness: 0.9,
             metalness: 0.1
         });
 
-        const detail = new THREE.MeshStandardMaterial({ // For dark ports, joints
+        const darkMetal = new THREE.MeshStandardMaterial({
             color: "#333333",
             metalness: 0.8,
             roughness: 0.4
@@ -644,188 +651,250 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
             solarMaterial: solar,
             trussMaterial: truss,
             radiatorMaterial: radiator,
-            detailMaterial: detail
+            detailMaterial: detail,
+            darkMetalMaterial: darkMetal
         };
     }, [hullTexture, solarTexture]);
 
     return (
         <group ref={meshRef} scale={scale}>
-            {/* === 1. CENTRAL MODULES === */}
+            {/* === 1. CENTRAL MODULES (High Res) === */}
             <group rotation={[Math.PI / 2, 0, 0]}>
                 {/* Zarya (FGB) */}
                 <mesh position={[0, -2, 0]}>
-                    <cylinderGeometry args={[0.6, 0.6, 6, 16]} />
+                    <cylinderGeometry args={[0.6, 0.6, 6, 32]} /> {/* Increased segments 16->32 */}
                     <primitive object={moduleMaterial} />
                 </mesh>
-                {/* Solars on Zarya (Retracted/Small) */}
-                <mesh position={[0, -2, 0]} rotation={[0, 0, Math.PI / 2]}>
-                    <boxGeometry args={[4, 1, 0.05]} />
-                    <primitive object={solarMaterial} />
-                </mesh>
+                {/* 💍 Segmentation Rings (Ribs) for Zarya */}
+                {[...Array(5)].map((_, i) => (
+                    <mesh key={i} position={[0, -4 + i * 1.2, 0]}>
+                        <torusGeometry args={[0.62, 0.04, 8, 32]} />
+                        <primitive object={detailMaterial} />
+                    </mesh>
+                ))}
 
                 {/* Unity (Node 1) */}
                 <mesh position={[0, 1.5, 0]}>
-                    <cylinderGeometry args={[0.7, 0.7, 1.5, 16]} />
+                    <cylinderGeometry args={[0.7, 0.7, 1.5, 32]} />
                     <primitive object={moduleMaterial} />
                 </mesh>
-                {/* Unity Docking Port */}
-                <mesh position={[0, 2.3, 0]}>
-                    <torusGeometry args={[0.4, 0.05, 8, 16]} />
-                    <primitive object={detailMaterial} />
+                {/* Unity Docking Port Highlight */}
+                <mesh position={[0, 1.5, 0]}>
+                    <torusGeometry args={[0.72, 0.05, 8, 32]} />
+                    <primitive object={darkMetalMaterial} />
                 </mesh>
 
                 {/* Destiny (Lab) */}
                 <mesh position={[0, 4, 0]}>
-                    <cylinderGeometry args={[0.6, 0.6, 5, 16]} />
+                    <cylinderGeometry args={[0.6, 0.6, 5, 32]} />
                     <primitive object={moduleMaterial} />
                 </mesh>
+                {/* Destiny Ribs */}
+                {[...Array(3)].map((_, i) => (
+                    <mesh key={i} position={[0, 2 + i * 1.5, 0]}>
+                        <torusGeometry args={[0.61, 0.03, 8, 32]} />
+                        <primitive object={detailMaterial} />
+                    </mesh>
+                ))}
 
                 {/* Harmony (Node 2) */}
                 <mesh position={[0, 6.5, 0]}>
-                    <cylinderGeometry args={[0.7, 0.7, 1.5, 16]} />
+                    <cylinderGeometry args={[0.7, 0.7, 1.5, 32]} />
                     <primitive object={moduleMaterial} />
                 </mesh>
 
-                {/* Columbus & Kibo (Cross Modules) */}
-                <mesh position={[1.2, 6.5, 0]} rotation={[0, 0, Math.PI / 2]}>
-                    <cylinderGeometry args={[0.6, 0.6, 3, 16]} />
-                    <primitive object={moduleMaterial} />
-                </mesh>
-                <mesh position={[-1.2, 6.5, 0]} rotation={[0, 0, Math.PI / 2]}>
-                    <cylinderGeometry args={[0.6, 0.6, 3, 16]} />
-                    <primitive object={moduleMaterial} />
-                </mesh>
+                {/* Columbus & Kibo (Cross Modules) - With End Caps */}
+                <group position={[1.2, 6.5, 0]} rotation={[0, 0, Math.PI / 2]}>
+                    <mesh>
+                        <cylinderGeometry args={[0.6, 0.6, 3, 32]} />
+                        <primitive object={moduleMaterial} />
+                    </mesh>
+                    <mesh position={[0, 1.5, 0]}> {/* End Cap */}
+                        <cylinderGeometry args={[0.62, 0.62, 0.2, 32]} />
+                        <primitive object={darkMetalMaterial} />
+                    </mesh>
+                </group>
+                <group position={[-1.2, 6.5, 0]} rotation={[0, 0, Math.PI / 2]}>
+                    <mesh>
+                        <cylinderGeometry args={[0.6, 0.6, 3, 32]} />
+                        <primitive object={moduleMaterial} />
+                    </mesh>
+                    <mesh position={[0, 1.5, 0]}> {/* End Cap */}
+                        <cylinderGeometry args={[0.62, 0.62, 0.2, 32]} />
+                        <primitive object={darkMetalMaterial} />
+                    </mesh>
+                </group>
             </group>
 
-            {/* === 2. INTEGRATED TRUSS STRUCTURE (ITS) === */}
+            {/* === 2. INTEGRATED TRUSS STRUCTURE (High Detial) === */}
             <group>
-                {/* Main Truss Segment */}
+                {/* Main Truss - Skeleton Look */}
                 <mesh position={[0, 0, 0]}>
-                    <boxGeometry args={[22, 0.5, 0.5]} />
+                    <boxGeometry args={[22, 0.6, 0.6]} />
                     <primitive object={trussMaterial} />
                 </mesh>
-                {/* Vertical Stabilizers/Connectors */}
-                <mesh position={[4, 0, 0]}>
-                    <boxGeometry args={[0.6, 1.5, 0.6]} />
-                    <primitive object={trussMaterial} />
-                </mesh>
-                <mesh position={[-4, 0, 0]}>
-                    <boxGeometry args={[0.6, 1.5, 0.6]} />
-                    <primitive object={trussMaterial} />
+                {/* Internal Truss Pattern (Visual Trick) */}
+                <mesh position={[0, 0, 0]}>
+                    <boxGeometry args={[21.8, 0.65, 0.65]} />
+                    <meshBasicMaterial color="black" wireframe={true} transparent opacity={0.3} />
                 </mesh>
             </group>
 
-            {/* === 3. THERMAL CONTROL RADIATORS === */}
-            {/* The zig-zag white panels extending back */}
+            {/* === 3. THERMAL CONTROL RADIATORS (Enhanced) === */}
             <group position={[3, 0, -2]} rotation={[0.4, 0, 0]}>
-                <mesh position={[0, 0, 0]}>
-                    <boxGeometry args={[2, 6, 0.1]} />
+                <mesh> {/* Main Panel */}
+                    <boxGeometry args={[2.5, 7, 0.1]} />
                     <primitive object={radiatorMaterial} />
                 </mesh>
-                <mesh position={[0.5, 0, 0]}> {/* Shadow/Detail strip */}
-                    <boxGeometry args={[0.1, 6, 0.12]} />
-                    <primitive object={detailMaterial} />
-                </mesh>
+                {/* 📏 Cooling Lines (Texture simulation via Geometry) */}
+                {[...Array(6)].map((_, i) => (
+                    <mesh key={i} position={[0, -3 + i, 0.06]}>
+                        <boxGeometry args={[2.4, 0.05, 0.05]} />
+                        <primitive object={detailMaterial} />
+                    </mesh>
+                ))}
             </group>
             <group position={[-3, 0, -2]} rotation={[0.4, 0, 0]}>
-                <mesh position={[0, 0, 0]}>
-                    <boxGeometry args={[2, 6, 0.1]} />
+                <mesh>
+                    <boxGeometry args={[2.5, 7, 0.1]} />
                     <primitive object={radiatorMaterial} />
                 </mesh>
-                <mesh position={[-0.5, 0, 0]}>
-                    <boxGeometry args={[0.1, 6, 0.12]} />
-                    <primitive object={detailMaterial} />
-                </mesh>
+                {[...Array(6)].map((_, i) => (
+                    <mesh key={i} position={[0, -3 + i, 0.06]}>
+                        <boxGeometry args={[2.4, 0.05, 0.05]} />
+                        <primitive object={detailMaterial} />
+                    </mesh>
+                ))}
             </group>
 
 
             {/* === 4. SOLAR ARRAYS (The 8 Big Wings) === */}
-            {/* Rotating joints (SARJ) */}
+            {/* Rotating joints (SARJ) - Gigantic Gear Look */}
             <mesh position={[9, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-                <cylinderGeometry args={[0.8, 0.8, 1, 16]} />
-                <primitive object={detailMaterial} />
+                <cylinderGeometry args={[1.2, 1.2, 1.5, 32]} />
+                <primitive object={darkMetalMaterial} />
             </mesh>
             <mesh position={[-9, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-                <cylinderGeometry args={[0.8, 0.8, 1, 16]} />
-                <primitive object={detailMaterial} />
+                <cylinderGeometry args={[1.2, 1.2, 1.5, 32]} />
+                <primitive object={darkMetalMaterial} />
             </mesh>
 
             {/* Arrays Group (Right) */}
-            <group position={[11, 0, 0]}>
+            <group position={[12, 0, 0]}>
                 {/* Top Pair */}
-                <mesh position={[0, 4, 0]} rotation={[0, 0, 0]}>
-                    <boxGeometry args={[2.5, 9, 0.05]} />
-                    <primitive object={solarMaterial} />
-                </mesh>
-                <mesh position={[3, 4, 0]} rotation={[0, 0, 0]}>
-                    <boxGeometry args={[2.5, 9, 0.05]} />
-                    <primitive object={solarMaterial} />
-                </mesh>
+                <group position={[0, 5, 0]}>
+                    <mesh>
+                        <boxGeometry args={[3, 10, 0.05]} />
+                        <primitive object={solarMaterial} />
+                    </mesh>
+                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}> {/* Border */}
+                        <boxGeometry args={[3, 10, 0.04]} />
+                        <meshBasicMaterial color="#111111" wireframe />
+                    </mesh>
+                </group>
+                <group position={[4, 5, 0]}>
+                    <mesh>
+                        <boxGeometry args={[3, 10, 0.05]} />
+                        <primitive object={solarMaterial} />
+                    </mesh>
+                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
+                        <boxGeometry args={[3, 10, 0.04]} />
+                        <meshBasicMaterial color="#111111" wireframe />
+                    </mesh>
+                </group>
+
                 {/* Bottom Pair */}
-                <mesh position={[0, -4, 0]} rotation={[0, 0, 0]}>
-                    <boxGeometry args={[2.5, 9, 0.05]} />
-                    <primitive object={solarMaterial} />
-                </mesh>
-                <mesh position={[3, -4, 0]} rotation={[0, 0, 0]}>
-                    <boxGeometry args={[2.5, 9, 0.05]} />
-                    <primitive object={solarMaterial} />
-                </mesh>
+                <group position={[0, -5, 0]}>
+                    <mesh>
+                        <boxGeometry args={[3, 10, 0.05]} />
+                        <primitive object={solarMaterial} />
+                    </mesh>
+                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
+                        <boxGeometry args={[3, 10, 0.04]} />
+                        <meshBasicMaterial color="#111111" wireframe />
+                    </mesh>
+                </group>
+                <group position={[4, -5, 0]}>
+                    <mesh>
+                        <boxGeometry args={[3, 10, 0.05]} />
+                        <primitive object={solarMaterial} />
+                    </mesh>
+                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
+                        <boxGeometry args={[3, 10, 0.04]} />
+                        <meshBasicMaterial color="#111111" wireframe />
+                    </mesh>
+                </group>
             </group>
 
             {/* Arrays Group (Left) */}
-            <group position={[-11, 0, 0]}>
+            <group position={[-12, 0, 0]}>
                 {/* Top Pair */}
-                <mesh position={[0, 4, 0]} rotation={[0, 0, 0]}>
-                    <boxGeometry args={[2.5, 9, 0.05]} />
-                    <primitive object={solarMaterial} />
-                </mesh>
-                <mesh position={[-3, 4, 0]} rotation={[0, 0, 0]}>
-                    <boxGeometry args={[2.5, 9, 0.05]} />
-                    <primitive object={solarMaterial} />
-                </mesh>
+                <group position={[0, 5, 0]}>
+                    <mesh>
+                        <boxGeometry args={[3, 10, 0.05]} />
+                        <primitive object={solarMaterial} />
+                    </mesh>
+                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
+                        <boxGeometry args={[3, 10, 0.04]} />
+                        <meshBasicMaterial color="#111111" wireframe />
+                    </mesh>
+                </group>
+                <group position={[-4, 5, 0]}>
+                    <mesh>
+                        <boxGeometry args={[3, 10, 0.05]} />
+                        <primitive object={solarMaterial} />
+                    </mesh>
+                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
+                        <boxGeometry args={[3, 10, 0.04]} />
+                        <meshBasicMaterial color="#111111" wireframe />
+                    </mesh>
+                </group>
                 {/* Bottom Pair */}
-                <mesh position={[0, -4, 0]} rotation={[0, 0, 0]}>
-                    <boxGeometry args={[2.5, 9, 0.05]} />
-                    <primitive object={solarMaterial} />
-                </mesh>
-                <mesh position={[-3, -4, 0]} rotation={[0, 0, 0]}>
-                    <boxGeometry args={[2.5, 9, 0.05]} />
-                    <primitive object={solarMaterial} />
-                </mesh>
+                <group position={[0, -5, 0]}>
+                    <mesh>
+                        <boxGeometry args={[3, 10, 0.05]} />
+                        <primitive object={solarMaterial} />
+                    </mesh>
+                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
+                        <boxGeometry args={[3, 10, 0.04]} />
+                        <meshBasicMaterial color="#111111" wireframe />
+                    </mesh>
+                </group>
+                <group position={[-4, -5, 0]}>
+                    <mesh>
+                        <boxGeometry args={[3, 10, 0.05]} />
+                        <primitive object={solarMaterial} />
+                    </mesh>
+                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
+                        <boxGeometry args={[3, 10, 0.04]} />
+                        <meshBasicMaterial color="#111111" wireframe />
+                    </mesh>
+                </group>
             </group>
 
             {/* === 5. SPECIAL DETAILS (Canadarm2 & Antennae) === */}
-            {/* Canadarm2 */}
-            <group position={[1.5, 2, 0.8]} rotation={[0, 0, 0.5]}>
-                <mesh>
-                    <cylinderGeometry args={[0.08, 0.08, 2.5, 8]} />
-                    <primitive object={trussMaterial} />
-                </mesh>
-                <mesh position={[0, 1.25, 0]}> {/* Joint */}
-                    <sphereGeometry args={[0.15]} />
-                    <primitive object={detailMaterial} />
-                </mesh>
-                <mesh position={[0.8, 1.8, 0]} rotation={[0, 0, -1]}>
-                    <cylinderGeometry args={[0.06, 0.06, 2, 8]} />
-                    <primitive object={trussMaterial} />
-                </mesh>
+            {/* Canadarm2 - Multi-Segment */}
+            <group position={[2, 2, 0.8]} rotation={[0, 0, 0.5]}>
+                <mesh> <cylinderGeometry args={[0.08, 0.08, 2.5, 16]} /> <primitive object={trussMaterial} /> </mesh>
+                <mesh position={[0, 1.25, 0]}> <sphereGeometry args={[0.15]} /> <primitive object={darkMetalMaterial} /> </mesh>
+                <mesh position={[0.8, 1.8, 0]} rotation={[0, 0, -1]}> <cylinderGeometry args={[0.06, 0.06, 2, 16]} /> <primitive object={trussMaterial} /> </mesh>
             </group>
 
             {/* Ku-Band Comet Antenna */}
             <group position={[0.5, -3.5, 1]}>
                 <mesh rotation={[0.5, 0, 0]}>
-                    <cylinderGeometry args={[0.4, 0.02, 0.5, 16]} /> {/* Dish */}
+                    <cylinderGeometry args={[0.4, 0.02, 0.5, 32]} /> {/* Dish */}
                     <meshStandardMaterial color="#EEEEEE" side={THREE.DoubleSide} />
                 </mesh>
                 <mesh position={[0, -0.3, 0]}>
                     <cylinderGeometry args={[0.05, 0.05, 0.6]} />
-                    <primitive object={detailMaterial} />
+                    <primitive object={darkMetalMaterial} />
                 </mesh>
             </group>
 
-            {/* Lights */}
-            <pointLight distance={100} intensity={0.5} color="#aaaaff" position={[0, 5, 2]} />
-            <pointLight distance={100} intensity={0.5} color="#ffaa00" position={[0, -2, 2]} /> {/* Warm glow from windows */}
+            {/* Lights - Intense Industrial Lighting */}
+            <pointLight distance={100} intensity={1.5} color="#aaaaff" position={[0, 5, 2]} />
+            <pointLight distance={100} intensity={1.0} color="#ffaa00" position={[0, -2, 2]} />
         </group>
     );
 }
