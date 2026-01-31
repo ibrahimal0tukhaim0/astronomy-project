@@ -355,7 +355,6 @@ function RealUranus({ scale = 1.0 }: { scale?: number }) {
                 transparent={false}
                 depthWrite={true}
             />
-            />
         </mesh>
     );
 }
