@@ -580,72 +580,32 @@ function GreenComet({ scale = 1.0 }: { scale?: number }) {
 
 // 🛰️ محطة الفضاء الدولية (ISS) - High Detail & Accuracy
 function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
-    // 🎨 Procedural Hull Texture Generator (Fixes bad image artifacts)
-    const hullTexture = useMemo(() => {
-        const canvas = document.createElement('canvas');
-        canvas.width = 1024;
-        canvas.height = 1024;
-        const ctx = canvas.getContext('2d');
-        if (ctx) {
-            // 1. Base Metal Color - 🌑 DARKER to prevent white washout
-            ctx.fillStyle = '#444444';
-            ctx.fillRect(0, 0, 1024, 1024);
+    // 🛰️ Real NASA Textures (Wikimedia Commons)
+    // Solar: Actual ISS solar wing detail
+    const solarTexture = useTexture("https://upload.wikimedia.org/wikipedia/commons/0/04/International_Space_Station_solar_array_pair.jpg");
+    // Hull: Multi-Layer Insulation (Thermal Blanket) - Silver/White crinkled look
+    const hullTexture = useTexture("https://upload.wikimedia.org/wikipedia/commons/f/ff/Multi-layer_insulation_close-up.jpg");
+    // Radiator: Actual radiator panels in space
+    const radiatorTexture = useTexture("https://upload.wikimedia.org/wikipedia/commons/0/0d/ISS_Main_Radiators.jpg");
 
-            // 2. Add Noise (Grain)
-            for (let i = 0; i < 50000; i++) {
-                ctx.fillStyle = Math.random() > 0.5 ? '#555555' : '#333333';
-                ctx.fillRect(Math.random() * 1024, Math.random() * 1024, 2, 2);
-            }
-
-            // 3. Draw Panel Lines
-            ctx.strokeStyle = '#222222';
-            ctx.lineWidth = 2;
-            ctx.beginPath();
-            // Vertical Lines
-            for (let x = 0; x <= 1024; x += 128) {
-                ctx.moveTo(x, 0);
-                ctx.lineTo(x, 1024);
-            }
-            // Horizontal Lines
-            for (let y = 0; y <= 1024; y += 64) {
-                ctx.moveTo(0, y);
-                ctx.lineTo(1024, y);
-            }
-            ctx.stroke();
-
-            // 4. Rivets
-            ctx.fillStyle = '#111111';
-            for (let x = 0; x <= 1024; x += 32) {
-                for (let y = 0; y <= 1024; y += 64) {
-                    if (Math.random() > 0.8) {
-                        ctx.fillRect(x - 2, y - 2, 4, 4);
-                    }
-                }
-            }
-        }
-        const tex = new THREE.CanvasTexture(canvas);
-        tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-        tex.repeat.set(4, 1);
-        return tex;
-    }, []);
-
-    const solarTexture = useTexture(`${import.meta.env.BASE_URL}textures/solar_panel_texture.jpg`);
     const meshRef = useRef<THREE.Group>(null);
 
-    // Optimize Solar Texture
+    // Optimize Textures
     useEffect(() => {
+        // Solar: Crop/Tile to focus on the cells
         solarTexture.wrapS = solarTexture.wrapT = THREE.RepeatWrapping;
-        solarTexture.repeat.set(2, 1);
-    }, [solarTexture]);
+        solarTexture.repeat.set(1, 1);
+        solarTexture.center.set(0.5, 0.5);
+        solarTexture.rotation = Math.PI / 2; // Rotate to align wings
 
-    // 🌟 High-Res Texture Clone for Radiators
-    const radiatorTexture = useMemo(() => {
-        const tex = hullTexture.clone();
-        tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
-        tex.repeat.set(4, 8); // 🔍 High density tiling for "High Res" look
-        tex.needsUpdate = true;
-        return tex;
-    }, [hullTexture]);
+        // Hull: Tile heavily to simulate small cloth folds
+        hullTexture.wrapS = hullTexture.wrapT = THREE.RepeatWrapping;
+        hullTexture.repeat.set(4, 4);
+
+        // Radiator: Tile to show panel segments
+        radiatorTexture.wrapS = radiatorTexture.wrapT = THREE.RepeatWrapping;
+        radiatorTexture.repeat.set(1, 2);
+    }, [solarTexture, hullTexture, radiatorTexture]);
 
     // Slow Rotation
     useFrame((state, delta) => {
@@ -658,49 +618,49 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
     // Materials
     // Materials
     const { moduleMaterial, solarMaterial, trussMaterial, radiatorMaterial, detailMaterial, darkMetalMaterial } = useMemo(() => {
-        // 🌟 User Request: Brighten & Add 60% Shine
+        // 🌟 User Request: Real NASA Photos
 
         const module = new THREE.MeshStandardMaterial({
             map: hullTexture,
-            color: "#AAAAAA", // ☁️ Restored to Light Grey
-            roughness: 0.4,   // ✨ smoother surfac for shine
-            metalness: 0.6,   // 🔧 60% Metalness
+            color: "#AAAAAA", // Tint the gold/silver foil slightly grey
+            roughness: 0.6,   // Fabric is rough
+            metalness: 0.4,   // Foil is metallic
         });
 
         const solar = new THREE.MeshStandardMaterial({
             map: solarTexture,
-            color: "#0a1544", // Slightly brighter blue base
-            emissive: "#112266", // Brighter blue glow
-            emissiveIntensity: 0.5, // 💡 Increased from 0.2 to 0.5
-            roughness: 0.2,
-            metalness: 0.8,
+            color: "#FFFFFF", // 🚫 No tint, use the real photo colors
+            emissive: "#000511", // Very subtle boost
+            emissiveIntensity: 0.1,
+            roughness: 0.3,
+            metalness: 0.5,
             side: THREE.DoubleSide
         });
 
         const truss = new THREE.MeshStandardMaterial({
             color: "#888888",
-            roughness: 0.5,
-            metalness: 0.5
+            roughness: 0.7,
+            metalness: 0.3
         });
 
         const radiator = new THREE.MeshStandardMaterial({
-            map: radiatorTexture, // 🌟 Use the High-Res Cloned Texture
-            color: "#AAAAAA",
-            roughness: 0.5,
-            metalness: 0.8,
+            map: radiatorTexture, // 🆕 Real Radiator Photo
+            color: "#DDDDDD",
+            roughness: 0.4,
+            metalness: 0.6,
             side: THREE.DoubleSide
         });
 
         const detail = new THREE.MeshStandardMaterial({
             color: "#333333",
-            roughness: 0.5,
-            metalness: 0.6
+            roughness: 0.8,
+            metalness: 0.2
         });
 
         const darkMetal = new THREE.MeshStandardMaterial({
             color: "#444444",
-            metalness: 0.7,
-            roughness: 0.4
+            metalness: 0.5,
+            roughness: 0.5
         });
 
         return {
@@ -711,7 +671,7 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
             detailMaterial: detail,
             darkMetalMaterial: darkMetal
         };
-    }, [hullTexture, solarTexture]);
+    }, [hullTexture, solarTexture, radiatorTexture]);
 
     return (
         <group ref={meshRef} scale={scale}>
