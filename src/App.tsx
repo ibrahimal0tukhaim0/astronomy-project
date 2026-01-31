@@ -1,5 +1,6 @@
+```
 import { Canvas } from '@react-three/fiber'
-import { OrbitControls, Loader, AdaptiveDpr, AdaptiveEvents, DeviceOrientationControls } from '@react-three/drei'
+import { OrbitControls, Loader, AdaptiveDpr, AdaptiveEvents, DeviceOrientationControls, PerformanceMonitor } from '@react-three/drei'
 import React, { useState, Suspense, useRef, lazy, useEffect } from 'react'
 import { useTranslation } from 'react-i18next'
 import type { CelestialData } from './types'
@@ -126,7 +127,7 @@ function AppContent() {
         const handleResize = () => {
             // Force layout recalculation for mobile browser bars (100vh fix)
             const vh = window.innerHeight * 0.01;
-            document.documentElement.style.setProperty('--vh', `${vh}px`);
+            document.documentElement.style.setProperty('--vh', `${ vh } px`);
         };
 
         window.addEventListener('resize', handleResize);
@@ -144,7 +145,7 @@ function AppContent() {
     return (
         // touch-none prevents "pull-to-refresh" on mobile which ruins the 3D experience
         <div
-            className={`w-full relative overflow-hidden touch-none ${isARMode ? 'bg-transparent' : 'bg-black'}`}
+            className={`w - full relative overflow - hidden touch - none ${ isARMode ? 'bg-transparent' : 'bg-black' } `}
             dir="rtl"
             style={{
                 height: 'calc(var(--vh, 1vh) * 100)',
@@ -177,7 +178,7 @@ function AppContent() {
                                 ? (window.innerWidth < 768 ? 75 : 60)
                                 : (window.innerWidth < 768 ? 90 : 75),
                             near: 0.1,
-                            far: 50000 // ⚡ Performance: Infinite View (User Request: 50k for full orbit visibility)
+                            far: 300000 // ⚡ Performance: True Infinite View (300k to cover full solar diameter)
                         }}
                         // 🌟 4K RENDER UPGRADE: Optimized Pixel Ratio (User Request: 0.85 Factor)
                         // Scales resolution to 85% of native, saving GPU power while looking identical on Retina
@@ -200,8 +201,9 @@ function AppContent() {
                         {!isARMode && <color attach="background" args={['#000814']} />}
 
                         {/* Performance Optimization for iOS */}
-                        <AdaptiveDpr pixelated />
+                        <AdaptiveDpr pixelated minimum={0.4} /> {/* Allow dropping to 0.4 on heavy lag */}
                         <AdaptiveEvents />
+                        <PerformanceMonitor onDecline={(fps) => console.log('FPS Drop:', fps)} /> {/* Placeholder for intelligent logic */}
 
                         <Suspense fallback={null}>
                             <SimulationScene
@@ -271,7 +273,7 @@ function AppContent() {
             )}
 
             {/* UI Layer - Only Visible After Start */}
-            <div className={`transition-opacity duration-1000 ${hasStarted ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
+            <div className={`transition - opacity duration - 1000 ${ hasStarted ? 'opacity-100' : 'opacity-0 pointer-events-none' } `}>
                 <NavigationSidebar onNavigate={handleNavigate} isHidden={!!selectedObject} />
 
                 <div className="absolute top-safe right-0 p-6 md:p-8 text-white pointer-events-none transition-opacity duration-500 z-10" style={{ marginTop: 'env(safe-area-inset-top)' }}>
@@ -297,13 +299,13 @@ function AppContent() {
 
                 {/* 🎵 Background Music */}
                 <audio id="bg-music" loop>
-                    <source src={`${import.meta.env.BASE_URL}textures/interstellar.mp3`} type="audio/mpeg" />
+                    <source src={`${ import.meta.env.BASE_URL } textures / interstellar.mp3`} type="audio/mpeg" />
                 </audio>
 
                 <div className="absolute bottom-safe left-safe z-50 mb-4 ml-4 flex flex-row gap-[15px] items-end">
                     <button
                         onClick={() => setIsARMode(!isARMode)}
-                        className={`p-3 rounded-full transition-all backdrop-blur-sm border border-white/10 ${isARMode ? 'bg-red-500/80 text-white' : 'bg-white/10 hover:bg-white/20 text-white/70 hover:text-white'}`}
+                        className={`p - 3 rounded - full transition - all backdrop - blur - sm border border - white / 10 ${ isARMode ? 'bg-red-500/80 text-white' : 'bg-white/10 hover:bg-white/20 text-white/70 hover:text-white' } `}
                         title="AR Mode"
                     >
                         {/* Simple Icon for AR (Eye/Camera) */}
@@ -312,7 +314,7 @@ function AppContent() {
 
                     <button
                         onClick={() => setIsMarathonMode(!isMarathonMode)}
-                        className={`p-3 rounded-full transition-all backdrop-blur-sm border border-white/10 ${isMarathonMode ? 'bg-blue-500/80 text-white' : 'bg-white/10 hover:bg-white/20 text-white/70 hover:text-white'}`}
+                        className={`p - 3 rounded - full transition - all backdrop - blur - sm border border - white / 10 ${ isMarathonMode ? 'bg-blue-500/80 text-white' : 'bg-white/10 hover:bg-white/20 text-white/70 hover:text-white' } `}
                         title="Marathon Mode"
                     >
                         {/* Icon: Alignment (Straight Line) */}
