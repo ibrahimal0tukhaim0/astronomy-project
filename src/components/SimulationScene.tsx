@@ -58,16 +58,18 @@ function HerbigHaroBackground() {
 
     return (
         <mesh
-            position={[0, 5000, 60000]} // 🔄 Distant but safe (60k)
+            position={[0, 500, 10000]} // 🔄 Deep Space Position (SAFE RANGE)
             rotation={[0, Math.PI, 0]}
-            scale={[2.5, 2.5, 1]} // 🪐 Large celestial feature
+            scale={[0.8, 0.8, 1]} // 🪐 Massive Nebula Scale
         >
             <planeGeometry args={[60000, 40000]} />
             <meshBasicMaterial
                 map={texture}
                 transparent={true}
-                opacity={0.5} // ✨ Balanced Glow with Soft Mask
-                blending={THREE.AdditiveBlending} // ✨ Standard Glowing Blend
+                opacity={0.15} // 🌫️ Ghostly/Atmospheric (Natural)
+                blending={THREE.NormalBlending} // ☁️ Physical Cloud Look (Not overlay)
+                depthWrite={false}
+                // ✨ Standard Glowing Blend
                 depthWrite={false}
                 side={THREE.DoubleSide}
                 toneMapped={false}

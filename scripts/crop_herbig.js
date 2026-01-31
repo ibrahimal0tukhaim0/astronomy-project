@@ -19,9 +19,8 @@ async function cropAndMask() {
                 <defs>
                     <radialGradient id="grad" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
                         <stop offset="0%" style="stop-color:white;stop-opacity:1" />
-                        <stop offset="30%" style="stop-color:white;stop-opacity:1" />
-                        <stop offset="70%" style="stop-color:black;stop-opacity:0" />
-                        <stop offset="100%" style="stop-color:black;stop-opacity:0" />
+                        <stop offset="20%" style="stop-color:white;stop-opacity:0.9" />
+                        <stop offset="60%" style="stop-color:black;stop-opacity:0" />
                     </radialGradient>
                 </defs>
                 <rect x="0" y="0" width="${width}" height="${height}" fill="url(#grad)" />
