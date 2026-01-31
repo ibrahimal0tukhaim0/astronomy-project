@@ -589,14 +589,21 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
     const meshRef = useRef<THREE.Group>(null);
     const solarArraysRef = useRef<THREE.Group>(null);
 
-    // �️ Debug: Log Scene Graph to find Solar Panels
+    // 🛠️ Debug: Log Scene Graph to find Solar Panels
     useEffect(() => {
+        console.log("🛰️ ISS Component Mounted. Loading GLB...");
         if (scene) {
-            console.log("🛰️ ISS GLB Scene Graph:", scene);
+            console.log("✅ ISS GLB Loaded!", scene);
             scene.traverse((child) => {
                 if ((child as THREE.Mesh).isMesh) {
                     (child as THREE.Mesh).castShadow = true;
                     (child as THREE.Mesh).receiveShadow = true;
+                    // Material Fix: Ensure materials are not invisible or black
+                    const mat = (child as THREE.Mesh).material as THREE.MeshStandardMaterial;
+                    if (mat) {
+                        mat.envMapIntensity = 1.0;
+                        mat.needsUpdate = true;
+                    }
                     const name = child.name.toLowerCase();
                     if (name.includes('solar') || name.includes('array') || name.includes('wing')) {
                         console.log("☀️ Found Potential Solar Part:", child.name);
@@ -626,8 +633,8 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
             <pointLight distance={300} intensity={2.0} color="#aaccee" position={[0, -50, -20]} />
 
             {/* 🛰️ The Detailed NASA Model */}
-            {/* Scale: Start small as standard GLTFs are often in meters while our scene is km or abstract. */}
-            <primitive object={scene} scale={[0.01, 0.01, 0.01]} />
+            {/* Scale: Boosted to 2.0 (was 0.01) to ensure visibility */}
+            <primitive object={scene} scale={[2.0, 2.0, 2.0]} />
         </group>
     );
 }
