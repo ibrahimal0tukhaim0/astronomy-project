@@ -593,10 +593,10 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
     // Optimize Textures
     useEffect(() => {
         // Solar: User Image is vertical strip
-        // 💡 Enlarge Texture: Zoom in (repeat < 1) to remove borders and fill space
-        solarTexture.wrapS = solarTexture.wrapT = THREE.ClampToEdgeWrapping; // 🚫 No Tiling
-        solarTexture.repeat.set(0.9, 0.9); // 🔍 Zoom in 10% to fill edges
-        solarTexture.center.set(0.5, 0.5); // Center the zoom
+        // 💡 Enlarge Texture: Aggressive Zoom (0.5 repeat = 2x Zoom) to crop all borders
+        solarTexture.wrapS = solarTexture.wrapT = THREE.ClampToEdgeWrapping;
+        solarTexture.repeat.set(0.5, 0.5); // 🔍 ONLY show center 50% of image
+        solarTexture.center.set(0.5, 0.5);
         solarTexture.rotation = 0;
 
         // Hull: Tinted Grey in material, high repeat for detail
@@ -685,13 +685,11 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
 
         const solar = new THREE.MeshStandardMaterial({
             map: solarTexture,
-            bumpMap: solarTexture, // 🏔️ 3D Effect: Use texture as bump map
-            bumpScale: 0.05,        // Depth of the cells
             color: "#888888", // Brighter base for texture
             emissive: "#0a0a2a", // Blueish glow
             emissiveIntensity: 0.3,
-            roughness: 0.2,
-            metalness: 0.8,
+            roughness: 0.3,
+            metalness: 0.7,
             side: THREE.DoubleSide
         });
 
@@ -847,38 +845,109 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
                 ))}
             </group>
 
+
             {/* === 4. SOLAR ARRAYS (The 8 Big Wings) === */}
-            {/* ☀️ Solar Arrays Group - Independent Rotation for Sun Tracking */}
-            <group ref={solarArraysRef} rotation={[0, 0, Math.PI / 2]}>
-                {/* Rotating joints (SARJ) - Gigantic Gear Look */}
-                <mesh position={[9, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-                    <cylinderGeometry args={[1.2, 1.2, 1.5, 32]} />
-                    <primitive object={darkMetalMaterial} />
-                </mesh>
-                <mesh position={[-9, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-                    <cylinderGeometry args={[1.2, 1.2, 1.5, 32]} />
-                    <primitive object={darkMetalMaterial} />
-                </mesh>
+            {/* Rotating joints (SARJ) - Gigantic Gear Look */}
+            <mesh position={[9, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+                <cylinderGeometry args={[1.2, 1.2, 1.5, 32]} />
+                <primitive object={darkMetalMaterial} />
+            </mesh>
+            <mesh position={[-9, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+                <cylinderGeometry args={[1.2, 1.2, 1.5, 32]} />
+                <primitive object={darkMetalMaterial} />
+            </mesh>
 
-                {/* Left Array */}
-                <mesh position={[-12, 0, 0]} material={[darkMetalMaterial, darkMetalMaterial, solarMaterial, solarMaterial, darkMetalMaterial, darkMetalMaterial]}>
-                    <boxGeometry args={[4, 0.1, 12]} />
-                </mesh>
-                {/* Frame detail (Wireframe) */}
-                <mesh position={[-12, 0, 0]} scale={[1.01, 1.01, 1.005]}>
-                    <boxGeometry args={[4, 0.1, 12]} />
-                    <meshBasicMaterial color="#111111" wireframe={true} />
-                </mesh>
+            {/* Arrays Group (Right) */}
+            <group position={[12, 0, 0]}>
+                {/* Top Pair */}
+                <group position={[0, 5, 0]}>
+                    <mesh>
+                        <boxGeometry args={[3, 10, 0.05]} />
+                        <primitive object={solarMaterial} />
+                    </mesh>
+                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}> {/* Border */}
+                        <boxGeometry args={[3, 10, 0.04]} />
+                        <meshBasicMaterial color="#111111" wireframe />
+                    </mesh>
+                </group>
+                <group position={[4, 5, 0]}>
+                    <mesh>
+                        <boxGeometry args={[3, 10, 0.05]} />
+                        <primitive object={solarMaterial} />
+                    </mesh>
+                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
+                        <boxGeometry args={[3, 10, 0.04]} />
+                        <meshBasicMaterial color="#111111" wireframe />
+                    </mesh>
+                </group>
 
-                {/* Right Array */}
-                <mesh position={[12, 0, 0]} material={[darkMetalMaterial, darkMetalMaterial, solarMaterial, solarMaterial, darkMetalMaterial, darkMetalMaterial]}>
-                    <boxGeometry args={[4, 0.1, 12]} />
-                </mesh>
-                {/* Frame detail (Wireframe) */}
-                <mesh position={[12, 0, 0]} scale={[1.01, 1.01, 1.005]}>
-                    <boxGeometry args={[4, 0.1, 12]} />
-                    <meshBasicMaterial color="#111111" wireframe={true} />
-                </mesh>
+                {/* Bottom Pair */}
+                <group position={[0, -5, 0]}>
+                    <mesh>
+                        <boxGeometry args={[3, 10, 0.05]} />
+                        <primitive object={solarMaterial} />
+                    </mesh>
+                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
+                        <boxGeometry args={[3, 10, 0.04]} />
+                        <meshBasicMaterial color="#111111" wireframe />
+                    </mesh>
+                </group>
+                <group position={[4, -5, 0]}>
+                    <mesh>
+                        <boxGeometry args={[3, 10, 0.05]} />
+                        <primitive object={solarMaterial} />
+                    </mesh>
+                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
+                        <boxGeometry args={[3, 10, 0.04]} />
+                        <meshBasicMaterial color="#111111" wireframe />
+                    </mesh>
+                </group>
+            </group>
+
+            {/* Arrays Group (Left) */}
+            <group position={[-12, 0, 0]} ref={solarArraysRef}>
+                {/* Top Pair */}
+                <group position={[0, 5, 0]}>
+                    <mesh>
+                        <boxGeometry args={[3, 10, 0.05]} />
+                        <primitive object={solarMaterial} />
+                    </mesh>
+                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
+                        <boxGeometry args={[3, 10, 0.04]} />
+                        <meshBasicMaterial color="#111111" wireframe />
+                    </mesh>
+                </group>
+                <group position={[-4, 5, 0]}>
+                    <mesh>
+                        <boxGeometry args={[3, 10, 0.05]} />
+                        <primitive object={solarMaterial} />
+                    </mesh>
+                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
+                        <boxGeometry args={[3, 10, 0.04]} />
+                        <meshBasicMaterial color="#111111" wireframe />
+                    </mesh>
+                </group>
+                {/* Bottom Pair */}
+                <group position={[0, -5, 0]}>
+                    <mesh>
+                        <boxGeometry args={[3, 10, 0.05]} />
+                        <primitive object={solarMaterial} />
+                    </mesh>
+                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
+                        <boxGeometry args={[3, 10, 0.04]} />
+                        <meshBasicMaterial color="#111111" wireframe />
+                    </mesh>
+                </group>
+                <group position={[-4, -5, 0]}>
+                    <mesh>
+                        <boxGeometry args={[3, 10, 0.05]} />
+                        <primitive object={solarMaterial} />
+                    </mesh>
+                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
+                        <boxGeometry args={[3, 10, 0.04]} />
+                        <meshBasicMaterial color="#111111" wireframe />
+                    </mesh>
+                </group>
             </group>
 
             {/* === 5. SPECIAL DETAILS (Canadarm2 & Antennae) === */}
@@ -904,7 +973,7 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
             {/* Lights - Boosted for Visibility */}
             <pointLight distance={150} intensity={2.5} color="#ffffff" position={[0, 10, 10]} />
             <pointLight distance={150} intensity={1.5} color="#ffccaa" position={[0, -10, 5]} />
-        </group >
+        </group>
     );
 }
 
