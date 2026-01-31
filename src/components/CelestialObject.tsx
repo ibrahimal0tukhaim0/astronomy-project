@@ -599,20 +599,43 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
         console.log("🛰️ ISS Component Mounted. Loading GLB...");
         if (scene) {
             console.log("✅ ISS GLB Loaded!", scene);
+            let meshCount = 0;
+            // Optimization: Only cast shadows from larger meshes
             scene.traverse((child) => {
                 if ((child as THREE.Mesh).isMesh) {
-                    // Optimization: Cast shadows enabled, but model is now low-poly enough (14MB)
-                    (child as THREE.Mesh).castShadow = true;
-                    (child as THREE.Mesh).receiveShadow = true;
+                    meshCount++;
+                    const mesh = child as THREE.Mesh;
+                    // ⚡ PERFORMANCE: Frustum Culling is vital
+                    mesh.frustumCulled = true;
+
+                    // ⚡ PERFORMANCE: SMART SHADOWS
+                    // Only cast shadows from large structures (Solar arrays, main modules)
+                    // Disable shadows for tiny details (screws, handles) to double framerate
+                    const isLarge = mesh.geometry.boundingSphere && mesh.geometry.boundingSphere.radius > 0.5;
+                    const name = mesh.name.toLowerCase();
+                    const isKeyStructure = name.includes('solar') || name.includes('array') || name.includes('rad') || name.includes('mod');
+
+                    if (isLarge || isKeyStructure) {
+                        mesh.castShadow = true;
+                        mesh.receiveShadow = true;
+                    } else {
+                        mesh.castShadow = false;
+                        mesh.receiveShadow = false;
+                    }
 
                     // Fix Materials
-                    const mat = (child as THREE.Mesh).material as THREE.MeshStandardMaterial;
+                    const mat = mesh.material as THREE.MeshStandardMaterial;
                     if (mat) {
                         mat.envMapIntensity = 1.0;
                         mat.needsUpdate = true;
+                        // Reduce shader cost for details
+                        if (!isLarge) {
+                            mat.flatShading = true; // Cheaper shading for small bits
+                        }
                     }
                 }
             });
+            console.log(`📊 ISS Stats: ${meshCount} meshes processed. Shadows Enabled for major parts only.`);
         }
     }, [scene]);
 
