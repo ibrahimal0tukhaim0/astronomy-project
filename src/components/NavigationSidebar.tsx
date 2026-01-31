@@ -19,41 +19,28 @@ export function NavigationSidebar({ onNavigate }: NavigationSidebarProps) {
     };
 
     return (
-        <>
-            {/* 📱 Mobile Scaling & Safe Area Utilities */}
-            <style>{`
-                @media (max-width: 768px) {
-                    .mobile-scaled-ui {
-                        transform: scale(0.85);
-                        transform-origin: top left;
-                    }
-                    .safe-area-top {
-                        padding-top: env(safe-area-inset-top);
-                    }
-                }
-            `}</style>
-
-            {/* Hamburger Button (Top-Left for RTL Balance) */}
+        <div style={{ fontFamily: '"Cairo", sans-serif' }}>
+            {/* Hamburger Button - Standardized Touch Target */}
             <button
                 onClick={toggleMenu}
-                style={{ top: 'calc(1rem + env(safe-area-inset-top))' }}
-                className="absolute left-6 z-50 p-3 bg-black/30 hover:bg-black/50 backdrop-blur-md rounded-full text-white transition-all duration-300 border border-white/10 hover:border-white/30 mobile-scaled-ui"
+                style={{ top: 'calc(1.25rem + env(safe-area-inset-top))' }}
+                className="fixed left-6 z-[60] touch-target p-4 bg-black/40 hover:bg-black/60 backdrop-blur-xl rounded-2xl text-white transition-all duration-300 border border-white/10 active:scale-95 flex items-center justify-center shadow-lg"
                 aria-label="Menu"
                 aria-expanded={isOpen}
                 aria-controls="navigation-menu"
             >
-                <div className="w-6 h-5 flex flex-col justify-between items-center">
+                <div className="w-6 h-5 flex flex-col justify-between items-center transition-all">
                     <motion.span
-                        animate={isOpen ? { rotate: 45, y: 8 } : { rotate: 0, y: 0 }}
-                        className="w-full h-0.5 bg-white rounded-full origin-center transition-transform"
+                        animate={isOpen ? { rotate: 45, y: 9 } : { rotate: 0, y: 0 }}
+                        className="w-full h-0.5 bg-white rounded-full bg-gradient-to-r from-blue-200 to-white"
                     />
                     <motion.span
-                        animate={isOpen ? { opacity: 0 } : { opacity: 1 }}
-                        className="w-full h-0.5 bg-white rounded-full transition-opacity"
+                        animate={isOpen ? { opacity: 0, x: -10 } : { opacity: 1, x: 0 }}
+                        className="w-full h-0.5 bg-white rounded-full"
                     />
                     <motion.span
-                        animate={isOpen ? { rotate: -45, y: -8 } : { rotate: 0, y: 0 }}
-                        className="w-full h-0.5 bg-white rounded-full origin-center transition-transform"
+                        animate={isOpen ? { rotate: -45, y: -9 } : { rotate: 0, y: 0 }}
+                        className="w-full h-0.5 bg-white rounded-full bg-gradient-to-r from-white to-blue-200"
                     />
                 </div>
             </button>
@@ -68,50 +55,56 @@ export function NavigationSidebar({ onNavigate }: NavigationSidebarProps) {
                             animate={{ opacity: 1 }}
                             exit={{ opacity: 0 }}
                             onClick={toggleMenu}
-                            className="absolute inset-0 bg-black/60 backdrop-blur-sm z-40"
+                            className="fixed inset-0 bg-black/70 backdrop-blur-md z-[70]"
                             aria-hidden="true"
                         />
 
-                        {/* Sidebar (Left Side) */}
+                        {/* Sidebar */}
                         <motion.div
                             initial={{ x: '-100%' }}
                             animate={{ x: 0 }}
                             exit={{ x: '-100%' }}
-                            transition={{ type: 'spring', damping: 25, stiffness: 200 }}
-                            className="absolute top-0 left-0 h-full w-80 glass-menu border-r-0 z-50 overflow-y-auto mobile-scaled-ui origin-top-left"
+                            transition={{ type: 'spring', damping: 28, stiffness: 220 }}
+                            className="fixed top-0 left-0 h-full w-[min(85vw,360px)] glass-panel border-r border-white/10 z-[80] overflow-y-auto"
                             id="navigation-menu"
                             role="dialog"
                             aria-modal="true"
-                            aria-label="Celestial Navigation"
                         >
-                            <div className="p-8 safe-area-top">
-                                <h2 className="text-2xl font-serif font-bold text-transparent bg-clip-text bg-gradient-to-r from-blue-200 to-white mb-8 border-b border-white/10 pb-4">
-                                    {t('app.title')}
-                                </h2>
+                            <div className="p-8 pt-safe flex flex-col h-full">
+                                <div className="mb-10">
+                                    <h2 className="text-3xl font-bold text-white mb-2">
+                                        {t('app.title')}
+                                    </h2>
+                                    <p className="text-xs text-blue-300/60 font-medium tracking-widest uppercase">
+                                        {t('app.subtitle')}
+                                    </p>
+                                </div>
 
-                                <div className="space-y-2">
+                                <nav className="space-y-3 flex-1">
                                     {celestialObjects.map((obj) => (
                                         <button
                                             key={obj.id}
                                             onClick={() => handleItemClick(obj.id)}
-                                            className="w-full text-right group p-3 rounded-lg hover:bg-white/5 transition-all flex items-center justify-end gap-3 border border-transparent hover:border-white/5"
+                                            className="w-full touch-target text-right group p-4 rounded-2xl bg-white/5 hover:bg-white/10 transition-all flex items-center justify-end gap-5 border border-white/5 active:scale-[0.98]"
                                         >
-                                            <span className="text-gray-300 group-hover:text-white font-medium transition-colors">
+                                            <span className="text-gray-300 group-hover:text-white font-bold text-sm tracking-wide transition-colors">
                                                 {t(`objects.${obj.id}.name`)}
                                             </span>
 
-                                            {/* Object Icon/Indicator */}
                                             <div
-                                                className="w-8 h-8 rounded-full shadow-inner border border-white/10"
-                                                style={{ backgroundColor: obj.science.color }}
+                                                className="w-8 h-8 rounded-full shadow-lg border-2 border-white/20 ring-2 ring-black/20"
+                                                style={{
+                                                    backgroundColor: obj.science.color,
+                                                    boxShadow: `0 0 15px ${obj.science.color}44`
+                                                }}
                                             />
                                         </button>
                                     ))}
-                                </div>
+                                </nav>
 
-                                <div className="mt-12 pt-8 border-t border-white/10 text-center">
-                                    <p className="text-xs text-gray-500">
-                                        {t('app.subtitle')}
+                                <div className="mt-8 pt-6 border-t border-white/10 text-center opacity-40">
+                                    <p className="text-[10px] uppercase tracking-widest">
+                                        جميع الحقوق محفوظة © 2026
                                     </p>
                                 </div>
                             </div>
@@ -119,6 +112,6 @@ export function NavigationSidebar({ onNavigate }: NavigationSidebarProps) {
                     </>
                 )}
             </AnimatePresence>
-        </>
+        </div>
     );
 }

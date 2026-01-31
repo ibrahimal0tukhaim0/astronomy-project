@@ -21,6 +21,6 @@ export default defineConfig(() => {
     },
     // Universal Relative Path (The "Bulletproof" Fix)
     // Works on ANY domain, subfolder, or hosting (Vercel + GitHub Pages)
-    base: './',
+    base: '/astronomy-project/',
   }
 })

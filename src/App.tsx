@@ -171,12 +171,13 @@ function AppContent() {
                     <Canvas
                         shadows
                         camera={{
-                            // 🎥 CAMERA INTRO: Panorama Mode (Ultra Wide Max)
-                            // Intro: Wide FOV (75) + Far Z (3500) + High Y (2000)
+                            // 🎥 CAMERA INTRO: Responsive FOV for Mobile/Desktop
                             position: hasStarted ? [0, 400, 900] : [0, 2000, 3500],
-                            fov: hasStarted ? 60 : 75,
+                            fov: hasStarted
+                                ? (window.innerWidth < 768 ? 75 : 60)
+                                : (window.innerWidth < 768 ? 90 : 75),
                             near: 0.1,
-                            far: 500000 // ✨ Extended Range for Outer Belt
+                            far: 500000
                         }}
                         // 🌟 4K RENDER UPGRADE: Optimized Pixel Ratio (User Request: Max 2)
                         // Reduces GPU load by 30% while maintaining visual sharpness

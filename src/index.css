@@ -6,8 +6,10 @@
 @import "tailwindcss";
 
 @theme {
-    --font-sans: "Outfit", "Cairo", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    --font-serif: "Outfit", ui-serif, Georgia, Cambria, "Times New Roman", Times, serif;
+    --font-heading: "Cairo", ui-sans-serif, system-ui, sans-serif;
+    --font-body: "Cairo", ui-sans-serif, system-ui, sans-serif;
+    --font-amiri: "Amiri", serif;
+    --font-cairo: "Cairo", sans-serif;
     --font-arabic: "Amiri", "Scheherazade New", serif;
 }
 
@@ -18,17 +20,27 @@
     letter-spacing: 0.03em;
 }
 
-/* Glassmorphism Menu Style (User Requested) */
-.glass-menu {
-    background: rgba(255, 255, 255, 0.05);
-    /* High Transparency */
-    backdrop-filter: blur(15px);
-    /* Strong Blur for realism */
+/* Glassmorphism Panel Style (Bottom Sheet & High-End UI) */
+.glass-panel {
+    background: rgba(0, 0, 0, 0.4);
+    backdrop-filter: blur(12px) saturate(180%);
+    -webkit-backdrop-filter: blur(12px) saturate(180%);
     border: 1px solid rgba(255, 255, 255, 0.1);
-    border-radius: 20px;
-    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.8);
-    /* Deep space shadows */
-    color: #fff;
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+}
+
+/* Touch Target Size Utility (Minimum 44px for accessibility) */
+.touch-target {
+    min-height: 44px;
+    min-width: 44px;
+}
+
+/* Layout Padding Utilities */
+.safe-p {
+    padding-top: env(safe-area-inset-top);
+    padding-bottom: env(safe-area-inset-bottom);
+    padding-left: env(safe-area-inset-left);
+    padding-right: env(safe-area-inset-right);
 }
 
 /* Neon Text Style (User Requested) */
