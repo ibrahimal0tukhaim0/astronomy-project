@@ -48,7 +48,7 @@ function SpaceBackground() {
     return (
         <mesh
             ref={meshRef}
-            scale={[2000, 2000, 2000]} // 📏 User Request: Scale to 2000 (Prevents clipping/bubble effect)
+            scale={[4000, 4000, 4000]} // 📏 User Request: Scale to 4000 (Prevents tight feeling)
         >
             <sphereGeometry args={[1, 64, 64]} />
             <meshBasicMaterial

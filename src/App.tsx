@@ -233,8 +233,8 @@ function AppContent() {
                                     panSpeed={1.0} // Screen-space panning
                                     enableDamping={true}
                                     dampingFactor={0.05} // 🌊 Smooth inertia (Requested Feature)
-                                    minDistance={60} // 🛡️ Collision Avoidance (Sun Radius is 30)
-                                    maxDistance={900000} // Increased for new Far Clip
+                                    minDistance={5} // 🛡️ Prevent clipping inside planets (User Request: 5)
+                                    maxDistance={600} // 🛡️ Prevent getting lost in deep space (User Request: 600)
                                     autoRotate={!hasStarted}
                                     autoRotateSpeed={0.5}
                                     // 📱 Mobile Optimization: Slower rotation for touch precision (0.5), faster for mouse (0.8)
