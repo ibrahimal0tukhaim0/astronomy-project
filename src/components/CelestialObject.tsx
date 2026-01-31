@@ -578,16 +578,21 @@ function GreenComet({ scale = 1.0 }: { scale?: number }) {
     );
 }
 
-// 🛰️ مسار النموذج الجديد (NASA High-Res GLB)
-const ISS_MODEL_PATH = `${import.meta.env.BASE_URL}models/ISS_new.glb`;
+// 🛰️ مسار النموذج الجديد (NASA High-Res GLB - Optimized)
+// 14MB GLB (Draco + WebP) - Solves Lag
+const ISS_MODEL_PATH = `${import.meta.env.BASE_URL}models/ISS_opt.glb`;
 
 // 🛰️ محطة الفضاء الدولية (ISS) - High Detail GLB Version
 // Refactored to use useGLTF for the new model
 function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
     // Load the GLB model
+    // 🧠 Automatically handles Draco if needed via Drei
     const { scene } = useGLTF(ISS_MODEL_PATH);
     const meshRef = useRef<THREE.Group>(null);
     const solarArraysRef = useRef<THREE.Group>(null);
+
+    // 🧊 Dummy object for smooth rotation calculation to prevent jitter
+    const dummyRef = useRef(new THREE.Object3D());
 
     // 🛠️ Debug: Log Scene Graph to find Solar Panels
     useEffect(() => {
@@ -596,34 +601,41 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
             console.log("✅ ISS GLB Loaded!", scene);
             scene.traverse((child) => {
                 if ((child as THREE.Mesh).isMesh) {
+                    // Optimization: Cast shadows enabled, but model is now low-poly enough (14MB)
                     (child as THREE.Mesh).castShadow = true;
                     (child as THREE.Mesh).receiveShadow = true;
-                    // Material Fix: Ensure materials are not invisible or black
+
+                    // Fix Materials
                     const mat = (child as THREE.Mesh).material as THREE.MeshStandardMaterial;
                     if (mat) {
                         mat.envMapIntensity = 1.0;
                         mat.needsUpdate = true;
-                    }
-                    const name = child.name.toLowerCase();
-                    if (name.includes('solar') || name.includes('array') || name.includes('wing')) {
-                        console.log("☀️ Found Potential Solar Part:", child.name);
                     }
                 }
             });
         }
     }, [scene]);
 
-    // 🪐 ORBITAL MECHANICS: Earth-Lock
-    useFrame((state) => {
+    // 🪐 ORBITAL MECHANICS: Earth-Lock with SMOOTH DAMPING
+    useFrame((state, delta) => {
         if (!meshRef.current) return;
 
-        // 1. EARTH LOCK (Nadir Pointing)
-        // Orbit is around (0,0,0)
-        meshRef.current.lookAt(0, 0, 0);
-        meshRef.current.rotateX(-Math.PI / 2);
+        // 1. Calculate Target Orientation (Perfect Earth Lock)
+        // We use a dummy object to figure out where we "should" be looking
+        dummyRef.current.position.copy(meshRef.current.position);
 
-        // 2. Solar Tracking (Temporary placeholder until nodes identified)
-        // If we find the node, we will attach it to solarArraysRef and rotate it here.
+        // Look at Center (Earth/Sun) - Assuming (0,0,0) is focus
+        dummyRef.current.lookAt(0, 0, 0);
+
+        // Correction: ISS "Down" (-Y) points to Earth, so rotate -90 on X
+        dummyRef.current.rotateX(-Math.PI / 2);
+
+        // 2. Smoothly Interpolate (Slerp) to Target
+        // "5 * delta" factor makes it smooth (approx 0.08 per frame at 60fps)
+        // Filters out high-frequency jitter/vibration
+        meshRef.current.quaternion.slerp(dummyRef.current.quaternion, 5 * delta);
+
+        // 2. Solar Tracking (Placeholder)
     });
 
     return (
