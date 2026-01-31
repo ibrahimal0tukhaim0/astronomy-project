@@ -526,7 +526,58 @@ function HalleyComet({
     );
 }
 
+// ☄️ المذنب الأخضر (Green Comet ZTF) - "Tail Only" Concept
+function GreenComet({ scale = 1.0 }: { scale?: number }) {
+    // We use the same tail texture but tint it green
+    const tailTexture = useTexture(`${import.meta.env.BASE_URL}textures/shooting_star_trail.webp`);
 
+    const meshRef = useRef<THREE.Mesh>(null);
+
+    useFrame((_, delta) => {
+        if (meshRef.current) {
+            meshRef.current.rotation.y += delta * 0.1;
+        }
+    });
+
+    return (
+        <group>
+            {/* 🟢 The Coma (Head Glow) - NO SOLID SPHERE */}
+            {/* Just a soft green light point to represent the nucleus position */}
+            <pointLight distance={500} intensity={3} color="#20FF80" decay={1} />
+
+            {/* 🟢 The Tail - Massive & Green */}
+            <mesh
+                ref={meshRef}
+                position={[scale * 12, 0, 0]} // Offset tail behind
+                rotation={[0, 0, -Math.PI / 2]}
+                renderOrder={-1}
+            >
+                {/* Long, wide tail */}
+                <cylinderGeometry args={[1 * scale, 10 * scale, scale * 40, 32, 1, true]} />
+                <meshBasicMaterial
+                    map={tailTexture}
+                    color="#20FF80" // ❇️ Toxic Green / Emerald
+                    opacity={0.6}
+                    transparent={true}
+                    blending={THREE.AdditiveBlending}
+                    depthWrite={false}
+                    side={THREE.DoubleSide}
+                />
+            </mesh>
+
+            {/* Inner Core Glow (Just visually anchoring the tail) */}
+            <mesh scale={scale * 2}>
+                <sphereGeometry args={[1, 32, 32]} />
+                <meshBasicMaterial
+                    color="#FFFFFF"
+                    transparent={true}
+                    opacity={0.8}
+                    blending={THREE.AdditiveBlending}
+                />
+            </mesh>
+        </group>
+    );
+}
 
 export function CelestialObject(props: CelestialObjectProps) {
     const { data, onSelect, dateRef, isSelected } = props;

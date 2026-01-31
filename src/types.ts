@@ -1,4 +1,4 @@
-export type CelestialObjectId = 'sun' | 'earth' | 'moon' | 'sirius' | 'al-tariq' | 'venus' | 'mars' | 'mercury' | 'jupiter' | 'saturn' | 'uranus' | 'neptune' | 'pluto' | 'alnitak' | 'alnilam' | 'mintaka' | 'comet' | 'ceres' | 'vesta' | 'pallas' | 'juno' | 'eros' | 'ida' | 'gaspra' | 'bennu' | 'ryugu' | 'halley' | 'canopus' | 'arcturus' | 'rigil' | 'vega' | 'capella';
+export type CelestialObjectId = 'sun' | 'earth' | 'moon' | 'sirius' | 'al-tariq' | 'venus' | 'mars' | 'mercury' | 'jupiter' | 'saturn' | 'uranus' | 'neptune' | 'pluto' | 'alnitak' | 'alnilam' | 'mintaka' | 'comet' | 'ceres' | 'vesta' | 'pallas' | 'juno' | 'eros' | 'ida' | 'gaspra' | 'bennu' | 'ryugu' | 'halley' | 'canopus' | 'arcturus' | 'rigil' | 'vega' | 'capella' | 'green-comet';
 
 export interface CelestialData {
     id: CelestialObjectId;
