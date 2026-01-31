@@ -54,7 +54,7 @@ const ThreeLine = 'line' as any;
 
 // 🌌 Herbig-Haro 46/47 Background (Webb Image)
 function HerbigHaroBackground() {
-    const texture = useTexture("https://science.nasa.gov/wp-content/uploads/2023/07/hh46_47_original.jpg");
+    const texture = useTexture(`${import.meta.env.BASE_URL}textures/herbig_haro_bg.jpg`);
 
     return (
         <mesh
