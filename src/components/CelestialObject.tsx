@@ -610,10 +610,10 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
 
                     // ⚡ PERFORMANCE: SMART SHADOWS
                     // Only cast shadows from large structures (Solar arrays, main modules)
-                    // Disable shadows for tiny details (screws, handles) to double framerate
-                    const isLarge = mesh.geometry.boundingSphere && mesh.geometry.boundingSphere.radius > 0.5;
+                    // Removed 'radiator' to save costs on complex grids
+                    const isLarge = mesh.geometry.boundingSphere && mesh.geometry.boundingSphere.radius > 1.2; // Stricter size limit (was 0.5)
                     const name = mesh.name.toLowerCase();
-                    const isKeyStructure = name.includes('solar') || name.includes('array') || name.includes('rad') || name.includes('mod');
+                    const isKeyStructure = name.includes('solar') || name.includes('array') || name.includes('mod');
 
                     if (isLarge || isKeyStructure) {
                         mesh.castShadow = true;
@@ -623,19 +623,21 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
                         mesh.receiveShadow = false;
                     }
 
-                    // Fix Materials
+                    // Fix Materials & Lighting Optimization
                     const mat = mesh.material as THREE.MeshStandardMaterial;
                     if (mat) {
-                        mat.envMapIntensity = 1.0;
+                        // 💡 Increase Environment Lighting to replace expensive PointLights
+                        mat.envMapIntensity = 1.35;
                         mat.needsUpdate = true;
+
                         // Reduce shader cost for details
-                        if (!isLarge) {
+                        if (!isLarge && !isKeyStructure) {
                             mat.flatShading = true; // Cheaper shading for small bits
                         }
                     }
                 }
             });
-            console.log(`📊 ISS Stats: ${meshCount} meshes processed. Shadows Enabled for major parts only.`);
+            console.log(`📊 ISS Stats: ${meshCount} meshes processed. Lighting Optimized & Shadows Reduced.`);
         }
     }, [scene]);
 
@@ -663,9 +665,7 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
 
     return (
         <group ref={meshRef} scale={scale}>
-            {/* 💡 Add local lights to illuminate the detailed model */}
-            <pointLight distance={300} intensity={3.0} color="#ffffff" position={[0, 50, 50]} />
-            <pointLight distance={300} intensity={2.0} color="#aaccee" position={[0, -50, -20]} />
+            {/* ⚡ Performance: Removed expensive local PointLights. Using EnvMap instead. */}
 
             {/* 🛰️ The Detailed NASA Model */}
             {/* Scale: Boosted to 2.0 (was 0.01) to ensure visibility */}
