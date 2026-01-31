@@ -30,7 +30,7 @@ export function NavigationSidebar({ onNavigate, isHidden = false }: NavigationSi
                     pointerEvents: isHidden ? 'none' : 'auto',
                     transform: isHidden ? 'scale(0.8)' : 'scale(1)'
                 }}
-                className="fixed left-6 z-[60] touch-target p-4 bg-black/40 hover:bg-black/60 backdrop-blur-xl rounded-2xl text-white transition-all duration-300 border border-white/10 active:scale-95 flex items-center justify-center shadow-lg"
+                className="fixed left-6 z-[90] touch-target p-4 bg-black/40 hover:bg-black/60 backdrop-blur-xl rounded-2xl text-white transition-all duration-300 border border-white/10 active:scale-95 flex items-center justify-center shadow-lg"
                 aria-label="Menu"
                 aria-expanded={isOpen}
                 aria-controls="navigation-menu"
@@ -96,14 +96,6 @@ export function NavigationSidebar({ onNavigate, isHidden = false }: NavigationSi
                                             <span className="text-gray-300 group-hover:text-white font-bold text-sm tracking-wide transition-colors">
                                                 {t(`objects.${obj.id}.name`)}
                                             </span>
-
-                                            <div
-                                                className="w-8 h-8 rounded-full shadow-lg border-2 border-white/20 ring-2 ring-black/20"
-                                                style={{
-                                                    backgroundColor: obj.science.color,
-                                                    boxShadow: `0 0 15px ${obj.science.color}44`
-                                                }}
-                                            />
                                         </button>
                                     ))}
                                 </nav>
