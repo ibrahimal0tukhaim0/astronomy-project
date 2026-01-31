@@ -147,23 +147,6 @@ export const celestialObjects: CelestialData[] = [
     // =============================================================================
 
 
-    // المذنب الأخضر (Green Comet - C/2022 E3 ZTF)
-    {
-        id: 'green-comet',
-        type: 'planet', // Treated as planet for selection/orbit logic
-        science: {
-            color: '#20FF80', // Emerald Green
-            scale: 30.0,
-            orbitRadius: 530, // Near Earth (1.11 AU) - Earth is 480
-            orbitSpeed: 0.25, // Fast Mover
-            orbitInclination: 109.0, // Retrograde & Steep
-            orbitPhase: Math.random() * Math.PI * 2,
-            glowIntensity: 3.0,
-            poetry: 'زائرٌ أخضرُ من غياهبِ الزمن .. يجرُّ ذيلاً من نورٍ وشجن\n\nالمذنب الأخضر (ZTF) بوهجه الزمردي،، يأتينا من سحابة أورت البعيدة مرة كل 50,000 عام.'
-        },
-        initialPosition: [180, 400, 250], // High inclination position
-    },
-
     // نجم الشعرى
     {
         id: 'sirius',

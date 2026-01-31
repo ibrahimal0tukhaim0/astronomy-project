@@ -848,11 +848,6 @@ export function CelestialObject(props: CelestialObjectProps) {
                 />
             )}
 
-            {/* 11. المذنب الأخضر (Green Comet ZTF) */}
-            {data.id === 'green-comet' && (
-                <GreenComet scale={targetScale} />
-            )}
-
             {/* Asteroids - Mapping IDs to Textures */}
             {['ceres', 'vesta', 'pallas', 'juno', 'eros', 'ida', 'gaspra', 'bennu', 'ryugu'].includes(data.id) && (
                 <GenericAsteroid
