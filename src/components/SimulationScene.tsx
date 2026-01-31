@@ -66,8 +66,8 @@ function HerbigHaroBackground() {
             <meshBasicMaterial
                 map={texture}
                 transparent={true}
-                opacity={0.5} // Blended
-                blending={THREE.ScreenBlending} // Soft integration with Milky Way
+                opacity={0.3} // Lowered for Additive Blending
+                blending={THREE.AdditiveBlending} // ✨ Standard Glowing Blend
                 depthWrite={false}
                 side={THREE.DoubleSide}
                 toneMapped={false}
