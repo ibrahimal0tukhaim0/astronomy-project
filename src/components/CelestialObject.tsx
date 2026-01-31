@@ -579,6 +579,28 @@ function GreenComet({ scale = 1.0 }: { scale?: number }) {
     );
 }
 
+// 🛰️ محطة الفضاء الدولية (ISS)
+function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
+    const texture = useTexture(`${import.meta.env.BASE_URL}textures/iss_transparent.webp`);
+
+    return (
+        <group>
+            {/* Billboard Sprite for always-facing visibility */}
+            <sprite scale={[scale * 2, scale * 1.2, 1]}>
+                <spriteMaterial
+                    map={texture}
+                    toneMapped={false}
+                    transparent={true}
+                    color="#FFFFFF"
+                />
+            </sprite>
+
+            {/* Blue Tech Glow */}
+            <pointLight distance={300} intensity={2} color="#4488ff" decay={2} />
+        </group>
+    );
+}
+
 export function CelestialObject(props: CelestialObjectProps) {
     const { data, onSelect, dateRef, isSelected } = props;
     const meshRef = useRef<THREE.Mesh>(null)
@@ -846,6 +868,11 @@ export function CelestialObject(props: CelestialObjectProps) {
                     scale={targetScale}
                     name={data.id} // ✨ Pass name for logging
                 />
+            )}
+
+            {/* 11. محطة الفضاء الدولية (ISS) */}
+            {data.id === 'iss' && (
+                <InternationalSpaceStation scale={targetScale} />
             )}
 
             {/* Asteroids - Mapping IDs to Textures */}
