@@ -48,7 +48,7 @@ function SpaceBackground() {
     return (
         <mesh
             ref={meshRef}
-            scale={[4000, 4000, 4000]} // 📏 User Request: Scale to 4000 (Prevents tight feeling)
+            scale={[2000, 2000, 2000]} // 📏 User Request: Scale to 2000 (Prevents clipping/bubble effect)
         >
             <sphereGeometry args={[1, 64, 64]} />
             <meshBasicMaterial
@@ -163,7 +163,15 @@ export default function SimulationScene({ onSelect, isPaused, onDateChange, isAR
                 position={[100, 100, 100]}
                 intensity={2.0}
                 color="#FFFFFF"
-                castShadow={false}
+                castShadow={true} // ⚡ Optimized Shadows
+                shadow-mapSize={[1024, 1024]} // Mobile Friendly map size
+                shadow-camera-near={0.1}
+                shadow-camera-far={150} // ⚡ User Request: 150 Distance (Pro Optimization)
+                shadow-camera-left={-100} // Increased frustum width to cover ISS
+                shadow-camera-right={100}
+                shadow-camera-top={100}
+                shadow-camera-bottom={-100}
+                shadow-bias={-0.0005} // Reduce artifacting
             />
 
             <directionalLight

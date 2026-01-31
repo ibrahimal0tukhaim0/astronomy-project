@@ -179,9 +179,9 @@ function AppContent() {
                             near: 0.1,
                             far: 1000000 // 🌌 Far Clip Plane: Increased to 1M for distant planets
                         }}
-                        // 🌟 4K RENDER UPGRADE: Optimized Pixel Ratio (User Request: Max 2)
-                        // Reduces GPU load by 30% while maintaining visual sharpness
-                        dpr={[1, Math.min(window.devicePixelRatio, 2)]}
+                        // 🌟 4K RENDER UPGRADE: Optimized Pixel Ratio (User Request: 0.85 Factor)
+                        // Scales resolution to 85% of native, saving GPU power while looking identical on Retina
+                        dpr={[0.85, Math.min(window.devicePixelRatio, 2) * 0.85]}
                         gl={{
                             // PERFORMANCE: Auto-disable Antialias on High-DPI screens
                             antialias: window.devicePixelRatio < 2,
@@ -233,8 +233,8 @@ function AppContent() {
                                     panSpeed={1.0} // Screen-space panning
                                     enableDamping={true}
                                     dampingFactor={0.05} // 🌊 Smooth inertia (Requested Feature)
-                                    minDistance={5} // 🛡️ Prevent clipping inside planets (User Request: 5)
-                                    maxDistance={600} // 🛡️ Prevent getting lost in deep space (User Request: 600)
+                                    minDistance={60} // 🛡️ Collision Avoidance (Sun Radius is 30)
+                                    maxDistance={900000} // Increased for new Far Clip
                                     autoRotate={!hasStarted}
                                     autoRotateSpeed={0.5}
                                     // 📱 Mobile Optimization: Slower rotation for touch precision (0.5), faster for mouse (0.8)
