@@ -617,48 +617,49 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
     // Materials
     // Materials
     const { moduleMaterial, solarMaterial, trussMaterial, radiatorMaterial, detailMaterial, darkMetalMaterial } = useMemo(() => {
-        // 🌟 LIGHTING CALIBRATION: Scene is VERY bright (5.0 intensity).
-        // Must use DARK base colors to achieve "Grey" look.
+        // 🌟 User Request: "Too Dark" -> Brighten Up
 
         const module = new THREE.MeshStandardMaterial({
-            map: hullTexture, // Texture from "iss_solar.jpg" (Blue/Dark)
-            color: "#222222", // 🌑 Dark Grey (Appears Light Grey in scene)
+            map: hullTexture,
+            color: "#888888", // 💡 Much lighter Grey
+            emissive: "#111111", // Glow slightly to prevent darkness
             roughness: 0.5,
-            metalness: 0.4,
+            metalness: 0.5,
         });
 
         const solar = new THREE.MeshStandardMaterial({
             map: solarTexture,
-            color: "#444444", // 🔉 Significant darken to prevent wash out
-            emissive: "#000308", // Faint glow
-            emissiveIntensity: 0.1,
+            color: "#888888", // Brighter base for texture
+            emissive: "#0a0a2a", // Blueish glow
+            emissiveIntensity: 0.3,
             roughness: 0.3,
-            metalness: 0.6,
+            metalness: 0.7,
             side: THREE.DoubleSide
         });
 
         const truss = new THREE.MeshStandardMaterial({
-            color: "#111111", // Appearing as dark metal
-            roughness: 0.7,
-            metalness: 0.3
+            color: "#444444",
+            roughness: 0.6,
+            metalness: 0.4
         });
 
         const radiator = new THREE.MeshStandardMaterial({
             map: radiatorTexture,
-            color: "#222222", // 🌑 Dark Grey (Appears White/Silver)
+            color: "#AAAAAA", // Brighter
+            emissive: "#111111",
             roughness: 0.4,
             metalness: 0.6,
             side: THREE.DoubleSide
         });
 
         const detail = new THREE.MeshStandardMaterial({
-            color: "#050505",
+            color: "#222222",
             roughness: 0.8,
             metalness: 0.2
         });
 
         const darkMetal = new THREE.MeshStandardMaterial({
-            color: "#111111",
+            color: "#333333",
             metalness: 0.5,
             roughness: 0.5
         });
@@ -675,6 +676,10 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
 
     return (
         <group ref={meshRef} scale={scale}>
+            {/* Lights - Boosted for Visibility */}
+            <pointLight distance={150} intensity={2.5} color="#ffffff" position={[0, 10, 10]} />
+            <pointLight distance={150} intensity={1.5} color="#ffccaa" position={[0, -10, 5]} />
+
             {/* === 1. CENTRAL MODULES (High Res) === */}
             <group rotation={[Math.PI / 2, 0, 0]}>
                 {/* Zarya (FGB) */}
@@ -909,9 +914,9 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
                 </mesh>
             </group>
 
-            {/* Lights - Brightness Restored */}
-            <pointLight distance={100} intensity={1.2} color="#ffffff" position={[0, 8, 5]} />
-            <pointLight distance={100} intensity={0.8} color="#ffccaa" position={[0, -5, 2]} />
+            {/* Lights - Boosted for Visibility */}
+            <pointLight distance={150} intensity={2.5} color="#ffffff" position={[0, 10, 10]} />
+            <pointLight distance={150} intensity={1.5} color="#ffccaa" position={[0, -10, 5]} />
         </group>
     );
 }
