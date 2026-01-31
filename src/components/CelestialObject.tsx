@@ -604,46 +604,49 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
     // Materials
     // Materials
     const { moduleMaterial, solarMaterial, trussMaterial, radiatorMaterial, detailMaterial, darkMetalMaterial } = useMemo(() => {
+        // 💡 LIGHTING FIX: Scene has intensity=5.0 global light. 
+        // We must use NEAR-BLACK colors so they render as Grey/Visible under such bright light.
+
         const module = new THREE.MeshStandardMaterial({
             map: hullTexture,
-            color: "#333333", // 🌑 Darker Grey
-            roughness: 0.9,   // Fully matte
-            metalness: 0.0,   // 🚫 NO METAL (Fixes specular washout)
+            color: "#050505", // 🌑 Pure Black (Renders as Grey due to Ambient Light 1.5)
+            roughness: 0.95,  // Matte
+            metalness: 0.0,
         });
 
         const solar = new THREE.MeshStandardMaterial({
             map: solarTexture,
-            color: "#050510", // 🌑 Deepest Navy/Black
-            emissive: "#000011",
+            color: "#000005", // 🌑 Pure Black
+            emissive: "#000010", // Ultra faint blue
             emissiveIntensity: 0.05,
-            roughness: 0.8,   // Matte
-            metalness: 0.0,   // 🚫 NO METAL
+            roughness: 0.9,
+            metalness: 0.0,
             side: THREE.DoubleSide
         });
 
         const truss = new THREE.MeshStandardMaterial({
-            color: "#444444",
-            roughness: 0.9,
+            color: "#0a0a0a", // 🌑 Near Black
+            roughness: 1.0,
             metalness: 0.0
         });
 
         const radiator = new THREE.MeshStandardMaterial({
-            color: "#CCCCCC", // Light Grey instead of White
-            roughness: 0.8,
+            color: "#333333", // Dark Grey (Renders as White/Bright Grey)
+            roughness: 0.9,
             metalness: 0.0,
             side: THREE.DoubleSide
         });
 
         const detail = new THREE.MeshStandardMaterial({
-            color: "#111111",
+            color: "#000000", // Vantablack
             roughness: 1.0,
             metalness: 0.0
         });
 
         const darkMetal = new THREE.MeshStandardMaterial({
-            color: "#222222",
+            color: "#020202",
             metalness: 0.0,
-            roughness: 0.9
+            roughness: 1.0
         });
 
         return {
