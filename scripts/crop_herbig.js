@@ -11,13 +11,16 @@ async function cropAndMask() {
         const width = metadata.width || 1000;
         const height = metadata.height || 1000;
 
-        // Create a radial gradient mask using SVG
+        // Create a softer, larger radial gradient mask
+        // Gradient starts fading at 30% and is completely transparent by 70%
+        // This ensures edges are 100% gone and blending is seamless
         const maskSvg = Buffer.from(`
             <svg width="${width}" height="${height}">
                 <defs>
                     <radialGradient id="grad" cx="50%" cy="50%" r="50%" fx="50%" fy="50%">
                         <stop offset="0%" style="stop-color:white;stop-opacity:1" />
-                        <stop offset="60%" style="stop-color:white;stop-opacity:1" />
+                        <stop offset="30%" style="stop-color:white;stop-opacity:1" />
+                        <stop offset="70%" style="stop-color:black;stop-opacity:0" />
                         <stop offset="100%" style="stop-color:black;stop-opacity:0" />
                     </radialGradient>
                 </defs>
@@ -25,7 +28,7 @@ async function cropAndMask() {
             </svg>
         `);
 
-        console.log('Processing image...');
+        console.log('Processing image with SUPER SOFT mask...');
 
         await sharp(inputPath)
             .composite([{
@@ -35,7 +38,7 @@ async function cropAndMask() {
             .toFormat('webp')
             .toFile(outputPath);
 
-        console.log(`Created cropped texture at: ${outputPath}`);
+        console.log(`Created soft-cropped texture at: ${outputPath}`);
 
     } catch (error) {
         console.error('Error processing image:', error);

@@ -58,15 +58,15 @@ function HerbigHaroBackground() {
 
     return (
         <mesh
-            position={[0, 500, 8500]} // 📏 Brought 10x Closer (Fixes Jitter) - Visual appearance is identical
+            position={[0, 5000, 60000]} // 🔄 Distant but safe (60k)
             rotation={[0, Math.PI, 0]}
-            scale={[0.3, 0.3, 1]} // 🔍 Scaled down 10x to match perspective
+            scale={[2.5, 2.5, 1]} // 🪐 Large celestial feature
         >
             <planeGeometry args={[60000, 40000]} />
             <meshBasicMaterial
                 map={texture}
                 transparent={true}
-                opacity={0.3} // Lowered for Additive Blending
+                opacity={0.5} // ✨ Balanced Glow with Soft Mask
                 blending={THREE.AdditiveBlending} // ✨ Standard Glowing Blend
                 depthWrite={false}
                 side={THREE.DoubleSide}
