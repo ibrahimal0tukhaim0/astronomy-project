@@ -311,11 +311,11 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
 
             {/* UI Content */}
             <div className="hero-text-container">
-                <h1 className="hero-title" style={{ fontFamily: "'IBM Plex Sans Arabic', sans-serif", fontSize: '2.97rem' }}>فلك وآية</h1>
-                <p style={{ fontFamily: "'IBM Plex Sans Arabic', sans-serif", fontSize: '0.97rem', color: 'white', marginTop: '10px' }}>استكشاف الفلك والتوحيد</p>
+                <h1 className="hero-title" style={{ fontFamily: "'Cairo', sans-serif", fontSize: '2.97rem', fontWeight: 300 }}>فلك وآية</h1>
+                <p style={{ fontFamily: "'Cairo', sans-serif", fontSize: '0.97rem', color: 'white', marginTop: '10px', fontWeight: 300, letterSpacing: '1px' }}>استكشاف الفلك والتوحيد</p>
 
                 {!isLoaded && (
-                    <div className="mt-10 opacity-70" style={{ letterSpacing: 3 }}>
+                    <div className="mt-10 opacity-70" style={{ letterSpacing: 3, fontFamily: "'Cairo', sans-serif" }}>
                         جاري ضبط المدار... {progress}%
                     </div>
                 )}
@@ -323,7 +323,7 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
 
             {/* Start Button - Moved to Bottom Center independent of Text */}
             {isLoaded && (
-                <button onClick={handleStartClick} className="orbital-button">
+                <button onClick={handleStartClick} className="orbital-button" style={{ fontFamily: "'Cairo', sans-serif" }}>
                     انطلاق
                 </button>
             )}
@@ -336,9 +336,11 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
                 transform: 'translateX(-50%)',
                 textAlign: 'center',
                 color: 'rgba(255, 215, 0, 0.8)',
-                fontFamily: 'Cairo, Tajawal, sans-serif',
+                fontFamily: "'Cairo', sans-serif",
                 fontSize: '0.63rem',
-                zIndex: 100
+                zIndex: 100,
+                fontWeight: 300,
+                letterSpacing: '1px'
             }}>
                 صنع بواسطة ابراهيم سليمان الطخيم
             </div>
