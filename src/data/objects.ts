@@ -153,15 +153,15 @@ export const celestialObjects: CelestialData[] = [
         type: 'conceptual', // Special type
         science: {
             color: '#FFFFFF',
-            scale: 60.0, // Big scale to be visible
-            orbitRadius: 2500, // 🛰️ Far Outer Orbit (Beyond Pluto)
+            scale: 120.0, // 🌟 2x Scale (was 60.0)
+            orbitRadius: 3250, // 🛰️ +30% Distance (was 2500)
             orbitSpeed: 0.15, // Fast relative to outer planets
             orbitInclination: 20.0, // Tilted orbit
             orbitPhase: 0,
             glowIntensity: 2.0,
             poetry: 'محطة الفضاء الدولية (ISS)\n\nأعجوبة هندسية تدور في السماء، تجمع البشرية في منزلٍ واحد بين النجوم.\n\nالسرعة: 28,000 كم/س\nالارتفاع: 400 كم (واقعياً)\nالطاقم: 7 رواد فضاء'
         },
-        initialPosition: [2500, 500, 0],
+        initialPosition: [3250, 650, 0], // Radius 3250, Height 650 (+30%)
     },
 
     // نجم الشعرى
