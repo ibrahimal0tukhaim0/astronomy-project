@@ -1,6 +1,6 @@
 import React, { useRef, useEffect, Suspense } from 'react'
 import * as THREE from 'three'
-import { useFrame } from '@react-three/fiber'
+import { useFrame, useThree } from '@react-three/fiber'
 import { useTexture } from '@react-three/drei'
 import gsap from 'gsap'
 import { Meteors } from './Meteors';
@@ -31,17 +31,32 @@ interface SimulationSceneProps {
 const BASE_TIME_SCALE = 2.0;
 
 // 🌌 360 Space Background (High Res)
+// 🌌 360 Space Background (High Res)
 function SpaceBackground() {
     // FIX: Using reliable CDN URL to guarantee loading (bypassing local path issues)
     const texture = useTexture("https://upload.wikimedia.org/wikipedia/commons/6/60/ESO_-_Milky_Way.jpg")
+    const meshRef = useRef<THREE.Mesh>(null)
+    const { camera } = useThree()
+
+    // 🚀 SkyboxFollow Logic: Position follows camera, Rotation stays static
+    useFrame(() => {
+        if (meshRef.current) {
+            meshRef.current.position.copy(camera.position)
+        }
+    })
 
     return (
-        <mesh scale={[90000, 90000, 90000]}> {/* Increased scale to 90000 to cover far plane */}
+        <mesh
+            ref={meshRef}
+            scale={[2000, 2000, 2000]} // 📏 User Request: Scale to 2000 (Prevents clipping/bubble effect)
+        >
             <sphereGeometry args={[1, 64, 64]} />
             <meshBasicMaterial
                 map={texture}
                 side={THREE.BackSide}
-                toneMapped={false} // Keep colors vivid
+                toneMapped={false}
+                depthWrite={false} // 🎨 Optimization: Always draw behind
+                depthTest={true}   // But still test against depth buffer
             />
         </mesh>
     )
