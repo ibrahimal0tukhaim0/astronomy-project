@@ -47,25 +47,28 @@ function SpaceBackground() {
     )
 }
 
-// 🌌 Secondary Nebula (Pillars of Creation)
-// Positioned opposite to the main view for balance
+// 🌌 Secondary Nebula (Herbig-Haro 49/50 - NASA)
+// Positioned laterally as a static deep-space object (Not billboarding)
 function SecondaryNebula() {
-    const texture = useTexture(`${import.meta.env.BASE_URL}textures/nebula_pillar.jpg`);
+    const texture = useTexture(`${import.meta.env.BASE_URL}textures/herbig_haro_49_50.jpg`);
 
     return (
-        <sprite
-            position={[40000, 10000, -40000]} // 📍 Far away, opposite quadrant
-            scale={[30000, 30000, 1]} // Huge scale
+        <mesh
+            position={[-45000, 2000, 0]} // 📍 Left side deep space (Lateral)
+            rotation={[0, Math.PI / 2, 0]} // 🔄 Face the center/camera
+            scale={[40000, 40000, 1]} // Huge scale
         >
-            <spriteMaterial
+            <planeGeometry args={[1, 1]} />
+            <meshBasicMaterial
                 map={texture}
                 transparent={true}
-                blending={THREE.AdditiveBlending} // ✨ Additive blending makes black transparent & colors glowing
-                opacity={0.6} // Subtle blend
+                blending={THREE.AdditiveBlending} // ✨ Additive blending usually works best for space gas
+                opacity={0.8} // Visible but blended
                 depthWrite={false} // Prevent z-fighting
+                side={THREE.DoubleSide}
                 toneMapped={false}
             />
-        </sprite>
+        </mesh>
     );
 }
 
