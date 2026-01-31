@@ -24,6 +24,10 @@ export interface CelestialData {
         realImage?: string; // 🌟 NASA Image for Info Panel Background
         augustNotification?: boolean; // 🌟 Canopus special alert
         poetry?: string; // 🌟 Arabic poetry
+        facts?: string; // 🔭 Scientific Facts
+        quranse?: string; // 📖 Quranic Reference & Tafsir
+        history?: string; // 📜 Historical Context
+        note?: string; // 💡 Faith Reflection
     };
 
     initialPosition: [number, number, number];

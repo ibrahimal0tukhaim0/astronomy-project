@@ -241,6 +241,56 @@ export function InfoPanel({ selectedObject, onClose }: InfoPanelProps) {
                         </p>
                     </section>
 
+                    {/* 🌟 New Custom Sections for ISS (and others) */}
+
+                    {/* Custom Scientific Facts */}
+                    {selectedObject.science.facts && (
+                        <section className="bg-white/5 p-5 rounded-xl border border-white/5">
+                            <h3 className="text-xl font-semibold mb-4 flex items-center text-blue-300">
+                                <span className="ml-2 rtl:mr-2">🔭</span> {t('ui.scientific_facts')}
+                            </h3>
+                            <p className="text-sm text-gray-300 leading-relaxed whitespace-pre-line">
+                                {selectedObject.science.facts}
+                            </p>
+                        </section>
+                    )}
+
+                    {/* Custom Quranic Reference */}
+                    {selectedObject.science.quranse && (
+                        <section className="bg-emerald-900/20 p-6 rounded-xl border border-emerald-500/20">
+                            <h3 className="text-xl font-semibold mb-4 flex items-center text-emerald-300">
+                                <span className="ml-2 rtl:mr-2">📖</span> {t('ui.quranic_reference')}
+                            </h3>
+                            <p className="text-lg text-white leading-loose whitespace-pre-line font-serif" style={{ fontFamily: "'Amiri', serif" }}>
+                                {selectedObject.science.quranse}
+                            </p>
+                        </section>
+                    )}
+
+                    {/* Custom Historical Context */}
+                    {selectedObject.science.history && (
+                        <section className="bg-amber-900/20 p-5 rounded-xl border border-amber-500/20">
+                            <h3 className="text-xl font-semibold mb-4 flex items-center text-amber-300">
+                                <span className="ml-2 rtl:mr-2">📜</span> {t('ui.historical_beliefs')}
+                            </h3>
+                            <p className="text-sm text-gray-300 leading-relaxed whitespace-pre-line">
+                                {selectedObject.science.history}
+                            </p>
+                        </section>
+                    )}
+
+                    {/* Custom Reflection Note */}
+                    {selectedObject.science.note && (
+                        <section className="text-center p-6 bg-gradient-to-b from-blue-900/30 to-purple-900/20 rounded-xl border border-blue-400/20">
+                            <h3 className="text-2xl font-serif text-blue-200 mb-4">
+                                {t('ui.reflection')}
+                            </h3>
+                            <p className="text-lg text-blue-50 font-serif leading-relaxed whitespace-pre-line">
+                                {selectedObject.science.note}
+                            </p>
+                        </section>
+                    )}
+
                     {/* Arabic Poetry Section */}
                     {selectedObject.science.poetry && (
                         <section className="text-center p-6 bg-gradient-to-b from-amber-900/30 to-orange-900/20 rounded-xl border border-amber-400/20">
