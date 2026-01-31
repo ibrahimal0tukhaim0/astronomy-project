@@ -1,6 +1,6 @@
 import { useRef, useState, useEffect, useMemo } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { useTexture } from '@react-three/drei'
+import { useTexture, Text, Billboard, useGLTF } from '@react-three/drei'
 import type { CelestialData } from '../types' // ✨ Refactored Import
 import * as THREE from 'three';
 import { getObjectPosition } from '../utils/astronomy'
@@ -578,407 +578,61 @@ function GreenComet({ scale = 1.0 }: { scale?: number }) {
     );
 }
 
-// 🛰️ محطة الفضاء الدولية (ISS) - High Detail & Accuracy
+// 🛰️ مسار النموذج الجديد (NASA High-Res GLB)
+const ISS_MODEL_PATH = `${import.meta.env.BASE_URL}models/ISS_new.glb`;
+
+// 🛰️ محطة الفضاء الدولية (ISS) - High Detail GLB Version
+// Refactored to use useGLTF for the new model
 function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
-    // 🛰️ Real NASA Textures (Local Assets)
-    // Solar: User Uploaded Texture (Vertical Strip)
-    const solarTexture = useTexture(`${import.meta.env.BASE_URL}textures/iss_solar_real.jpg`);
-    // Hull & Radiator: Keep using the previous working texture (Blueish/Grey) for fallback
-    const hullTexture = useTexture(`${import.meta.env.BASE_URL}textures/iss_solar.jpg`);
-    const radiatorTexture = useTexture(`${import.meta.env.BASE_URL}textures/iss_solar.jpg`);
-
+    // Load the GLB model
+    const { scene } = useGLTF(ISS_MODEL_PATH);
     const meshRef = useRef<THREE.Group>(null);
-    const solarArraysRef = useRef<THREE.Group>(null); // ☀️ Ref for Solar Arrays
+    const solarArraysRef = useRef<THREE.Group>(null);
 
-    // Optimize Textures
+    // �️ Debug: Log Scene Graph to find Solar Panels
     useEffect(() => {
-        // Solar: User Image is vertical strip
-        // 💡 Enlarge Texture: Extreme Zoom (0.2 repeat = 5x Zoom) to force visual change
-        solarTexture.wrapS = solarTexture.wrapT = THREE.ClampToEdgeWrapping;
-        solarTexture.repeat.set(0.2, 0.2); // 🔍 ONLY show center 20% of image (Huge Scale)
-        solarTexture.center.set(0.5, 0.5);
-        solarTexture.rotation = 0;
+        if (scene) {
+            console.log("🛰️ ISS GLB Scene Graph:", scene);
+            scene.traverse((child) => {
+                if ((child as THREE.Mesh).isMesh) {
+                    (child as THREE.Mesh).castShadow = true;
+                    (child as THREE.Mesh).receiveShadow = true;
+                    const name = child.name.toLowerCase();
+                    if (name.includes('solar') || name.includes('array') || name.includes('wing')) {
+                        console.log("☀️ Found Potential Solar Part:", child.name);
+                    }
+                }
+            });
+        }
+    }, [scene]);
 
-        // Hull: Tinted Grey in material, high repeat for detail
-        hullTexture.wrapS = hullTexture.wrapT = THREE.RepeatWrapping;
-        hullTexture.repeat.set(4, 4);
-
-        // Radiator: Tinted White
-        radiatorTexture.wrapS = radiatorTexture.wrapT = THREE.RepeatWrapping;
-        radiatorTexture.repeat.set(1, 2);
-
-        // Force update - sometimes texture properties don't trigger re-render
-        solarTexture.needsUpdate = true;
-    }, [solarTexture, hullTexture, radiatorTexture]);
-
-    // 🪐 ORBITAL MECHANICS: Earth-Lock & Sun-Tracking
+    // 🪐 ORBITAL MECHANICS: Earth-Lock
     useFrame((state) => {
-        if (!meshRef.current || !solarArraysRef.current) return;
+        if (!meshRef.current) return;
 
         // 1. EARTH LOCK (Nadir Pointing)
-        // usage: Rotate body so 'down' (-Y) points to Earth (0,0,0)
-        // Since we want -Y to point to 0,0,0, we can use lookAt.
-        // If we lookAt(0,0,0), the object's +Z points to 0,0,0.
-        // We want -Y to point to 0,0,0.
-        // So we rotate the mesh -90 degrees on X axis relative to the lookAt?
-
-        // Calculate vector to Earth (Center 0,0,0)
-        // Note: In this scene, (0,0,0) is likely the Sun, but if the view is "Proximity", Earth is center.
-        // Assuming Earth is at (0,0,0) for the purpose of ISS orbit as requested.
+        // Orbit is around (0,0,0)
         meshRef.current.lookAt(0, 0, 0);
-
-        // Adjust orientation:
-        // lookAt aligns +Z to target.
-        // We want -Y (Bottom) to face target.
-        // So we rotate X by -90 deg (Math.PI/2) after lookAt?
-        // Actually, we can pre-rotate the geometry or just rotate the container.
-        // Let's rotate the container X -90.
         meshRef.current.rotateX(-Math.PI / 2);
-        // Also rotate Y to align the long axis with velocity vector?
-        // For now, Nadir pointing is the key.
 
-        // 2. SOLAR TRACKING (Sun Pointing)
-        // The Sun is at (0,0,0) in World Space (Scene Center).
-        // Since ISS is also orbiting (0,0,0), the vector to Sun is roughly "Inward".
-        // Solar panels should face the Sun.
-        // In local space of the ISS (which is now rotating to face Earth),
-        // we need to rotate panels to face the Sun.
-        // Since Earth is 0,0,0 and Sun is 0,0,0 (??) -> CONFLICT.
-        // If Earth is center, Sun is valid 'light source' at infinity or specific pos.
-        // If Sun is Center, Earth is moving.
-
-        // Assumption: User wants Panels to rotate. Even if "Sun" is just a direction.
-        // Let's make them rotate around the Truss Axis (Z axis of ISS).
-        // A simple continuous rotation simulates tracking if orbit is equatorial.
-        // Or finding the actual Sun vector.
-        // Given lighting setup: <pointLight position={[0, 10, 10]} /> is local.
-        // Global light is Directional.
-
-        // Let's implement active tracking to World(0,0,0) for panels?
-        // If body faces earth (0,0,0), panels facing Sun (0,0,0) means they overlap?
-        // Ah, usually Sun is "There" and Earth is "Down". They are orthogonal often.
-        // I will make the panels rotate slowly to simulate tracking or just Face Camera?
-        // Let's calculate a "Sun Direction". Assume Sun is at (100000, 0, 0).
-        // Or better: Just rotate them continuously based on time.
-
-        // Simple Simulation: Rotate panels to compensate for Body Rotation
-        // The body rotates once per orbit (360 deg).
-        // Panels should counter-rotate to stay fixed relative to stars (Sun)?
-        // Yes! If they stay fixed in World Space, they track the Sun (if Sun is far).
-
-        // To keep panels fixed in World Space while parent rotates:
-        // We can apply the inverse of parent rotation?
-        // Easier: Set generic rotation.
-
-        solarArraysRef.current.rotation.x = state.clock.getElapsedTime() * 0.2; // Slowly rotate
+        // 2. Solar Tracking (Temporary placeholder until nodes identified)
+        // If we find the node, we will attach it to solarArraysRef and rotate it here.
     });
-
-    // Materials
-    // Materials
-    const { moduleMaterial, solarMaterial, trussMaterial, radiatorMaterial, detailMaterial, darkMetalMaterial } = useMemo(() => {
-        // 🌟 User Request: "Too Dark" -> Brighten Up
-
-        const module = new THREE.MeshStandardMaterial({
-            map: hullTexture,
-            color: "#888888", // 💡 Much lighter Grey
-            emissive: "#111111", // Glow slightly to prevent darkness
-            roughness: 0.5,
-            metalness: 0.5,
-        });
-
-        const solar = new THREE.MeshStandardMaterial({
-            map: solarTexture,
-            color: "#888888", // Brighter base for texture
-            emissive: "#0a0a2a", // Blueish glow
-            emissiveIntensity: 0.3,
-            roughness: 0.3,
-            metalness: 0.7,
-            side: THREE.DoubleSide
-        });
-
-        const truss = new THREE.MeshStandardMaterial({
-            color: "#444444",
-            roughness: 0.6,
-            metalness: 0.4
-        });
-
-        const radiator = new THREE.MeshStandardMaterial({
-            map: radiatorTexture,
-            color: "#AAAAAA", // Brighter
-            emissive: "#111111",
-            roughness: 0.4,
-            metalness: 0.6,
-            side: THREE.DoubleSide
-        });
-
-        const detail = new THREE.MeshStandardMaterial({
-            color: "#222222",
-            roughness: 0.8,
-            metalness: 0.2
-        });
-
-        const darkMetal = new THREE.MeshStandardMaterial({
-            color: "#333333",
-            metalness: 0.5,
-            roughness: 0.5
-        });
-
-        return {
-            moduleMaterial: module,
-            solarMaterial: solar,
-            trussMaterial: truss,
-            radiatorMaterial: radiator,
-            detailMaterial: detail,
-            darkMetalMaterial: darkMetal
-        };
-    }, [hullTexture, solarTexture, radiatorTexture]);
 
     return (
         <group ref={meshRef} scale={scale}>
-            {/* Lights - Boosted for Visibility */}
-            <pointLight distance={150} intensity={2.5} color="#ffffff" position={[0, 10, 10]} />
-            <pointLight distance={150} intensity={1.5} color="#ffccaa" position={[0, -10, 5]} />
+            {/* 💡 Add local lights to illuminate the detailed model */}
+            <pointLight distance={300} intensity={3.0} color="#ffffff" position={[0, 50, 50]} />
+            <pointLight distance={300} intensity={2.0} color="#aaccee" position={[0, -50, -20]} />
 
-            {/* === 1. CENTRAL MODULES (High Res) === */}
-            <group rotation={[Math.PI / 2, 0, 0]}>
-                {/* Zarya (FGB) */}
-                <mesh position={[0, -2, 0]}>
-                    <cylinderGeometry args={[0.6, 0.6, 6, 32]} /> {/* Increased segments 16->32 */}
-                    <primitive object={moduleMaterial} />
-                </mesh>
-                {/* 💍 Segmentation Rings (Ribs) for Zarya */}
-                {[...Array(5)].map((_, i) => (
-                    <mesh key={i} position={[0, -4 + i * 1.2, 0]}>
-                        <torusGeometry args={[0.62, 0.04, 8, 32]} />
-                        <primitive object={detailMaterial} />
-                    </mesh>
-                ))}
-
-                {/* Unity (Node 1) */}
-                <mesh position={[0, 1.5, 0]}>
-                    <cylinderGeometry args={[0.7, 0.7, 1.5, 32]} />
-                    <primitive object={moduleMaterial} />
-                </mesh>
-                {/* Unity Docking Port Highlight */}
-                <mesh position={[0, 1.5, 0]}>
-                    <torusGeometry args={[0.72, 0.05, 8, 32]} />
-                    <primitive object={darkMetalMaterial} />
-                </mesh>
-
-                {/* Destiny (Lab) */}
-                <mesh position={[0, 4, 0]}>
-                    <cylinderGeometry args={[0.6, 0.6, 5, 32]} />
-                    <primitive object={moduleMaterial} />
-                </mesh>
-                {/* Destiny Ribs */}
-                {[...Array(3)].map((_, i) => (
-                    <mesh key={i} position={[0, 2 + i * 1.5, 0]}>
-                        <torusGeometry args={[0.61, 0.03, 8, 32]} />
-                        <primitive object={detailMaterial} />
-                    </mesh>
-                ))}
-
-                {/* Harmony (Node 2) */}
-                <mesh position={[0, 6.5, 0]}>
-                    <cylinderGeometry args={[0.7, 0.7, 1.5, 32]} />
-                    <primitive object={moduleMaterial} />
-                </mesh>
-
-                {/* Columbus & Kibo (Cross Modules) - With End Caps */}
-                <group position={[1.2, 6.5, 0]} rotation={[0, 0, Math.PI / 2]}>
-                    <mesh>
-                        <cylinderGeometry args={[0.6, 0.6, 3, 32]} />
-                        <primitive object={moduleMaterial} />
-                    </mesh>
-                    <mesh position={[0, 1.5, 0]}> {/* End Cap */}
-                        <cylinderGeometry args={[0.62, 0.62, 0.2, 32]} />
-                        <primitive object={darkMetalMaterial} />
-                    </mesh>
-                </group>
-                <group position={[-1.2, 6.5, 0]} rotation={[0, 0, Math.PI / 2]}>
-                    <mesh>
-                        <cylinderGeometry args={[0.6, 0.6, 3, 32]} />
-                        <primitive object={moduleMaterial} />
-                    </mesh>
-                    <mesh position={[0, 1.5, 0]}> {/* End Cap */}
-                        <cylinderGeometry args={[0.62, 0.62, 0.2, 32]} />
-                        <primitive object={darkMetalMaterial} />
-                    </mesh>
-                </group>
-            </group>
-
-            {/* === 2. INTEGRATED TRUSS STRUCTURE (High Detial) === */}
-            <group>
-                {/* Main Truss - Skeleton Look */}
-                <mesh position={[0, 0, 0]}>
-                    <boxGeometry args={[22, 0.6, 0.6]} />
-                    <primitive object={trussMaterial} />
-                </mesh>
-                {/* Internal Truss Pattern (Visual Trick) */}
-                <mesh position={[0, 0, 0]}>
-                    <boxGeometry args={[21.8, 0.65, 0.65]} />
-                    <meshBasicMaterial color="black" wireframe={true} transparent opacity={0.3} />
-                </mesh>
-            </group>
-
-            {/* === 3. THERMAL CONTROL RADIATORS (Enhanced) === */}
-            <group position={[3, 0, -2]} rotation={[0.4, 0, 0]}>
-                <mesh> {/* Main Panel */}
-                    <boxGeometry args={[2.5, 7, 0.1]} />
-                    <primitive object={radiatorMaterial} />
-                </mesh>
-                {/* 📏 Cooling Lines (Texture simulation via Geometry) */}
-                {[...Array(6)].map((_, i) => (
-                    <mesh key={i} position={[0, -3 + i, 0.06]}>
-                        <boxGeometry args={[2.4, 0.05, 0.05]} />
-                        <primitive object={detailMaterial} />
-                    </mesh>
-                ))}
-            </group>
-            <group position={[-3, 0, -2]} rotation={[0.4, 0, 0]}>
-                <mesh>
-                    <boxGeometry args={[2.5, 7, 0.1]} />
-                    <primitive object={radiatorMaterial} />
-                </mesh>
-                {[...Array(6)].map((_, i) => (
-                    <mesh key={i} position={[0, -3 + i, 0.06]}>
-                        <boxGeometry args={[2.4, 0.05, 0.05]} />
-                        <primitive object={detailMaterial} />
-                    </mesh>
-                ))}
-            </group>
-
-
-            {/* === 4. SOLAR ARRAYS (The 8 Big Wings) === */}
-            {/* Rotating joints (SARJ) - Gigantic Gear Look */}
-            <mesh position={[9, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-                <cylinderGeometry args={[1.2, 1.2, 1.5, 32]} />
-                <primitive object={darkMetalMaterial} />
-            </mesh>
-            <mesh position={[-9, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-                <cylinderGeometry args={[1.2, 1.2, 1.5, 32]} />
-                <primitive object={darkMetalMaterial} />
-            </mesh>
-
-            {/* Arrays Group (Right) */}
-            <group position={[12, 0, 0]}>
-                {/* Top Pair */}
-                <group position={[0, 5, 0]}>
-                    <mesh>
-                        <boxGeometry args={[3, 10, 0.05]} />
-                        <primitive object={solarMaterial} />
-                    </mesh>
-                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}> {/* Border */}
-                        <boxGeometry args={[3, 10, 0.04]} />
-                        <meshBasicMaterial color="#111111" wireframe />
-                    </mesh>
-                </group>
-                <group position={[4, 5, 0]}>
-                    <mesh>
-                        <boxGeometry args={[3, 10, 0.05]} />
-                        <primitive object={solarMaterial} />
-                    </mesh>
-                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
-                        <boxGeometry args={[3, 10, 0.04]} />
-                        <meshBasicMaterial color="#111111" wireframe />
-                    </mesh>
-                </group>
-
-                {/* Bottom Pair */}
-                <group position={[0, -5, 0]}>
-                    <mesh>
-                        <boxGeometry args={[3, 10, 0.05]} />
-                        <primitive object={solarMaterial} />
-                    </mesh>
-                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
-                        <boxGeometry args={[3, 10, 0.04]} />
-                        <meshBasicMaterial color="#111111" wireframe />
-                    </mesh>
-                </group>
-                <group position={[4, -5, 0]}>
-                    <mesh>
-                        <boxGeometry args={[3, 10, 0.05]} />
-                        <primitive object={solarMaterial} />
-                    </mesh>
-                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
-                        <boxGeometry args={[3, 10, 0.04]} />
-                        <meshBasicMaterial color="#111111" wireframe />
-                    </mesh>
-                </group>
-            </group>
-
-            {/* Arrays Group (Left) */}
-            <group position={[-12, 0, 0]} ref={solarArraysRef}>
-                {/* Top Pair */}
-                <group position={[0, 5, 0]}>
-                    <mesh>
-                        <boxGeometry args={[3, 10, 0.05]} />
-                        <primitive object={solarMaterial} />
-                    </mesh>
-                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
-                        <boxGeometry args={[3, 10, 0.04]} />
-                        <meshBasicMaterial color="#111111" wireframe />
-                    </mesh>
-                </group>
-                <group position={[-4, 5, 0]}>
-                    <mesh>
-                        <boxGeometry args={[3, 10, 0.05]} />
-                        <primitive object={solarMaterial} />
-                    </mesh>
-                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
-                        <boxGeometry args={[3, 10, 0.04]} />
-                        <meshBasicMaterial color="#111111" wireframe />
-                    </mesh>
-                </group>
-                {/* Bottom Pair */}
-                <group position={[0, -5, 0]}>
-                    <mesh>
-                        <boxGeometry args={[3, 10, 0.05]} />
-                        <primitive object={solarMaterial} />
-                    </mesh>
-                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
-                        <boxGeometry args={[3, 10, 0.04]} />
-                        <meshBasicMaterial color="#111111" wireframe />
-                    </mesh>
-                </group>
-                <group position={[-4, -5, 0]}>
-                    <mesh>
-                        <boxGeometry args={[3, 10, 0.05]} />
-                        <primitive object={solarMaterial} />
-                    </mesh>
-                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
-                        <boxGeometry args={[3, 10, 0.04]} />
-                        <meshBasicMaterial color="#111111" wireframe />
-                    </mesh>
-                </group>
-            </group>
-
-            {/* === 5. SPECIAL DETAILS (Canadarm2 & Antennae) === */}
-            {/* Canadarm2 - Multi-Segment */}
-            <group position={[2, 2, 0.8]} rotation={[0, 0, 0.5]}>
-                <mesh> <cylinderGeometry args={[0.08, 0.08, 2.5, 16]} /> <primitive object={trussMaterial} /> </mesh>
-                <mesh position={[0, 1.25, 0]}> <sphereGeometry args={[0.15]} /> <primitive object={darkMetalMaterial} /> </mesh>
-                <mesh position={[0.8, 1.8, 0]} rotation={[0, 0, -1]}> <cylinderGeometry args={[0.06, 0.06, 2, 16]} /> <primitive object={trussMaterial} /> </mesh>
-            </group>
-
-            {/* Ku-Band Comet Antenna */}
-            <group position={[0.5, -3.5, 1]}>
-                <mesh rotation={[0.5, 0, 0]}>
-                    <cylinderGeometry args={[0.4, 0.02, 0.5, 32]} /> {/* Dish */}
-                    <meshStandardMaterial color="#EEEEEE" side={THREE.DoubleSide} />
-                </mesh>
-                <mesh position={[0, -0.3, 0]}>
-                    <cylinderGeometry args={[0.05, 0.05, 0.6]} />
-                    <primitive object={darkMetalMaterial} />
-                </mesh>
-            </group>
-
-            {/* Lights - Boosted for Visibility */}
-            <pointLight distance={150} intensity={2.5} color="#ffffff" position={[0, 10, 10]} />
-            <pointLight distance={150} intensity={1.5} color="#ffccaa" position={[0, -10, 5]} />
+            {/* 🛰️ The Detailed NASA Model */}
+            {/* Scale: Start small as standard GLTFs are often in meters while our scene is km or abstract. */}
+            <primitive object={scene} scale={[0.01, 0.01, 0.01]} />
         </group>
     );
 }
+// Preload the model
+useGLTF.preload(ISS_MODEL_PATH);
 
 export function CelestialObject(props: CelestialObjectProps) {
     const { data, onSelect, dateRef, isSelected } = props;
