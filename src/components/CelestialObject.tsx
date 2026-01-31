@@ -302,16 +302,16 @@ function RealJupiter({ scale = 1.0 }: { scale?: number }) {
     });
 
     return (
-        <mesh ref={meshRef} scale={scale} castShadow={true} receiveShadow={true}>
+        <mesh ref={meshRef} scale={scale} castShadow={true} receiveShadow={false}>
             <sphereGeometry args={[1, 128, 128]} />
             <meshStandardMaterial
                 map={texture}
                 color="#FFFFFF"
-                roughness={0.3} // ✨ Glossy
-                metalness={0.2} // ✨ Specular
+                roughness={0.5} // ☁️ Gas Giant (Softer)
+                metalness={0.0} // 🚫 No Metal (Fixes black reflections)
                 emissiveMap={texture}
-                emissive="#C88B3A" // Warm fallback/tint
-                emissiveIntensity={0.12} // +20%
+                emissive="#FFFFFF" // 💡 True Color Glow
+                emissiveIntensity={0.2} // 💡 Slight boost
                 toneMapped={false}
             />
         </mesh>
@@ -338,18 +338,18 @@ function RealUranus({ scale = 1.0 }: { scale?: number }) {
             ref={meshRef}
             scale={scale}
             castShadow={true}
-            receiveShadow={true}
+            receiveShadow={false}
             rotation={[Math.PI / 2 + 0.14, 0, 0]}
         >
             <sphereGeometry args={[1, 64, 64]} />
             <meshStandardMaterial
                 map={texture}
                 color="#FFFFFF"
-                roughness={0.3} // ✨ Glossy
-                metalness={0.2} // ✨ Specular
+                roughness={0.5} // ☁️ Gas Giant
+                metalness={0.0} // 🚫 No Metal
                 emissiveMap={texture}
-                emissive="#ACE5EE"
-                emissiveIntensity={0.18} // +20%
+                emissive="#FFFFFF" // 💡 True Color
+                emissiveIntensity={0.2}
             />
         </mesh>
     );
