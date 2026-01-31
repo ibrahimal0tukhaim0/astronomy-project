@@ -685,11 +685,13 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
 
         const solar = new THREE.MeshStandardMaterial({
             map: solarTexture,
+            bumpMap: solarTexture, // 🏔️ 3D Effect: Use texture as bump map
+            bumpScale: 0.05,        // Depth of the cells
             color: "#888888", // Brighter base for texture
             emissive: "#0a0a2a", // Blueish glow
             emissiveIntensity: 0.3,
-            roughness: 0.3,
-            metalness: 0.7,
+            roughness: 0.2,
+            metalness: 0.8,
             side: THREE.DoubleSide
         });
 
@@ -846,29 +848,6 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
             </group>
 
 
-            {/* === 4. SOLAR ARRAYS (The 8 Big Wings) === */}
-            {/* Rotating joints (SARJ) - Gigantic Gear Look */}
-            <mesh position={[9, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-                <cylinderGeometry args={[1.2, 1.2, 1.5, 32]} />
-                <primitive object={darkMetalMaterial} />
-            </mesh>
-            <mesh position={[-9, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
-                <cylinderGeometry args={[1.2, 1.2, 1.5, 32]} />
-                <primitive object={darkMetalMaterial} />
-            </mesh>
-
-            {/* Arrays Group (Right) */}
-            <group position={[12, 0, 0]}>
-                {/* Top Pair */}
-                <group position={[0, 5, 0]}>
-                    <mesh>
-                        <boxGeometry args={[3, 10, 0.05]} />
-                        <primitive object={solarMaterial} />
-                    </mesh>
-                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}> {/* Border */}
-                        <boxGeometry args={[3, 10, 0.04]} />
-                        <meshBasicMaterial color="#111111" wireframe />
-                    </mesh>
                 </group>
                 <group position={[4, 5, 0]}>
                     <mesh>
@@ -881,7 +860,7 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
                     </mesh>
                 </group>
 
-                {/* Bottom Pair */}
+                {/* Bottom Pair */ }
                 <group position={[0, -5, 0]}>
                     <mesh>
                         <boxGeometry args={[3, 10, 0.05]} />
@@ -902,12 +881,12 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
                         <meshBasicMaterial color="#111111" wireframe />
                     </mesh>
                 </group>
-            </group>
+            </group >
 
-            {/* Arrays Group (Left) */}
-            <group position={[-12, 0, 0]} ref={solarArraysRef}>
-                {/* Top Pair */}
-                <group position={[0, 5, 0]}>
+        {/* Arrays Group (Left) */ }
+        < group position = { [-12, 0, 0]} ref = { solarArraysRef } >
+            {/* Top Pair */ }
+            < group position = { [0, 5, 0]} >
                     <mesh>
                         <boxGeometry args={[3, 10, 0.05]} />
                         <primitive object={solarMaterial} />
@@ -916,18 +895,18 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
                         <boxGeometry args={[3, 10, 0.04]} />
                         <meshBasicMaterial color="#111111" wireframe />
                     </mesh>
-                </group>
-                <group position={[-4, 5, 0]}>
-                    <mesh>
-                        <boxGeometry args={[3, 10, 0.05]} />
-                        <primitive object={solarMaterial} />
-                    </mesh>
-                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
-                        <boxGeometry args={[3, 10, 0.04]} />
-                        <meshBasicMaterial color="#111111" wireframe />
-                    </mesh>
-                </group>
-                {/* Bottom Pair */}
+                </group >
+        <group position={[-4, 5, 0]}>
+            <mesh>
+                <boxGeometry args={[3, 10, 0.05]} />
+                <primitive object={solarMaterial} />
+            </mesh>
+            <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
+                <boxGeometry args={[3, 10, 0.04]} />
+                <meshBasicMaterial color="#111111" wireframe />
+            </mesh>
+        </group>
+    {/* Bottom Pair */ }
                 <group position={[0, -5, 0]}>
                     <mesh>
                         <boxGeometry args={[3, 10, 0.05]} />
@@ -948,32 +927,32 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
                         <meshBasicMaterial color="#111111" wireframe />
                     </mesh>
                 </group>
-            </group>
+            </group >
 
-            {/* === 5. SPECIAL DETAILS (Canadarm2 & Antennae) === */}
-            {/* Canadarm2 - Multi-Segment */}
-            <group position={[2, 2, 0.8]} rotation={[0, 0, 0.5]}>
-                <mesh> <cylinderGeometry args={[0.08, 0.08, 2.5, 16]} /> <primitive object={trussMaterial} /> </mesh>
-                <mesh position={[0, 1.25, 0]}> <sphereGeometry args={[0.15]} /> <primitive object={darkMetalMaterial} /> </mesh>
-                <mesh position={[0.8, 1.8, 0]} rotation={[0, 0, -1]}> <cylinderGeometry args={[0.06, 0.06, 2, 16]} /> <primitive object={trussMaterial} /> </mesh>
-            </group>
+        {/* === 5. SPECIAL DETAILS (Canadarm2 & Antennae) === */ }
+    {/* Canadarm2 - Multi-Segment */ }
+    <group position={[2, 2, 0.8]} rotation={[0, 0, 0.5]}>
+        <mesh> <cylinderGeometry args={[0.08, 0.08, 2.5, 16]} /> <primitive object={trussMaterial} /> </mesh>
+        <mesh position={[0, 1.25, 0]}> <sphereGeometry args={[0.15]} /> <primitive object={darkMetalMaterial} /> </mesh>
+        <mesh position={[0.8, 1.8, 0]} rotation={[0, 0, -1]}> <cylinderGeometry args={[0.06, 0.06, 2, 16]} /> <primitive object={trussMaterial} /> </mesh>
+    </group>
 
-            {/* Ku-Band Comet Antenna */}
-            <group position={[0.5, -3.5, 1]}>
-                <mesh rotation={[0.5, 0, 0]}>
-                    <cylinderGeometry args={[0.4, 0.02, 0.5, 32]} /> {/* Dish */}
-                    <meshStandardMaterial color="#EEEEEE" side={THREE.DoubleSide} />
-                </mesh>
-                <mesh position={[0, -0.3, 0]}>
-                    <cylinderGeometry args={[0.05, 0.05, 0.6]} />
-                    <primitive object={darkMetalMaterial} />
-                </mesh>
-            </group>
+    {/* Ku-Band Comet Antenna */ }
+    <group position={[0.5, -3.5, 1]}>
+        <mesh rotation={[0.5, 0, 0]}>
+            <cylinderGeometry args={[0.4, 0.02, 0.5, 32]} /> {/* Dish */}
+            <meshStandardMaterial color="#EEEEEE" side={THREE.DoubleSide} />
+        </mesh>
+        <mesh position={[0, -0.3, 0]}>
+            <cylinderGeometry args={[0.05, 0.05, 0.6]} />
+            <primitive object={darkMetalMaterial} />
+        </mesh>
+    </group>
 
-            {/* Lights - Boosted for Visibility */}
+    {/* Lights - Boosted for Visibility */ }
             <pointLight distance={150} intensity={2.5} color="#ffffff" position={[0, 10, 10]} />
             <pointLight distance={150} intensity={1.5} color="#ffccaa" position={[0, -10, 5]} />
-        </group>
+        </group >
     );
 }
 
