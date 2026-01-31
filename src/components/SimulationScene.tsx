@@ -38,7 +38,7 @@ function SpaceBackground() {
     const meshRef = useRef<THREE.Mesh>(null)
     const { camera } = useThree()
 
-    // 🚀 SkyboxFollow Logic: Position follows camera, Rotation stays static
+    // 🚀 SkyboxFollow Logic: Position follows camera on ALL AXES (X, Y, Z)
     useFrame(() => {
         if (meshRef.current) {
             meshRef.current.position.copy(camera.position)
@@ -48,7 +48,7 @@ function SpaceBackground() {
     return (
         <mesh
             ref={meshRef}
-            scale={[1000, 1000, 1000]} // ⚡ Performance: Reduced Scale to 1000
+            scale={[4000, 4000, 4000]} // 📏 User Request: Scale to 4000 (Prevents void effect)
         >
             <sphereGeometry args={[1, 64, 64]} />
             <meshBasicMaterial
