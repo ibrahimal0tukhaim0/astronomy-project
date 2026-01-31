@@ -58,9 +58,9 @@ function HerbigHaroBackground() {
 
     return (
         <mesh
-            position={[0, 5000, 85000]} // 🔄 Pushed Back 100% (85k)
+            position={[0, 500, 8500]} // 📏 Brought 10x Closer (Fixes Jitter) - Visual appearance is identical
             rotation={[0, Math.PI, 0]}
-            scale={[3, 3, 1]} // 🔍 Scaled up to compensate for distance
+            scale={[0.3, 0.3, 1]} // 🔍 Scaled down 10x to match perspective
         >
             <planeGeometry args={[60000, 40000]} />
             <meshBasicMaterial

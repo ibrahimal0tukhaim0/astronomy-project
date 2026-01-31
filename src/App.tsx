@@ -191,7 +191,8 @@ function AppContent() {
                             toneMappingExposure: 0.8,
                             outputColorSpace: THREE.SRGBColorSpace,
                             preserveDrawingBuffer: false,
-                            alpha: true // ✨ Allow Transparent Background for AR
+                            alpha: true, // ✨ Allow Transparent Background for AR
+                            logarithmicDepthBuffer: true // 📐 Fixes Z-fighting for distant stars/backgrounds
                         }}
                     >
                         {/* In AR Mode, we want transparent background so VideoTexture (or DOM) shows through */}
