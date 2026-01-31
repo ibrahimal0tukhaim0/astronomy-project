@@ -153,8 +153,6 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
             `}</style>
 
             {/* Background Image with Overlay */}
-            {/* Background Image with Overlay */}
-            {/* Background Image with Overlay */}
             <div style={{ position: 'absolute', inset: 0, zIndex: 0, backgroundColor: 'black' }}>
                 <img
                     src={appLogoBg}
@@ -162,7 +160,154 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
                     className="w-full h-full object-contain"
                 />
                 <div className="absolute inset-0 bg-black/20 backdrop-blur-[0px]" />
+
+                {/* Animated Planets Overlay - Positioned on helmet visor */}
+                <div className="animated-solar-system">
+                    {/* Sun (center glow) */}
+                    <div className="orbit-center">
+                        <div className="sun-glow" />
+                    </div>
+
+                    {/* Mercury */}
+                    <div className="orbit orbit-1">
+                        <div className="planet planet-mercury" />
+                    </div>
+
+                    {/* Venus */}
+                    <div className="orbit orbit-2">
+                        <div className="planet planet-venus" />
+                    </div>
+
+                    {/* Earth */}
+                    <div className="orbit orbit-3">
+                        <div className="planet planet-earth" />
+                    </div>
+
+                    {/* Mars */}
+                    <div className="orbit orbit-4">
+                        <div className="planet planet-mars" />
+                    </div>
+
+                    {/* Jupiter */}
+                    <div className="orbit orbit-5">
+                        <div className="planet planet-jupiter" />
+                    </div>
+
+                    {/* Saturn */}
+                    <div className="orbit orbit-6">
+                        <div className="planet planet-saturn">
+                            <div className="saturn-ring" />
+                        </div>
+                    </div>
+                </div>
             </div>
+
+            <style>{`
+                /* Animated Solar System Styles */
+                .animated-solar-system {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -52%);
+                    width: 55%;
+                    height: 55%;
+                    pointer-events: none;
+                }
+                
+                .orbit-center {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    transform: translate(-50%, -50%);
+                }
+                
+                .sun-glow {
+                    width: 30px;
+                    height: 30px;
+                    background: radial-gradient(circle, #fff9c4 0%, #ffb300 40%, #ff8f00 70%, transparent 100%);
+                    border-radius: 50%;
+                    box-shadow: 0 0 40px 15px rgba(255, 180, 0, 0.4), 0 0 80px 30px rgba(255, 140, 0, 0.2);
+                    animation: sunPulse 3s ease-in-out infinite;
+                }
+                
+                @keyframes sunPulse {
+                    0%, 100% { transform: scale(1); opacity: 1; }
+                    50% { transform: scale(1.1); opacity: 0.9; }
+                }
+                
+                .orbit {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    border: 1px solid rgba(255, 180, 100, 0.15);
+                    border-radius: 50%;
+                    transform-style: preserve-3d;
+                    transform: translate(-50%, -50%) rotateX(75deg);
+                }
+                
+                .planet {
+                    position: absolute;
+                    border-radius: 50%;
+                    top: -4px;
+                    left: 50%;
+                    transform: translateX(-50%) rotateX(-75deg);
+                    box-shadow: 0 0 10px 2px rgba(255,255,255,0.3);
+                }
+                
+                /* Orbit sizes and speeds */
+                .orbit-1 { width: 50px; height: 50px; animation: orbitRotate 4s linear infinite; }
+                .orbit-2 { width: 80px; height: 80px; animation: orbitRotate 6s linear infinite; }
+                .orbit-3 { width: 110px; height: 110px; animation: orbitRotate 10s linear infinite; }
+                .orbit-4 { width: 145px; height: 145px; animation: orbitRotate 15s linear infinite; }
+                .orbit-5 { width: 190px; height: 190px; animation: orbitRotate 25s linear infinite; }
+                .orbit-6 { width: 240px; height: 240px; animation: orbitRotate 35s linear infinite; }
+                
+                @keyframes orbitRotate {
+                    from { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(0deg); }
+                    to { transform: translate(-50%, -50%) rotateX(75deg) rotateZ(360deg); }
+                }
+                
+                /* Planet styles */
+                .planet-mercury { width: 5px; height: 5px; background: #b0b0b0; }
+                .planet-venus { width: 7px; height: 7px; background: #e6c87a; }
+                .planet-earth { width: 8px; height: 8px; background: linear-gradient(135deg, #4a90d9 50%, #2d5a1d 50%); }
+                .planet-mars { width: 6px; height: 6px; background: #c1440e; }
+                .planet-jupiter { width: 14px; height: 14px; background: linear-gradient(180deg, #d4a574 0%, #c99856 50%, #a97842 100%); }
+                .planet-saturn { 
+                    width: 12px; height: 12px; 
+                    background: linear-gradient(180deg, #f4d59e 0%, #d4a574 100%);
+                    position: relative;
+                }
+                .saturn-ring {
+                    position: absolute;
+                    top: 50%;
+                    left: 50%;
+                    width: 22px;
+                    height: 6px;
+                    border: 1px solid rgba(210, 180, 140, 0.6);
+                    border-radius: 50%;
+                    transform: translate(-50%, -50%) rotateX(75deg);
+                }
+                
+                /* Mobile adjustments */
+                @media (max-width: 768px) {
+                    .animated-solar-system {
+                        width: 70%;
+                        height: 50%;
+                        transform: translate(-50%, -55%);
+                    }
+                    .sun-glow { width: 20px; height: 20px; }
+                    .orbit-1 { width: 35px; height: 35px; }
+                    .orbit-2 { width: 55px; height: 55px; }
+                    .orbit-3 { width: 75px; height: 75px; }
+                    .orbit-4 { width: 100px; height: 100px; }
+                    .orbit-5 { width: 130px; height: 130px; }
+                    .orbit-6 { width: 165px; height: 165px; }
+                    .planet-jupiter { width: 10px; height: 10px; }
+                    .planet-saturn { width: 9px; height: 9px; }
+                    .saturn-ring { width: 16px; height: 4px; }
+                }
+            `}</style>
 
             {/* UI Content */}
             <div className="hero-text-container">
