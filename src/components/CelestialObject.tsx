@@ -581,10 +581,9 @@ function GreenComet({ scale = 1.0 }: { scale?: number }) {
 // 🛰️ محطة الفضاء الدولية (ISS) - High Detail & Accuracy
 function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
     // 🛰️ Real NASA Textures (Local Assets)
-    // Solar: Actual ISS solar wing detail (Downloaded Successfully)
-    const solarTexture = useTexture(`${import.meta.env.BASE_URL}textures/iss_solar.jpg`);
-    // Hull & Radiator: Using reliable texture source (Fallback to Solar texture tinted grey to prevent crash)
-    // This allows the "Real Photo" detail to appear on all surfaces without broken links.
+    // Solar: User Uploaded Texture (Vertical Strip)
+    const solarTexture = useTexture(`${import.meta.env.BASE_URL}textures/iss_solar_real.jpg`);
+    // Hull & Radiator: Keep using the previous working texture (Blueish/Grey) for fallback
     const hullTexture = useTexture(`${import.meta.env.BASE_URL}textures/iss_solar.jpg`);
     const radiatorTexture = useTexture(`${import.meta.env.BASE_URL}textures/iss_solar.jpg`);
 
@@ -593,10 +592,10 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
 
     // Optimize Textures
     useEffect(() => {
-        // Solar: Real Photo
+        // Solar: User Image is vertical strip
         solarTexture.wrapS = solarTexture.wrapT = THREE.RepeatWrapping;
         solarTexture.repeat.set(1, 1);
-        solarTexture.rotation = Math.PI / 2;
+        solarTexture.rotation = 0; // 0 rotation to match vertical image to long wing axis
 
         // Hull: Tinted Grey in material, high repeat for detail
         hullTexture.wrapS = hullTexture.wrapT = THREE.RepeatWrapping;
