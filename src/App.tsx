@@ -234,7 +234,7 @@ function AppContent() {
                                     enableDamping={true}
                                     dampingFactor={0.05} // 🌊 Smooth inertia (Requested Feature)
                                     minDistance={60} // 🛡️ Collision Avoidance (Sun Radius is 30)
-                                    maxDistance={14000} // ⚡ Performance: Max Distance 14000 (User Request)
+                                    maxDistance={16000} // ⚡ Performance: Max Distance 16000 (User Request)
                                     autoRotate={!hasStarted}
                                     autoRotateSpeed={0.5}
                                     // 📱 Mobile Optimization: Slower rotation for touch precision (0.5), faster for mouse (0.8)
