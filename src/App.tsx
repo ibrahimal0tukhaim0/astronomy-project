@@ -272,12 +272,8 @@ function AppContent() {
             <div className={`transition-opacity duration-1000 ${hasStarted ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
                 <NavigationSidebar onNavigate={handleNavigate} />
 
-                <div className="absolute top-safe left-0 p-4 md:p-8 text-white pointer-events-none transition-opacity duration-500 rtl:right-0 rtl:left-auto mt-12 md:mt-0" style={{ marginTop: 'env(safe-area-inset-top)' }}>
-                    <h1 className="text-3xl md:text-5xl font-bold font-serif tracking-tighter bg-clip-text text-transparent bg-gradient-to-r from-white to-gray-400">
-                        {t('app.title')}
-                    </h1>
-                    <p className="text-base md:text-lg text-blue-200 mt-2 font-light">{t('app.subtitle')}</p>
-                    <div className="mt-4 md:mt-8 text-sm text-gray-500 max-w-xs">
+                <div className="absolute top-safe right-0 p-6 md:p-8 text-white pointer-events-none transition-opacity duration-500 z-10" style={{ marginTop: 'env(safe-area-inset-top)' }}>
+                    <div className="text-sm md:text-base text-gray-300/80 font-light max-w-xs text-right" style={{ fontFamily: '"Cairo", sans-serif' }}>
                         <p>{t('app.instruction')}</p>
                     </div>
                 </div>

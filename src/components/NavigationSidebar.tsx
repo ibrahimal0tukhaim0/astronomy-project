@@ -73,11 +73,12 @@ export function NavigationSidebar({ onNavigate }: NavigationSidebarProps) {
                             <div className="p-8 pt-safe flex flex-col h-full">
                                 <div className="mb-10">
                                     <h2 className="text-3xl font-bold text-white mb-2">
-                                        {t('app.title')}
-                                    </h2>
-                                    <p className="text-xs text-blue-300/60 font-medium tracking-widest uppercase">
-                                        {t('app.subtitle')}
-                                    </p>
+                                        <h2 className="text-3xl font-bold text-white mb-2" style={{ fontFamily: '"IBM Plex Sans Arabic", sans-serif' }}>
+                                            فلك وآية
+                                        </h2>
+                                        <p className="text-xs text-blue-300/60 font-medium tracking-widest uppercase" style={{ fontFamily: '"IBM Plex Sans Arabic", sans-serif' }}>
+                                            استكشاف الفلك والتوحيد
+                                        </p>
                                 </div>
 
                                 <nav className="space-y-3 flex-1">

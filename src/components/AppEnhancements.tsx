@@ -450,7 +450,7 @@ export function AppEnhancements({ currentDate }: { currentDate?: Date }) {
             }
         </style>
         <div class="loader-spinner"></div>
-        <div class="loader-text">جاري تحميل رحلة في الكون...</div>
+        <div class="loader-text">جاري تحميل فلك وآية...</div>
         <div class="loader-progress">
             <div class="loader-progress-bar"></div>
         </div>

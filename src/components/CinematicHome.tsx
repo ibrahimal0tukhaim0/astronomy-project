@@ -311,8 +311,8 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
 
             {/* UI Content */}
             <div className="hero-text-container">
-                <h1 className="hero-title">فلك وآية</h1>
-                {/* Subtitle Removed as requested */}
+                <h1 className="hero-title" style={{ fontFamily: "'IBM Plex Sans Arabic', sans-serif", fontSize: '2.97rem' }}>فلك وآية</h1>
+                <p style={{ fontFamily: "'IBM Plex Sans Arabic', sans-serif", fontSize: '0.97rem', color: 'white', marginTop: '10px' }}>استكشاف الفلك والتوحيد</p>
 
                 {!isLoaded && (
                     <div className="mt-10 opacity-70" style={{ letterSpacing: 3 }}>
@@ -331,13 +331,13 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
             {/* Creator Credit */}
             <div style={{
                 position: 'fixed',
-                bottom: '100px',
+                bottom: '20px',
                 left: '50%',
                 transform: 'translateX(-50%)',
                 textAlign: 'center',
                 color: 'rgba(255, 215, 0, 0.8)',
                 fontFamily: 'Cairo, Tajawal, sans-serif',
-                fontSize: '0.9rem',
+                fontSize: '0.63rem',
                 zIndex: 100
             }}>
                 صنع بواسطة ابراهيم سليمان الطخيم
