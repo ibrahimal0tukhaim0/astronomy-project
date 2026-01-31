@@ -52,30 +52,6 @@ function SpaceBackground() {
 // Bypass TS conflict for <line> element
 const ThreeLine = 'line' as any;
 
-// 🌌 Herbig-Haro 46/47 Background (Webb Image)
-function HerbigHaroBackground() {
-    const texture = useTexture(`${import.meta.env.BASE_URL}textures/herbig_haro_cropped.webp`);
-
-    return (
-        <mesh
-            position={[0, 500, 10000]} // 🔄 Deep Space Position (SAFE RANGE)
-            rotation={[0, Math.PI, 0]}
-            scale={[0.8, 0.8, 1]} // 🪐 Massive Nebula Scale
-        >
-            <planeGeometry args={[60000, 40000]} />
-            <meshBasicMaterial
-                map={texture}
-                transparent={true}
-                opacity={0.15} // 🌫️ Ghostly/Atmospheric (Natural)
-                blending={THREE.NormalBlending} // ☁️ Physical Cloud Look (Not overlay)
-                depthWrite={false}
-                side={THREE.DoubleSide}
-                toneMapped={false}
-            />
-        </mesh>
-    )
-}
-
 function PlanetOrbits() {
     const groupRef = useRef<THREE.Group>(null);
     const orbitPlanets = ['mercury', 'venus', 'earth', 'mars', 'jupiter', 'saturn', 'uranus', 'neptune', 'pluto'];
@@ -163,7 +139,6 @@ export default function SimulationScene({ onSelect, isPaused, onDateChange, isAR
             {/* If AR Mode: Show Webcam. Else: Show Space Background */}
             <Suspense fallback={null}>
                 {!isARMode && <SpaceBackground />}
-                {!isARMode && <HerbigHaroBackground />} {/* 🌌 NASA Webb Layer */}
             </Suspense>
 
             {/* Emergency Lighting - High Intensity */}
@@ -182,8 +157,6 @@ export default function SimulationScene({ onSelect, isPaused, onDateChange, isAR
                 color="#AAAAFF"
                 castShadow={false}
             />
-
-
 
             {/* 🌠 Shooting Stars (Every 15s) */}
             <ComponentBoundary>
