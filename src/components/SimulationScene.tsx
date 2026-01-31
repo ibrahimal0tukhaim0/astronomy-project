@@ -54,13 +54,13 @@ const ThreeLine = 'line' as any;
 
 // 🌌 Herbig-Haro 46/47 Background (Webb Image)
 function HerbigHaroBackground() {
-    const texture = useTexture(`${import.meta.env.BASE_URL}textures/herbig_haro_bg.jpg`);
+    const texture = useTexture(`${import.meta.env.BASE_URL}textures/herbig_haro_cropped.webp`);
 
     return (
         <mesh
-            position={[0, 5000, 45000]} // 🔄 Moved to "Other Side" (Behind Camera) & Closer (45k vs 90k)
-            rotation={[0, Math.PI, 0]} // 🔄 Facing Center
-            scale={[1.2, 1.2, 1]}
+            position={[0, 5000, 85000]} // 🔄 Pushed Back 100% (85k)
+            rotation={[0, Math.PI, 0]}
+            scale={[3, 3, 1]} // 🔍 Scaled up to compensate for distance
         >
             <planeGeometry args={[60000, 40000]} />
             <meshBasicMaterial
