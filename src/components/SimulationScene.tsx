@@ -58,9 +58,9 @@ function HerbigHaroBackground() {
 
     return (
         <mesh
-            position={[40000, 5000, -80000]} // Positioned "opposite" and deep in space
-            rotation={[0, -Math.PI / 6, 0]}
-            scale={[1.5, 1.5, 1]}
+            position={[0, 5000, 45000]} // 🔄 Moved to "Other Side" (Behind Camera) & Closer (45k vs 90k)
+            rotation={[0, Math.PI, 0]} // 🔄 Facing Center
+            scale={[1.2, 1.2, 1]}
         >
             <planeGeometry args={[60000, 40000]} />
             <meshBasicMaterial
