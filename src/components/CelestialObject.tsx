@@ -605,8 +605,9 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
                 if ((child as THREE.Mesh).isMesh) {
                     meshCount++;
                     const mesh = child as THREE.Mesh;
-                    // ⚡ PERFORMANCE: Frustum Culling is vital
-                    mesh.frustumCulled = true;
+                    // ⚡ PERFORMANCE: User Request: Disable Layer Culling/Wall Effect
+                    // We must render everything even at distance
+                    mesh.frustumCulled = false;
 
                     // ⚡ PERFORMANCE: SMART SHADOWS
                     // Only cast shadows from large structures (Solar arrays, main modules)
