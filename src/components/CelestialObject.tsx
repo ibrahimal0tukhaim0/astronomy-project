@@ -615,9 +615,9 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
 
         const solar = new THREE.MeshStandardMaterial({
             map: solarTexture,
-            color: "#081033", // Slightly darker
-            emissive: "#0d1a4d", // Less intense blue
-            emissiveIntensity: 0.35, // 📉 Reduced from 0.5 to 0.35
+            color: "#0a1544", // Slightly brighter blue base
+            emissive: "#112266", // Brighter blue glow
+            emissiveIntensity: 0.5, // 💡 Increased from 0.2 to 0.5
             roughness: 0.2,
             metalness: 0.8,
             side: THREE.DoubleSide
@@ -630,9 +630,10 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
         });
 
         const radiator = new THREE.MeshStandardMaterial({
-            color: "#FFFFFF",
-            roughness: 0.3,
-            metalness: 0.2,
+            map: hullTexture, // 🛠️ Applied texture as requested
+            color: "#AAAAAA", // Grey base to prevent white washout
+            roughness: 0.5,
+            metalness: 0.8, // Metallic look for radiators
             side: THREE.DoubleSide
         });
 
