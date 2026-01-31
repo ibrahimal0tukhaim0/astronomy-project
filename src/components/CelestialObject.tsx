@@ -593,9 +593,11 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
     // Optimize Textures
     useEffect(() => {
         // Solar: User Image is vertical strip
-        solarTexture.wrapS = solarTexture.wrapT = THREE.RepeatWrapping;
-        solarTexture.repeat.set(1, 1);
-        solarTexture.rotation = 0; // 0 rotation to match vertical image to long wing axis
+        // 💡 Enlarge Texture: Zoom in (repeat < 1) to remove borders and fill space
+        solarTexture.wrapS = solarTexture.wrapT = THREE.ClampToEdgeWrapping; // 🚫 No Tiling
+        solarTexture.repeat.set(0.9, 0.9); // 🔍 Zoom in 10% to fill edges
+        solarTexture.center.set(0.5, 0.5); // Center the zoom
+        solarTexture.rotation = 0;
 
         // Hull: Tinted Grey in material, high repeat for detail
         hullTexture.wrapS = hullTexture.wrapT = THREE.RepeatWrapping;
