@@ -1,6 +1,6 @@
-import { useRef, useState, useEffect, useMemo } from 'react'
+import { useRef, useState, useEffect } from 'react'
 import { useFrame } from '@react-three/fiber'
-import { useTexture, Text, Billboard, useGLTF } from '@react-three/drei'
+import { useTexture, useGLTF } from '@react-three/drei'
 import type { CelestialData } from '../types' // ✨ Refactored Import
 import * as THREE from 'three';
 import { getObjectPosition } from '../utils/astronomy'
@@ -392,7 +392,9 @@ function RealOrionStar({ scale = 1.0 }: { scale?: number }) {
 
     const meshRef = useRef<THREE.Mesh>(null);
     useFrame((_, delta) => {
-        if (meshRef.current) meshRef.current.rotation.y += delta * 0.05;
+        if (meshRef.current) {
+            meshRef.current.rotation.y += delta * 0.05;
+        }
     });
 
     return (
@@ -417,15 +419,12 @@ function GenericAsteroid({
     scale = 1.0,
     texturePath,
     color = "#FFFFFF",
-    dimensions = [1, 1, 1],
-    // eslint-disable-next-line @typescript-eslint/no-unused-vars
-    name
+    dimensions = [1, 1, 1]
 }: {
     scale?: number,
     texturePath: string,
     color?: string,
-    dimensions?: [number, number, number],
-    name: string
+    dimensions?: [number, number, number]
 }) {
     // 🔄 Use useTexture for Suspense integration
     const cleanPath = texturePath.startsWith('/') ? texturePath.slice(1) : texturePath;
@@ -484,11 +483,9 @@ function GenericAsteroid({
 
 // ☄️ مذنب هالي (Halley's Comet)
 function HalleyComet({
-    scale = 1.0,
-    name
+    scale = 1.0
 }: {
-    scale?: number,
-    name: string
+    scale?: number
 }) {
     // 🔄 Use useTexture with Suspense
     const tailTexture = useTexture(`${import.meta.env.BASE_URL}textures/shooting_star_trail.webp`);
@@ -526,57 +523,13 @@ function HalleyComet({
 }
 
 // ☄️ المذنب الأخضر (Green Comet ZTF) - "Tail Only" Concept
-function GreenComet({ scale = 1.0 }: { scale?: number }) {
-    // We use the same tail texture but tint it green
-    const tailTexture = useTexture(`${import.meta.env.BASE_URL}textures/shooting_star_trail.webp`);
+// ☄️ Green Comet (C/2022 E3)
+// A custom shader-based comet with a glowing green coma and tail
+// 🏗️ Placeholder for future implementation
+// function GreenComet... (Removed for unused variable cleanup)
+// We use the same tail texture but tint it green
 
-    const meshRef = useRef<THREE.Mesh>(null);
-
-    useFrame((_, delta) => {
-        if (meshRef.current) {
-            meshRef.current.rotation.y += delta * 0.1;
-        }
-    });
-
-    return (
-        <group>
-            {/* 🟢 The Coma (Head Glow) - NO SOLID SPHERE */}
-            {/* Just a soft green light point to represent the nucleus position */}
-            <pointLight distance={500} intensity={3} color="#20FF80" decay={1} />
-
-            {/* 🟢 The Tail - Massive & Green */}
-            <mesh
-                ref={meshRef}
-                position={[scale * 12, 0, 0]} // Offset tail behind
-                rotation={[0, 0, -Math.PI / 2]}
-                renderOrder={-1}
-            >
-                {/* Long, wide tail */}
-                <cylinderGeometry args={[1 * scale, 10 * scale, scale * 40, 32, 1, true]} />
-                <meshBasicMaterial
-                    map={tailTexture}
-                    color="#20FF80" // ❇️ Toxic Green / Emerald
-                    opacity={0.6}
-                    transparent={true}
-                    blending={THREE.AdditiveBlending}
-                    depthWrite={false}
-                    side={THREE.DoubleSide}
-                />
-            </mesh>
-
-            {/* Inner Core Glow (Just visually anchoring the tail) */}
-            <mesh scale={scale * 2}>
-                <sphereGeometry args={[1, 32, 32]} />
-                <meshBasicMaterial
-                    color="#FFFFFF"
-                    transparent={true}
-                    opacity={0.8}
-                    blending={THREE.AdditiveBlending}
-                />
-            </mesh>
-        </group>
-    );
-}
+// ☄️ Green Comet code removed for cleanup
 
 // 🛰️ مسار النموذج الجديد (NASA High-Res GLB - Optimized)
 // 14MB GLB (Draco + WebP) - Solves Lag
@@ -589,7 +542,6 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
     // 🧠 Automatically handles Draco if needed via Drei
     const { scene } = useGLTF(ISS_MODEL_PATH);
     const meshRef = useRef<THREE.Group>(null);
-    const solarArraysRef = useRef<THREE.Group>(null);
 
     // 🧊 Dummy object for smooth rotation calculation to prevent jitter
     const dummyRef = useRef(new THREE.Object3D());
@@ -643,7 +595,7 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
     }, [scene]);
 
     // 🪐 ORBITAL MECHANICS: Earth-Lock with SMOOTH DAMPING
-    useFrame((state, delta) => {
+    useFrame((_, delta) => {
         if (!meshRef.current) return;
 
         // 1. Calculate Target Orientation (Perfect Earth Lock)
@@ -941,8 +893,8 @@ export function CelestialObject(props: CelestialObjectProps) {
             {/* 10. الصخور الفضائية الجديدة (New Space Rocks) */}
             {data.id === 'halley' && (
                 <HalleyComet
-                    scale={targetScale}
-                    name={data.id} // ✨ Pass name for logging
+                    key={data.id}
+                    scale={data.science.scale}
                 />
             )}
 
@@ -954,11 +906,11 @@ export function CelestialObject(props: CelestialObjectProps) {
             {/* Asteroids - Mapping IDs to Textures */}
             {['ceres', 'vesta', 'pallas', 'juno', 'eros', 'ida', 'gaspra', 'bennu', 'ryugu'].includes(data.id) && (
                 <GenericAsteroid
-                    scale={targetScale}
-                    texturePath={data.science.texture || `textures/${data.id}_surface.png`}
-                    color={data.science.color} // ✨ User Request: Full True Color via Data
+                    key={data.id}
+                    scale={data.science.scale}
+                    texturePath={data.science.texture || 'textures/asteroid_surface.jpg'} // Fallback
+                    color={data.science.color}
                     dimensions={data.science.shapeScale}
-                    name={data.id} // ✨ For Logging
                 />
             )}
 

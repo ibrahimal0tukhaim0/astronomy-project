@@ -1,12 +1,11 @@
-import { useRef, useState, useMemo } from "react";
+import { useRef, useMemo } from "react";
 import { useFrame } from "@react-three/fiber";
 import { useTexture } from "@react-three/drei";
 import * as THREE from "three";
 
 // 🌠 Shooting Star Configuration
-const METEOR_COUNT = 30; // Increased count supported by Instancing
-const SPAWN_INTERVAL = 0.4;
-const TRAIL_LENGTH = 5.0;
+const METEOR_COUNT = 50; // Increased count supported by Instancing
+const SPAWN_INTERVAL = 0.1;
 
 interface MeteorData {
     active: boolean;
