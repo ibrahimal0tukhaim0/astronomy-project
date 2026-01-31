@@ -177,7 +177,7 @@ function AppContent() {
                                 ? (window.innerWidth < 768 ? 75 : 60)
                                 : (window.innerWidth < 768 ? 90 : 75),
                             near: 0.1,
-                            far: 1000000 // 🌌 Far Clip Plane: Increased to 1M for distant planets
+                            far: 20000 // ⚡ Performance: Reduced Far Clip (User Request: 20k)
                         }}
                         // 🌟 4K RENDER UPGRADE: Optimized Pixel Ratio (User Request: 0.85 Factor)
                         // Scales resolution to 85% of native, saving GPU power while looking identical on Retina
@@ -234,7 +234,7 @@ function AppContent() {
                                     enableDamping={true}
                                     dampingFactor={0.05} // 🌊 Smooth inertia (Requested Feature)
                                     minDistance={60} // 🛡️ Collision Avoidance (Sun Radius is 30)
-                                    maxDistance={900000} // Increased for new Far Clip
+                                    maxDistance={650} // ⚡ Performance: Max Distance 650 (User Request)
                                     autoRotate={!hasStarted}
                                     autoRotateSpeed={0.5}
                                     // 📱 Mobile Optimization: Slower rotation for touch precision (0.5), faster for mouse (0.8)
