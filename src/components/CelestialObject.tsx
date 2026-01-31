@@ -593,9 +593,9 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
     // Optimize Textures
     useEffect(() => {
         // Solar: User Image is vertical strip
-        // 💡 Enlarge Texture: Aggressive Zoom (0.5 repeat = 2x Zoom) to crop all borders
+        // 💡 Enlarge Texture: Extreme Zoom (0.2 repeat = 5x Zoom) to force visual change
         solarTexture.wrapS = solarTexture.wrapT = THREE.ClampToEdgeWrapping;
-        solarTexture.repeat.set(0.5, 0.5); // 🔍 ONLY show center 50% of image
+        solarTexture.repeat.set(0.2, 0.2); // 🔍 ONLY show center 20% of image (Huge Scale)
         solarTexture.center.set(0.5, 0.5);
         solarTexture.rotation = 0;
 
@@ -606,6 +606,9 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
         // Radiator: Tinted White
         radiatorTexture.wrapS = radiatorTexture.wrapT = THREE.RepeatWrapping;
         radiatorTexture.repeat.set(1, 2);
+
+        // Force update - sometimes texture properties don't trigger re-render
+        solarTexture.needsUpdate = true;
     }, [solarTexture, hullTexture, radiatorTexture]);
 
     // 🪐 ORBITAL MECHANICS: Earth-Lock & Sun-Tracking
