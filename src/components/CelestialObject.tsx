@@ -302,7 +302,7 @@ function RealJupiter({ scale = 1.0 }: { scale?: number }) {
     });
 
     return (
-        <mesh ref={meshRef} scale={scale} castShadow={true} receiveShadow={false}>
+        <mesh ref={meshRef} scale={scale} castShadow={false} receiveShadow={false}>
             <sphereGeometry args={[1, 128, 128]} />
             <meshStandardMaterial
                 map={texture}
@@ -313,6 +313,8 @@ function RealJupiter({ scale = 1.0 }: { scale?: number }) {
                 emissive="#FFFFFF" // 💡 True Color Glow
                 emissiveIntensity={0.2} // 💡 Slight boost
                 toneMapped={false}
+                transparent={false}
+                depthWrite={true}
             />
         </mesh>
     );
@@ -337,7 +339,7 @@ function RealUranus({ scale = 1.0 }: { scale?: number }) {
         <mesh
             ref={meshRef}
             scale={scale}
-            castShadow={true}
+            castShadow={false}
             receiveShadow={false}
             rotation={[Math.PI / 2 + 0.14, 0, 0]}
         >
@@ -350,6 +352,9 @@ function RealUranus({ scale = 1.0 }: { scale?: number }) {
                 emissiveMap={texture}
                 emissive="#FFFFFF" // 💡 True Color
                 emissiveIntensity={0.2}
+                transparent={false}
+                depthWrite={true}
+            />
             />
         </mesh>
     );
