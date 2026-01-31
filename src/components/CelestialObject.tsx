@@ -847,109 +847,61 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
                 ))}
             </group>
 
+            {/* === 4. SOLAR ARRAYS (The 8 Big Wings) === */}
+            {/* ☀️ Solar Arrays Group - Independent Rotation for Sun Tracking */}
+            <group ref={solarArraysRef} rotation={[0, 0, Math.PI / 2]}>
+                {/* Rotating joints (SARJ) - Gigantic Gear Look */}
+                <mesh position={[9, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+                    <cylinderGeometry args={[1.2, 1.2, 1.5, 32]} />
+                    <primitive object={darkMetalMaterial} />
+                </mesh>
+                <mesh position={[-9, 0, 0]} rotation={[0, 0, Math.PI / 2]}>
+                    <cylinderGeometry args={[1.2, 1.2, 1.5, 32]} />
+                    <primitive object={darkMetalMaterial} />
+                </mesh>
 
-                </group>
-                <group position={[4, 5, 0]}>
-                    <mesh>
-                        <boxGeometry args={[3, 10, 0.05]} />
-                        <primitive object={solarMaterial} />
-                    </mesh>
-                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
-                        <boxGeometry args={[3, 10, 0.04]} />
-                        <meshBasicMaterial color="#111111" wireframe />
-                    </mesh>
-                </group>
+                {/* Left Array */}
+                <mesh position={[-12, 0, 0]} material={[darkMetalMaterial, darkMetalMaterial, solarMaterial, solarMaterial, darkMetalMaterial, darkMetalMaterial]}>
+                    <boxGeometry args={[4, 0.1, 12]} />
+                </mesh>
+                {/* Frame detail (Wireframe) */}
+                <mesh position={[-12, 0, 0]} scale={[1.01, 1.01, 1.005]}>
+                    <boxGeometry args={[4, 0.1, 12]} />
+                    <meshBasicMaterial color="#111111" wireframe={true} />
+                </mesh>
 
-                {/* Bottom Pair */ }
-                <group position={[0, -5, 0]}>
-                    <mesh>
-                        <boxGeometry args={[3, 10, 0.05]} />
-                        <primitive object={solarMaterial} />
-                    </mesh>
-                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
-                        <boxGeometry args={[3, 10, 0.04]} />
-                        <meshBasicMaterial color="#111111" wireframe />
-                    </mesh>
-                </group>
-                <group position={[4, -5, 0]}>
-                    <mesh>
-                        <boxGeometry args={[3, 10, 0.05]} />
-                        <primitive object={solarMaterial} />
-                    </mesh>
-                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
-                        <boxGeometry args={[3, 10, 0.04]} />
-                        <meshBasicMaterial color="#111111" wireframe />
-                    </mesh>
-                </group>
-            </group >
+                {/* Right Array */}
+                <mesh position={[12, 0, 0]} material={[darkMetalMaterial, darkMetalMaterial, solarMaterial, solarMaterial, darkMetalMaterial, darkMetalMaterial]}>
+                    <boxGeometry args={[4, 0.1, 12]} />
+                </mesh>
+                {/* Frame detail (Wireframe) */}
+                <mesh position={[12, 0, 0]} scale={[1.01, 1.01, 1.005]}>
+                    <boxGeometry args={[4, 0.1, 12]} />
+                    <meshBasicMaterial color="#111111" wireframe={true} />
+                </mesh>
+            </group>
 
-        {/* Arrays Group (Left) */ }
-        < group position = { [-12, 0, 0]} ref = { solarArraysRef } >
-            {/* Top Pair */ }
-            < group position = { [0, 5, 0]} >
-                    <mesh>
-                        <boxGeometry args={[3, 10, 0.05]} />
-                        <primitive object={solarMaterial} />
-                    </mesh>
-                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
-                        <boxGeometry args={[3, 10, 0.04]} />
-                        <meshBasicMaterial color="#111111" wireframe />
-                    </mesh>
-                </group >
-        <group position={[-4, 5, 0]}>
-            <mesh>
-                <boxGeometry args={[3, 10, 0.05]} />
-                <primitive object={solarMaterial} />
-            </mesh>
-            <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
-                <boxGeometry args={[3, 10, 0.04]} />
-                <meshBasicMaterial color="#111111" wireframe />
-            </mesh>
-        </group>
-    {/* Bottom Pair */ }
-                <group position={[0, -5, 0]}>
-                    <mesh>
-                        <boxGeometry args={[3, 10, 0.05]} />
-                        <primitive object={solarMaterial} />
-                    </mesh>
-                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
-                        <boxGeometry args={[3, 10, 0.04]} />
-                        <meshBasicMaterial color="#111111" wireframe />
-                    </mesh>
-                </group>
-                <group position={[-4, -5, 0]}>
-                    <mesh>
-                        <boxGeometry args={[3, 10, 0.05]} />
-                        <primitive object={solarMaterial} />
-                    </mesh>
-                    <mesh position={[0, 0, 0]} scale={[1.01, 1.01, 1]}>
-                        <boxGeometry args={[3, 10, 0.04]} />
-                        <meshBasicMaterial color="#111111" wireframe />
-                    </mesh>
-                </group>
-            </group >
+            {/* === 5. SPECIAL DETAILS (Canadarm2 & Antennae) === */}
+            {/* Canadarm2 - Multi-Segment */}
+            <group position={[2, 2, 0.8]} rotation={[0, 0, 0.5]}>
+                <mesh> <cylinderGeometry args={[0.08, 0.08, 2.5, 16]} /> <primitive object={trussMaterial} /> </mesh>
+                <mesh position={[0, 1.25, 0]}> <sphereGeometry args={[0.15]} /> <primitive object={darkMetalMaterial} /> </mesh>
+                <mesh position={[0.8, 1.8, 0]} rotation={[0, 0, -1]}> <cylinderGeometry args={[0.06, 0.06, 2, 16]} /> <primitive object={trussMaterial} /> </mesh>
+            </group>
 
-        {/* === 5. SPECIAL DETAILS (Canadarm2 & Antennae) === */ }
-    {/* Canadarm2 - Multi-Segment */ }
-    <group position={[2, 2, 0.8]} rotation={[0, 0, 0.5]}>
-        <mesh> <cylinderGeometry args={[0.08, 0.08, 2.5, 16]} /> <primitive object={trussMaterial} /> </mesh>
-        <mesh position={[0, 1.25, 0]}> <sphereGeometry args={[0.15]} /> <primitive object={darkMetalMaterial} /> </mesh>
-        <mesh position={[0.8, 1.8, 0]} rotation={[0, 0, -1]}> <cylinderGeometry args={[0.06, 0.06, 2, 16]} /> <primitive object={trussMaterial} /> </mesh>
-    </group>
+            {/* Ku-Band Comet Antenna */}
+            <group position={[0.5, -3.5, 1]}>
+                <mesh rotation={[0.5, 0, 0]}>
+                    <cylinderGeometry args={[0.4, 0.02, 0.5, 32]} /> {/* Dish */}
+                    <meshStandardMaterial color="#EEEEEE" side={THREE.DoubleSide} />
+                </mesh>
+                <mesh position={[0, -0.3, 0]}>
+                    <cylinderGeometry args={[0.05, 0.05, 0.6]} />
+                    <primitive object={darkMetalMaterial} />
+                </mesh>
+            </group>
 
-    {/* Ku-Band Comet Antenna */ }
-    <group position={[0.5, -3.5, 1]}>
-        <mesh rotation={[0.5, 0, 0]}>
-            <cylinderGeometry args={[0.4, 0.02, 0.5, 32]} /> {/* Dish */}
-            <meshStandardMaterial color="#EEEEEE" side={THREE.DoubleSide} />
-        </mesh>
-        <mesh position={[0, -0.3, 0]}>
-            <cylinderGeometry args={[0.05, 0.05, 0.6]} />
-            <primitive object={darkMetalMaterial} />
-        </mesh>
-    </group>
-
-    {/* Lights - Boosted for Visibility */ }
+            {/* Lights - Boosted for Visibility */}
             <pointLight distance={150} intensity={2.5} color="#ffffff" position={[0, 10, 10]} />
             <pointLight distance={150} intensity={1.5} color="#ffccaa" position={[0, -10, 5]} />
         </group >
