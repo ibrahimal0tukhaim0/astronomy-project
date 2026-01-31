@@ -296,46 +296,25 @@ function RealJupiter({ scale = 1.0 }: { scale?: number }) {
         texture.colorSpace = THREE.SRGBColorSpace;
     }, [texture]);
 
-    const coreRef = useRef<THREE.Mesh>(null);
-    const atmosphereRef = useRef<THREE.Mesh>(null);
-
+    const meshRef = useRef<THREE.Mesh>(null);
     useFrame((_, delta) => {
-        if (coreRef.current) coreRef.current.rotation.y += delta * 0.15;
-        // Atmosphere rotates slightly faster for dynamic effect
-        if (atmosphereRef.current) atmosphereRef.current.rotation.y += delta * 0.18;
+        if (meshRef.current) meshRef.current.rotation.y += delta * 0.15;
     });
 
     return (
-        <group scale={scale}>
-            {/* Layer 1: The Core (Solid) */}
-            <mesh ref={coreRef} castShadow={false} receiveShadow={false}>
-                <sphereGeometry args={[1, 128, 128]} />
-                <meshStandardMaterial
-                    map={texture}
-                    color="#FFFFFF"
-                    roughness={0.5}
-                    metalness={0.0}
-                    emissiveMap={texture}
-                    emissive="#C88B3A" // Warm fallback/tint
-                    emissiveIntensity={0.3} // 🔥 Increased brightness
-                    toneMapped={false}
-                />
-            </mesh>
-
-            {/* Layer 2: The Atmosphere (Transparent Overlay) */}
-            <mesh ref={atmosphereRef} scale={1.01} castShadow={false} receiveShadow={false}>
-                <sphereGeometry args={[1, 128, 128]} />
-                <meshStandardMaterial
-                    map={texture}
-                    color="#FFFFFF"
-                    transparent={true}
-                    opacity={0.4} // Semi-transparent overlay
-                    side={THREE.DoubleSide}
-                    blending={THREE.AdditiveBlending}
-                    depthWrite={false}
-                />
-            </mesh>
-        </group>
+        <mesh ref={meshRef} scale={scale} castShadow={true} receiveShadow={false}>
+            <sphereGeometry args={[1, 128, 128]} />
+            <meshStandardMaterial
+                map={texture}
+                color="#FFFFFF"
+                roughness={0.4} // ✨ Natural Gloss
+                metalness={0.0} // 🚫 No Metal
+                emissiveMap={texture}
+                emissive="#C88B3A" // Warm Jupiter Glow
+                emissiveIntensity={0.1} // 🌑 Subtle Ambient Fill (Removes pure blackness)
+                toneMapped={false}
+            />
+        </mesh>
     );
 }
 
@@ -349,44 +328,30 @@ function RealUranus({ scale = 1.0 }: { scale?: number }) {
         texture.colorSpace = THREE.SRGBColorSpace;
     }, [texture]);
 
-    const coreRef = useRef<THREE.Mesh>(null);
-    const atmosphereRef = useRef<THREE.Mesh>(null);
-
+    const meshRef = useRef<THREE.Mesh>(null);
     useFrame((_, delta) => {
-        if (coreRef.current) coreRef.current.rotation.z += delta * 0.15;
-        if (atmosphereRef.current) atmosphereRef.current.rotation.z += delta * 0.20;
+        if (meshRef.current) meshRef.current.rotation.z += delta * 0.15;
     });
 
     return (
-        <group scale={scale} rotation={[Math.PI / 2 + 0.14, 0, 0]}>
-            {/* Layer 1: The Core (Solid) */}
-            <mesh ref={coreRef} castShadow={false} receiveShadow={false}>
-                <sphereGeometry args={[1, 64, 64]} />
-                <meshStandardMaterial
-                    map={texture}
-                    color="#FFFFFF"
-                    roughness={0.5}
-                    metalness={0.0}
-                    emissiveMap={texture}
-                    emissive="#FFFFFF"
-                    emissiveIntensity={0.3} // 🔥 Brighter
-                />
-            </mesh>
-
-            {/* Layer 2: The Atmosphere (Hazy) */}
-            <mesh ref={atmosphereRef} scale={1.02} castShadow={false} receiveShadow={false}>
-                <sphereGeometry args={[1, 64, 64]} />
-                <meshStandardMaterial
-                    map={texture}
-                    color="#AADDFF" // Cyan Tint
-                    transparent={true}
-                    opacity={0.3}
-                    side={THREE.DoubleSide}
-                    blending={THREE.AdditiveBlending}
-                    depthWrite={false}
-                />
-            </mesh>
-        </group>
+        <mesh
+            ref={meshRef}
+            scale={scale}
+            castShadow={true}
+            receiveShadow={false}
+            rotation={[Math.PI / 2 + 0.14, 0, 0]}
+        >
+            <sphereGeometry args={[1, 64, 64]} />
+            <meshStandardMaterial
+                map={texture}
+                color="#FFFFFF"
+                roughness={0.4} // ✨ Natural Ice Gloss
+                metalness={0.0} // 🚫 No Metal
+                emissiveMap={texture}
+                emissive="#ACE5EE" // Cyan Uranus Glow
+                emissiveIntensity={0.15} // 🌑 Subtle Ambient Fill
+            />
+        </mesh>
     );
 }
 
