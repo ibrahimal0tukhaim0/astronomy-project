@@ -605,10 +605,10 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
     // Materials
     const { moduleMaterial, solarMaterial, trussMaterial, radiatorMaterial, detailMaterial, darkMetalMaterial } = useMemo(() => {
         const module = new THREE.MeshStandardMaterial({
-            map: hullTexture,
-            color: "#AAAAAA", // 🌑 Darker base to let texture show
-            roughness: 0.6,   // Less shiny/glossy
-            metalness: 0.3,   // Less metallic wash-out
+            map: hullTexture, // Texture must dominate
+            color: "#555555", // 🌑 Dark Grey Base (Fixes White Washout)
+            roughness: 0.8,   // High roughness -> Matte (Less reflection)
+            metalness: 0.2,   // Low metalness -> Less environmental reflection
         });
 
         const solar = new THREE.MeshStandardMaterial({
