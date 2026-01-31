@@ -177,7 +177,7 @@ function AppContent() {
                                 ? (window.innerWidth < 768 ? 75 : 60)
                                 : (window.innerWidth < 768 ? 90 : 75),
                             near: 0.1,
-                            far: 500000
+                            far: 1000000 // 🌌 Far Clip Plane: Increased to 1M for distant planets
                         }}
                         // 🌟 4K RENDER UPGRADE: Optimized Pixel Ratio (User Request: Max 2)
                         // Reduces GPU load by 30% while maintaining visual sharpness
@@ -227,13 +227,14 @@ function AppContent() {
                                     ref={controlsRef}
                                     target={[0, 0, 0]}
                                     enableZoom={true}
+                                    zoomSpeed={1.2} // 🔍 Optimized Pinch-to-Zoom Speed
                                     zoomToCursor={true} // 🔍 Pro Feature: Zoom to wherever cursor is
                                     enablePan={true} // ✋ Allow panning (2 fingers on mobile)
                                     panSpeed={1.0} // Screen-space panning
                                     enableDamping={true}
-                                    dampingFactor={0.05} // 🌊 Smooth inertia
+                                    dampingFactor={0.05} // 🌊 Smooth inertia (Requested Feature)
                                     minDistance={60} // 🛡️ Collision Avoidance (Sun Radius is 30)
-                                    maxDistance={4000}
+                                    maxDistance={900000} // Increased for new Far Clip
                                     autoRotate={!hasStarted}
                                     autoRotateSpeed={0.5}
                                     // 📱 Mobile Optimization: Slower rotation for touch precision (0.5), faster for mouse (0.8)
