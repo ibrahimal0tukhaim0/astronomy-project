@@ -152,13 +152,27 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
 
             `}</style>
 
-            {/* Background Image with Overlay */}
-            <div style={{ position: 'absolute', inset: 0, zIndex: 0, backgroundColor: 'black' }}>
-                <img
-                    src={appLogoBg}
-                    alt="App Logo Background"
-                    className="w-full h-full object-contain"
-                />
+            {/* Background Image with Overlay - CSS Method for robustness */}
+            <div style={{
+                position: 'fixed',
+                inset: 0,
+                zIndex: 0,
+                backgroundColor: 'black',
+                backgroundImage: `url(${appLogoBg})`,
+                backgroundSize: 'cover',
+                backgroundPosition: 'center',
+                backgroundRepeat: 'no-repeat'
+            }}>
+                {/* Overlay inside the bg div? No, keep it sibling or child if needed. 
+                Wait, if I make it a self-closing div, I can put the overlay as a sibling inside the root?
+                The structure was:
+                <div container>
+                   <img />
+                   <overlay />
+                   <planets />
+                </div>
+                I will make the container *be* the background.
+                */}
                 <div className="absolute inset-0 bg-black/20 backdrop-blur-[0px]" />
 
                 {/* Animated Planets Overlay - Positioned on helmet visor */}
