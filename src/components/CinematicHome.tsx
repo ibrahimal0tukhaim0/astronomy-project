@@ -328,6 +328,21 @@ function CinematicHomeComponent({ onStart }: CinematicHomeProps) {
                 </button>
             )}
 
+            {/* Creator Credit */}
+            <div style={{
+                position: 'fixed',
+                bottom: '100px',
+                left: '50%',
+                transform: 'translateX(-50%)',
+                textAlign: 'center',
+                color: 'rgba(255, 215, 0, 0.8)',
+                fontFamily: 'Cairo, Tajawal, sans-serif',
+                fontSize: '0.9rem',
+                zIndex: 100
+            }}>
+                صنع بواسطة ابراهيم سليمان الطخيم
+            </div>
+
             <div className="credit-orbital">
                 جميع الحقوق محفوظة © 2026 تطبيق فلك وآية
             </div>
