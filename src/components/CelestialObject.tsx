@@ -593,6 +593,15 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
         hullTexture.repeat.set(4, 1);
     }, [solarTexture, hullTexture]);
 
+    // 🌟 High-Res Texture Clone for Radiators
+    const radiatorTexture = useMemo(() => {
+        const tex = hullTexture.clone();
+        tex.wrapS = tex.wrapT = THREE.RepeatWrapping;
+        tex.repeat.set(4, 8); // 🔍 High density tiling for "High Res" look
+        tex.needsUpdate = true;
+        return tex;
+    }, [hullTexture]);
+
     // Slow Rotation
     useFrame((state, delta) => {
         if (meshRef.current) {
@@ -630,10 +639,10 @@ function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
         });
 
         const radiator = new THREE.MeshStandardMaterial({
-            map: hullTexture, // 🛠️ Applied texture as requested
-            color: "#AAAAAA", // Grey base to prevent white washout
+            map: radiatorTexture, // 🌟 Use the High-Res Cloned Texture
+            color: "#AAAAAA",
             roughness: 0.5,
-            metalness: 0.8, // Metallic look for radiators
+            metalness: 0.8,
             side: THREE.DoubleSide
         });
 
