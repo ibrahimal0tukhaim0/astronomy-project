@@ -16,6 +16,7 @@ const texturePaths = [
     'textures/pluto_surface.webp',
     'textures/stars.webp',
     'textures/al_tariq_real.webp', // 🌟 Added Al-Tariq
+    'textures/nebula_pillar.jpg', // 🌌 New Pillars of Creation Background
     // Asteroids
     'textures/asteroids/ceres.webp',
     'textures/asteroids/vesta.webp',

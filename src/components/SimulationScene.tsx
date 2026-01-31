@@ -47,6 +47,28 @@ function SpaceBackground() {
     )
 }
 
+// 🌌 Secondary Nebula (Pillars of Creation)
+// Positioned opposite to the main view for balance
+function SecondaryNebula() {
+    const texture = useTexture(`${import.meta.env.BASE_URL}textures/nebula_pillar.jpg`);
+
+    return (
+        <sprite
+            position={[40000, 10000, -40000]} // 📍 Far away, opposite quadrant
+            scale={[30000, 30000, 1]} // Huge scale
+        >
+            <spriteMaterial
+                map={texture}
+                transparent={true}
+                blending={THREE.AdditiveBlending} // ✨ Additive blending makes black transparent & colors glowing
+                opacity={0.6} // Subtle blend
+                depthWrite={false} // Prevent z-fighting
+                toneMapped={false}
+            />
+        </sprite>
+    );
+}
+
 // 🪐 Planet Orbits (Visual Paths)
 // Renders static rings, optionally animated with dashed lines for "High-Tech Radar" look
 // Bypass TS conflict for <line> element
@@ -139,6 +161,7 @@ export default function SimulationScene({ onSelect, isPaused, onDateChange, isAR
             {/* If AR Mode: Show Webcam. Else: Show Space Background */}
             <Suspense fallback={null}>
                 {!isARMode && <SpaceBackground />}
+                {!isARMode && <SecondaryNebula />}
             </Suspense>
 
             {/* Emergency Lighting - High Intensity */}
