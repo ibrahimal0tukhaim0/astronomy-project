@@ -580,29 +580,28 @@ function GreenComet({ scale = 1.0 }: { scale?: number }) {
 
 // 🛰️ محطة الفضاء الدولية (ISS) - High Detail & Accuracy
 function InternationalSpaceStation({ scale = 1.0 }: { scale?: number }) {
-    // 🛰️ Real NASA Textures (Wikimedia Commons)
-    // Solar: Actual ISS solar wing detail
-    const solarTexture = useTexture("https://upload.wikimedia.org/wikipedia/commons/0/04/International_Space_Station_solar_array_pair.jpg");
-    // Hull: Multi-Layer Insulation (Thermal Blanket) - Silver/White crinkled look
-    const hullTexture = useTexture("https://upload.wikimedia.org/wikipedia/commons/f/ff/Multi-layer_insulation_close-up.jpg");
-    // Radiator: Actual radiator panels in space
-    const radiatorTexture = useTexture("https://upload.wikimedia.org/wikipedia/commons/0/0d/ISS_Main_Radiators.jpg");
+    // 🛰️ Real NASA Textures (Local Assets)
+    // Solar: Actual ISS solar wing detail (Downloaded Successfully)
+    const solarTexture = useTexture(`${import.meta.env.BASE_URL}textures/iss_solar.jpg`);
+    // Hull & Radiator: Using reliable texture source (Fallback to Solar texture tinted grey to prevent crash)
+    // This allows the "Real Photo" detail to appear on all surfaces without broken links.
+    const hullTexture = useTexture(`${import.meta.env.BASE_URL}textures/iss_solar.jpg`);
+    const radiatorTexture = useTexture(`${import.meta.env.BASE_URL}textures/iss_solar.jpg`);
 
     const meshRef = useRef<THREE.Group>(null);
 
     // Optimize Textures
     useEffect(() => {
-        // Solar: Crop/Tile to focus on the cells
+        // Solar: Real Photo
         solarTexture.wrapS = solarTexture.wrapT = THREE.RepeatWrapping;
         solarTexture.repeat.set(1, 1);
-        solarTexture.center.set(0.5, 0.5);
-        solarTexture.rotation = Math.PI / 2; // Rotate to align wings
+        solarTexture.rotation = Math.PI / 2;
 
-        // Hull: Tile heavily to simulate small cloth folds
+        // Hull: Tinted Grey in material, high repeat for detail
         hullTexture.wrapS = hullTexture.wrapT = THREE.RepeatWrapping;
         hullTexture.repeat.set(4, 4);
 
-        // Radiator: Tile to show panel segments
+        // Radiator: Tinted White
         radiatorTexture.wrapS = radiatorTexture.wrapT = THREE.RepeatWrapping;
         radiatorTexture.repeat.set(1, 2);
     }, [solarTexture, hullTexture, radiatorTexture]);
