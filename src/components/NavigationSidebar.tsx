@@ -5,9 +5,10 @@ import { useTranslation } from 'react-i18next';
 
 interface NavigationSidebarProps {
     onNavigate: (objectId: string) => void;
+    isHidden?: boolean;
 }
 
-export function NavigationSidebar({ onNavigate }: NavigationSidebarProps) {
+export function NavigationSidebar({ onNavigate, isHidden = false }: NavigationSidebarProps) {
     const [isOpen, setIsOpen] = useState(false);
     const { t } = useTranslation();
 
@@ -23,7 +24,12 @@ export function NavigationSidebar({ onNavigate }: NavigationSidebarProps) {
             {/* Hamburger Button - Standardized Touch Target */}
             <button
                 onClick={toggleMenu}
-                style={{ top: 'calc(1.25rem + env(safe-area-inset-top))' }}
+                style={{
+                    top: 'calc(1.25rem + env(safe-area-inset-top))',
+                    opacity: isHidden ? 0 : 1,
+                    pointerEvents: isHidden ? 'none' : 'auto',
+                    transform: isHidden ? 'scale(0.8)' : 'scale(1)'
+                }}
                 className="fixed left-6 z-[60] touch-target p-4 bg-black/40 hover:bg-black/60 backdrop-blur-xl rounded-2xl text-white transition-all duration-300 border border-white/10 active:scale-95 flex items-center justify-center shadow-lg"
                 aria-label="Menu"
                 aria-expanded={isOpen}

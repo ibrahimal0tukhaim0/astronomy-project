@@ -270,7 +270,7 @@ function AppContent() {
 
             {/* UI Layer - Only Visible After Start */}
             <div className={`transition-opacity duration-1000 ${hasStarted ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}>
-                <NavigationSidebar onNavigate={handleNavigate} />
+                <NavigationSidebar onNavigate={handleNavigate} isHidden={!!selectedObject} />
 
                 <div className="absolute top-safe right-0 p-6 md:p-8 text-white pointer-events-none transition-opacity duration-500 z-10" style={{ marginTop: 'env(safe-area-inset-top)' }}>
                     <div className="text-sm md:text-base text-gray-300/80 font-light max-w-xs text-right" style={{ fontFamily: '"Cairo", sans-serif' }}>
